@@ -17,7 +17,7 @@
         },
         "rightSection": {
           "links": [
-            { "icon": "Location", "text": "Malad West" },
+            { "icon": "Location", "text": "Kolkata" },
             { "icon": "Truck", "text": "Track Order" },
             { "icon": "User", "text": "Log In / Sign Up" }
           ]
@@ -32,8 +32,8 @@
           "padding": "10px 20px"
         },
         "logo": {
-          "image": "green_nursery_logo.png",
-          "text": "Green Nursery"
+          "image": "logo.png",
+          "text": "GoGreen Nursery"
         },
         "menu": [
           "HOME",

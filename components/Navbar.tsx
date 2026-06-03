@@ -27,8 +27,8 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="text-2xl font-serif font-bold text-brand-dark flex items-center gap-2">
-              <span className="text-3xl">🌿</span>
-              Green Nursery
+              <img src="/logo.png" alt="GoGreen Nursery Logo" className="h-10 w-10 object-contain" />
+              <span>GoGreen Nursery</span>
             </Link>
           </div>
 

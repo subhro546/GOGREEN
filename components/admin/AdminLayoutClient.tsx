@@ -23,7 +23,8 @@ export default function AdminLayoutClient({
     <>
       <div className="h-20 flex items-center justify-between px-6 border-b border-brand/5">
         <Link href="/" className="text-xl font-serif font-bold text-brand-dark flex items-center gap-2">
-          🌿 GOGREEN Admin
+          <img src="/logo.png" alt="GoGreen Logo" className="h-8 w-8 object-contain" />
+          <span>GoGreen Admin</span>
         </Link>
         <button 
           onClick={() => setIsSidebarOpen(false)} 
@@ -93,7 +94,8 @@ export default function AdminLayoutClient({
         {/* Mobile Header */}
         <header className="h-16 bg-white border-b border-brand/5 flex items-center justify-between px-6 lg:hidden shrink-0 shadow-sm z-30">
           <Link href="/" className="text-lg font-serif font-bold text-brand-dark flex items-center gap-2">
-            🌿 GOGREEN Admin
+            <img src="/logo.png" alt="GoGreen Logo" className="h-6 w-6 object-contain" />
+            <span>GoGreen Admin</span>
           </Link>
           <button 
             onClick={() => setIsSidebarOpen(true)} 

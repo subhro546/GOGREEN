@@ -26,7 +26,7 @@ export default function FAQPage() {
         },
         {
           question: "How long does shipping take?",
-          answer: "Orders are processed within 1-2 business days. Shipping usually takes 3-5 business days depending on your location. We provide tracking details once the order leaves our Malad West nursery."
+          answer: "Orders are processed within 1-2 business days. Shipping usually takes 3-5 business days depending on your location. We provide tracking details once the order leaves our Kolkata nursery."
         },
         {
           question: "What is your return policy?",

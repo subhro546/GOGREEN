@@ -34,13 +34,13 @@ const TopBar = () => {
         {/* Right Section */}
         <div className="flex items-center space-x-6">
           <a 
-            href="https://www.google.com/maps/search/?api=1&query=Go+Green+Nursery+Malad+West+Mumbai"
+            href="https://www.google.com/maps/search/?api=1&query=Go+Green+Nursery+Kolkata+Maheshtala"
             target="_blank" 
             rel="noopener noreferrer" 
             className="flex items-center space-x-1 hover:text-brand-light transition-colors"
           >
             <FaMapMarkerAlt />
-            <span>Malad West</span>
+            <span>Kolkata</span>
           </a>
           <Link href="/orders" className="flex items-center space-x-1 border-l border-white/20 pl-4 hover:text-brand-light transition-colors">
             <FaTruck />

@@ -107,15 +107,15 @@ export default function ContactPage() {
                     <h4 className="font-bold text-text-dark text-sm">Nursery Location</h4>
                     <p className="text-text-dark/80 mt-1 font-medium">
                       <a 
-                        href="https://www.google.com/maps/search/?api=1&query=Go+Green+Nursery+Malad+West+Mumbai"
+                        href="https://www.google.com/maps/search/?api=1&query=Go+Green+Nursery+Kolkata+Maheshtala"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:underline"
                       >
-                        Malad West
+                        Kali Nagar, South Padirhati, Makalhati Mauza
                       </a>
                     </p>
-                    <p className="text-xs text-text-dark/50 mt-0.5">Mumbai, Maharashtra, India</p>
+                    <p className="text-xs text-text-dark/50 mt-0.5">Kolkata, Maheshtala, West Bengal 700066</p>
                   </div>
                 </div>
 

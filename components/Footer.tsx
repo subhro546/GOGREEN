@@ -8,7 +8,8 @@ const Footer = () => {
           
           <div className="space-y-4">
             <Link href="/" className="text-2xl font-serif font-bold text-white flex items-center gap-2">
-              <span>🌿</span> GOGREEN
+              <img src="/logo.png" alt="GoGreen Nursery Logo" className="h-8 w-8 object-contain brightness-0 invert" />
+              <span>GoGreen Nursery</span>
             </Link>
             <p className="text-brand-light/80 text-sm leading-relaxed max-w-xs">
               Bringing nature closer to you. We provide premium, healthy plants and accessories to transform your space into a green oasis.
