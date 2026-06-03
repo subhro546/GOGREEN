@@ -9,7 +9,7 @@ export default function UpdateImageButton({ productId, currentImage }: { product
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(currentImage);
-  const [useUrlInput, setUseUrlInput] = useState(false);
+  const [useUrlInput, setUseUrlInput] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
 

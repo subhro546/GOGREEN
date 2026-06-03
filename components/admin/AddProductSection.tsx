@@ -18,7 +18,7 @@ export default function AddProductSection() {
   const [category, setCategory] = useState("Indoor Plant");
   const [stock, setStock] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [useUrlInput, setUseUrlInput] = useState(false);
+  const [useUrlInput, setUseUrlInput] = useState(true);
   const [isIndoor, setIsIndoor] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
