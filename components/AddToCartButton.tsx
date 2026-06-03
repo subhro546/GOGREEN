@@ -72,7 +72,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       <button
         onClick={handleAddToCart}
         disabled={product.stock === 0}
-        className="flex-1 bg-brand-secondary text-white py-4 rounded-xl font-bold hover:bg-brand-topbar transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+        className="flex-1 bg-yellow-400 text-yellow-900 py-4 rounded-xl font-bold hover:bg-yellow-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
       >
         {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
       </button>

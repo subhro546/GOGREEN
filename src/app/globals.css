@@ -3,10 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #fdfbf7;
-  --foreground: #1c261e;
+  --background: #fafdf8;
+  --foreground: #1a1a1a;
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   background-color: var(--background);
@@ -15,8 +18,48 @@ body {
   overflow-x: hidden;
 }
 
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1fdf4;
+}
+::-webkit-scrollbar-thumb {
+  background: #2e7d32;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1b5e20;
+}
+
 @layer utilities {
   .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/20 dark:bg-black/50 dark:border-white/10;
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .text-gradient-green {
+    background: linear-gradient(135deg, #2e7d32, #84cc16);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-warm {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
   }
 }

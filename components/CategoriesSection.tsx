@@ -3,40 +3,81 @@ import Link from 'next/link';
 
 const CategoriesSection = () => {
   const categories = [
-    { name: "Indoor Plants", dbName: "Indoor Plant", image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=400&q=80" },
-    { name: "Air Purifying", dbName: "Air Purifying", image: "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?auto=format&fit=crop&w=400&q=80" },
-    { name: "Low Maintenance", dbName: "Low Maintenance", image: "https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=400&q=80" },
-    { name: "All Plants", dbName: "", image: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=400&q=80" }
+    {
+      name: "Indoor Plants",
+      dbName: "Indoor Plant",
+      image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=400&q=80",
+      tag: "Most Popular",
+    },
+    {
+      name: "Air Purifying",
+      dbName: "Air Purifying",
+      image: "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?auto=format&fit=crop&w=400&q=80",
+      tag: "Clean Air",
+    },
+    {
+      name: "Low Maintenance",
+      dbName: "Low Maintenance",
+      image: "https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=400&q=80",
+      tag: "Easy Care",
+    },
+    {
+      name: "All Plants",
+      dbName: "",
+      image: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=400&q=80",
+      tag: "Browse All",
+    },
   ];
 
   return (
-    <section id="categories" className="py-20 bg-white">
+    <section id="categories" className="py-20 bg-[#0f1f13]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-serif text-text-dark text-center mb-16 italic">
-          Categories
-        </h2>
 
-        {/* Scrollable container for smaller screens, grid for larger */}
-        <div className="flex overflow-x-auto pb-8 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6 scrollbar-hide">
+        {/* Header */}
+        <div className="text-center mb-14">
+          <span className="inline-block bg-green-900/60 text-green-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4 border border-green-700/50">
+            Shop by Category
+          </span>
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-white italic">
+            Find Your Perfect Plant
+          </h2>
+          <p className="mt-4 text-gray-400 max-w-xl mx-auto">
+            Whether you want fresh air, low-effort greens, or a statement piece — we&apos;ve got it all.
+          </p>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {categories.map((category, index) => (
-            <Link 
-              key={index} 
+            <Link
+              key={index}
               href={category.dbName ? `/shop?category=${encodeURIComponent(category.dbName)}` : `/shop`}
-              className="relative flex-none w-64 sm:w-auto h-80 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-300"
+              className="relative h-36 sm:h-64 lg:h-80 rounded-2xl overflow-hidden group shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
             >
-              <img 
-                src={category.image} 
+              <img
+                src={category.image}
                 alt={category.name}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-              
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <h3 className="text-white text-xl font-medium translate-y-2 group-hover:translate-y-0 transition-transform">
+
+              {/* Uniform dark overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10 transition-opacity duration-300 group-hover:from-black/85" />
+
+              {/* Tag */}
+              <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
+                <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] sm:text-xs font-semibold px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/30">
+                  {category.tag}
+                </span>
+              </div>
+
+              {/* Content */}
+              <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-5">
+                <h3 className="text-white text-sm sm:text-xl font-bold drop-shadow-md">
                   {category.name}
                 </h3>
-                <div className="w-8 h-1 bg-brand-hero mt-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="hidden sm:flex items-center gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
+                  <span className="text-green-300 text-sm font-semibold">Shop Now →</span>
+                </div>
               </div>
             </Link>
           ))}

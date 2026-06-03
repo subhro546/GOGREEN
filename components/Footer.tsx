@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className="bg-brand-topbar text-white pt-16 pb-8">
+    <footer className="text-white pt-16 pb-8" style={{ background: 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 60%, #1a3a1f 100%)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           

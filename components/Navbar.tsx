@@ -21,7 +21,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white w-full z-40 border-b border-gray-100 sticky top-0">
+    <nav className="bg-white w-full z-40 border-b border-gray-100 sticky top-0 shadow-sm">
+      {/* Colourful top accent strip */}
+      <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #2e7d32, #66bb6a, #f9a825, #f97316, #f43f5e)' }} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}

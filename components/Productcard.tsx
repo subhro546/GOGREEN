@@ -72,7 +72,7 @@ const ProductCard = ({ id, name, price, category, isNew, images }: ProductCardPr
 
           <button
             onClick={handleAddToCart}
-            className="mt-2 w-full bg-brand-secondary text-white text-xs font-semibold py-2 rounded-xl hover:bg-brand-topbar active:scale-95 transition-all shadow-sm"
+            className="mt-2 w-full bg-yellow-400 text-yellow-900 text-xs font-bold py-2 rounded-xl hover:bg-yellow-300 active:scale-95 transition-all shadow-sm"
           >
             Add to Cart
           </button>
@@ -105,7 +105,7 @@ const ProductCard = ({ id, name, price, category, isNew, images }: ProductCardPr
           <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <button
               onClick={handleAddToCart}
-              className="w-full bg-brand-secondary text-white py-3 rounded-xl font-medium hover:bg-brand-topbar transition-colors shadow-lg"
+              className="w-full bg-yellow-400 text-yellow-900 py-3 rounded-xl font-bold hover:bg-yellow-300 transition-colors shadow-lg"
             >
               Add to Cart
             </button>

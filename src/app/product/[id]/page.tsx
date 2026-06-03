@@ -34,7 +34,7 @@ export default async function ProductPage({
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-28 pb-16 bg-brand-hero min-h-screen">
+      <main className="flex-1 pt-28 pb-16 bg-white min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-brand/5 grid grid-cols-1 md:grid-cols-2 gap-12">
             

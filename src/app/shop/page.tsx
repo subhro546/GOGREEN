@@ -26,7 +26,7 @@ export default async function ShopPage({
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 bg-brand-hero min-h-screen">
+      <main className="flex-1 pt-24 pb-16 min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 border-b border-brand/10 pb-8">
