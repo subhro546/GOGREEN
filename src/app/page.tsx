@@ -1,13 +1,19 @@
 import Navbar from "../../components/Navbar";
+import HeroSection from "../../components/HeroSection";
+import CategoriesSection from "../../components/CategoriesSection";
+import FeaturedProducts from "../../components/FeaturedProducts";
+import Footer from "../../components/Footer";
 
 export default function HomePage() {
   return (
     <>
       <Navbar />
-      <main className="p-10">
-        <h1 className="text-3xl font-bold">Welcome to GOGREEN nursery</h1>
-        <p className="text-gray-600 mt-4">Your plant-loving e-commerce site 🌿</p>
+      <main className="flex-1 flex flex-col">
+        <HeroSection />
+        <CategoriesSection />
+        <FeaturedProducts />
       </main>
+      <Footer />
     </>
   );
 }

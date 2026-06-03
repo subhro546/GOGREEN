@@ -1,13 +1,86 @@
-const Hero = () => {
-    return (
-      <section className="text-center p-10 bg-gradient-to-r from-orange-100 to-pink-100">
-        <h2 className="text-3xl font-bold mb-4">Big Sale on Ethnic Wear!</h2>
-        <p className="text-lg">Up to 70% Off on Sarees, Kurtas & more</p>
-        <button className="mt-6 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600">
-          Shop Now
-        </button>
-      </section>
-    );
+/* eslint-disable @next/next/no-img-element */
+"use client";
+
+import Link from 'next/link';
+import { useCart } from '../src/context/CartContext';
+
+interface ProductCardProps {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  isNew?: boolean;
+  images?: string;
+}
+
+const ProductCard = ({ id, name, price, category, isNew, images }: ProductCardProps) => {
+  const { addItem } = useCart();
+
+  let imageUrl = '/placeholder.png';
+  if (images) {
+    try {
+      const parsed = JSON.parse(images);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        imageUrl = parsed[0];
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  const handleAddToCart = () => {
+    addItem({ id, name, price, category, quantity: 1, image: imageUrl });
   };
-  
-  export default Hero;
+
+  return (
+    <div className="group flex flex-col bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-brand/5">
+      <div className="relative aspect-[4/5] bg-brand-hero overflow-hidden flex items-center justify-center">
+        {isNew && (
+          <div className="absolute top-4 left-4 bg-brand-topbar text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+            NEW
+          </div>
+        )}
+        <button className="absolute top-4 right-4 p-2 bg-white/50 backdrop-blur-md rounded-full text-foreground/50 hover:text-red-500 hover:bg-white transition-all z-10 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+          </svg>
+        </button>
+        
+        {/* Plant Image */}
+        <img 
+          src={imageUrl} 
+          alt={name}
+          className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+        />
+        
+        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <button 
+            onClick={handleAddToCart}
+            className="w-full bg-brand-secondary text-white py-3 rounded-xl font-medium hover:bg-brand-topbar transition-colors shadow-lg"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <div className="p-5 flex-1 flex flex-col">
+        <p className="text-sm text-text-dark/50 font-medium mb-1 uppercase tracking-wider">{category}</p>
+        <Link href={`/product/${id}`} className="text-lg font-serif font-bold text-text-dark hover:text-brand-secondary transition-colors mb-2">
+          {name}
+        </Link>
+        <div className="mt-auto flex items-center justify-between">
+          <span className="text-xl font-semibold text-brand-secondary">${price.toFixed(2)}</span>
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-yellow-400">
+                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007z" clipRule="evenodd" />
+              </svg>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;

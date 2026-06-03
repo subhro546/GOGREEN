@@ -1,0 +1,119 @@
+{
+  "website": {
+    "header": {
+      "topBar": {
+        "style": {
+          "backgroundColor": "#1a472a",
+          "textColor": "#ffffff",
+          "display": "flex",
+          "justifyContent": "space-between"
+        },
+        "leftSection": {
+          "socialIcons": ["Facebook", "LinkedIn", "Twitter", "Instagram"],
+          "contact": {
+            "phone": "+91 9508499690",
+            "email": "online.support@xyz.com"
+          }
+        },
+        "rightSection": {
+          "links": [
+            { "icon": "Location", "text": "Malad West" },
+            { "icon": "Truck", "text": "Track Order" },
+            { "icon": "User", "text": "Log In / Sign Up" }
+          ]
+        }
+      },
+      "navigation": {
+        "style": {
+          "backgroundColor": "#ffffff",
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "space-between",
+          "padding": "10px 20px"
+        },
+        "logo": {
+          "image": "green_nursery_logo.png",
+          "text": "Green Nursery"
+        },
+        "menu": [
+          "HOME",
+          "CATEGORIES",
+          "PRODUCTS",
+          "SERVICES",
+          "ABOUT US",
+          "MORE"
+        ],
+        "actions": [
+          { "type": "searchBar", "placeholder": "Search..." },
+          { "type": "icon", "name": "Shopping Cart" }
+        ]
+      }
+    },
+    "heroSection": {
+      "style": {
+        "backgroundColor": "#e6f9f0",
+        "backgroundImage": "abstract_green_shapes_and_leaves.svg",
+        "display": "flex",
+        "alignItems": "center",
+        "padding": "40px"
+      },
+      "content": {
+        "textContainer": {
+          "topText": {
+            "text": "Wide Range of Plants at",
+            "style": {
+              "fontFamily": "sans-serif",
+              "fontSize": "24px",
+              "color": "#333333"
+            }
+          },
+          "bottomText": {
+            "text": "Affordable Prices",
+            "style": {
+              "fontFamily": "cursive",
+              "fontSize": "48px",
+              "color": "#2c4c3b"
+            }
+          }
+        },
+        "imageCarousel": {
+          "images": [
+            { "alt": "Potted Monstera Plant", "src": "monstera.png" },
+            { "alt": "Potted Snake Plant", "src": "snake_plant.png" }
+          ],
+          "controls": {
+            "leftArrow": true,
+            "rightArrow": true
+          }
+        }
+      }
+    },
+    "mainContent": {
+      "categoriesSection": {
+        "heading": {
+          "text": "Categories",
+          "style": {
+            "fontFamily": "cursive",
+            "fontSize": "32px",
+            "textAlign": "center",
+            "color": "#333333",
+            "padding": "40px 0"
+          }
+        },
+        "grid": {
+          "style": {
+            "display": "flex",
+            "gap": "20px",
+            "overflowX": "hidden"
+          },
+          "items": [
+            { "image": "ferns.jpg", "alt": "Fern Plant" },
+            { "image": "bonsai.jpg", "alt": "Bonsai Tree" },
+            { "image": "pink_flowers.jpg", "alt": "Flowering Plant" },
+            { "image": "leaves.jpg", "alt": "Indoor Plant" }
+          ]
+        }
+      }
+    }
+  }
+}
