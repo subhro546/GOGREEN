@@ -3,10 +3,10 @@ import Link from 'next/link';
 
 const CategoriesSection = () => {
   const categories = [
-    { name: "Fern Plant", image: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=400&q=80" },
-    { name: "Bonsai Tree", image: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=400&q=80" },
-    { name: "Flowering Plant", image: "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?auto=format&fit=crop&w=400&q=80" },
-    { name: "Indoor Plant", image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=400&q=80" }
+    { name: "Indoor Plants", dbName: "Indoor Plant", image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=400&q=80" },
+    { name: "Air Purifying", dbName: "Air Purifying", image: "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?auto=format&fit=crop&w=400&q=80" },
+    { name: "Low Maintenance", dbName: "Low Maintenance", image: "https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=400&q=80" },
+    { name: "All Plants", dbName: "", image: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=400&q=80" }
   ];
 
   return (
@@ -21,7 +21,7 @@ const CategoriesSection = () => {
           {categories.map((category, index) => (
             <Link 
               key={index} 
-              href={`/shop?category=${encodeURIComponent(category.name)}`}
+              href={category.dbName ? `/shop?category=${encodeURIComponent(category.dbName)}` : `/shop`}
               className="relative flex-none w-64 sm:w-auto h-80 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-300"
             >
               <img 
