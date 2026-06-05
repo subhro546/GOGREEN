@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Providers } from "../../components/Providers";
 import TopBar from "../../components/TopBar";
+import WhatsAppWidget from "../../components/WhatsAppWidget";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -32,6 +33,7 @@ export default function RootLayout({
         <Providers>
           <TopBar />
           {children}
+          <WhatsAppWidget />
         </Providers>
       </body>
     </html>

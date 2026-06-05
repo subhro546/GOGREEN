@@ -14,6 +14,17 @@ const Footer = () => {
             <p className="text-brand-light/80 text-sm leading-relaxed max-w-xs">
               Bringing nature closer to you. We provide premium, healthy plants and accessories to transform your space into a green oasis.
             </p>
+            <div className="pt-2 space-y-2.5 text-xs text-brand-light/80 border-t border-white/10">
+              <p className="flex items-center gap-2">
+                <span>📞</span> <a href="tel:+917596811595" className="hover:underline font-semibold text-white">+91 7596811595</a>
+              </p>
+              <p className="flex items-center gap-2">
+                <span>✉️</span> <a href="mailto:gogreen.nursery20@gmail.com" className="hover:underline text-white">gogreen.nursery20@gmail.com</a>
+              </p>
+              <p className="flex items-start gap-2">
+                <span className="mt-0.5">📍</span> <a href="https://www.google.com/maps/search/?api=1&query=Go+Green+Nursery+Kolkata+Maheshtala" target="_blank" rel="noopener noreferrer" className="hover:underline text-white">Kali Nagar, South Padirhati, Maheshtala, Kolkata 700066</a>
+              </p>
+            </div>
           </div>
 
           <div>

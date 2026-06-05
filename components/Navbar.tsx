@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useCart } from '../src/context/CartContext';
 import { useEffect, useState } from 'react';
-import { FaSearch, FaShoppingCart, FaBars, FaTimes, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart, FaBars, FaTimes, FaUser, FaSignOutAlt, FaPhoneAlt, FaEnvelope, FaWhatsapp } from 'react-icons/fa';
 import { useSession, signOut } from 'next-auth/react';
 
 const Navbar = () => {
@@ -160,6 +160,23 @@ const Navbar = () => {
                 </Link>
               </div>
             )}
+          </div>
+
+          {/* Quick Contacts Panel */}
+          <div className="border-t border-gray-100 pt-4 mt-2 space-y-2 text-xs text-text-dark/70">
+            <p className="font-bold text-text-dark/50 uppercase tracking-wider text-[10px]">Contact Us</p>
+            <div className="flex items-center gap-2 px-1">
+              <FaPhoneAlt className="text-brand-secondary shrink-0" />
+              <a href="tel:+917596811595" className="hover:underline font-semibold text-text-dark">+91 7596811595</a>
+            </div>
+            <div className="flex items-center gap-2 px-1">
+              <FaEnvelope className="text-brand-secondary shrink-0" />
+              <a href="mailto:gogreen.nursery20@gmail.com" className="hover:underline text-text-dark font-medium">gogreen.nursery20@gmail.com</a>
+            </div>
+            <div className="flex items-center gap-2 px-1">
+              <FaWhatsapp className="text-green-500 shrink-0" />
+              <a href="https://wa.me/917980028176" target="_blank" rel="noopener noreferrer" className="hover:underline font-semibold text-text-dark">WhatsApp Support</a>
+            </div>
           </div>
         </div>
       )}

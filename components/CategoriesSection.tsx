@@ -1,26 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
+import { prisma } from '../src/lib/prisma';
 
-const CategoriesSection = () => {
+const CategoriesSection = async () => {
+  const dbCategories = await prisma.category.findMany({
+    orderBy: { name: 'asc' }
+  });
+
   const categories = [
-    {
-      name: "Indoor Plants",
-      dbName: "Indoor Plant",
-      image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=400&q=80",
-      tag: "Most Popular",
-    },
-    {
-      name: "Air Purifying",
-      dbName: "Air Purifying",
-      image: "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?auto=format&fit=crop&w=400&q=80",
-      tag: "Clean Air",
-    },
-    {
-      name: "Low Maintenance",
-      dbName: "Low Maintenance",
-      image: "https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=400&q=80",
-      tag: "Easy Care",
-    },
+    ...dbCategories.map((cat) => ({
+      name: cat.name + (cat.name.toLowerCase().endsWith('plant') || cat.name.toLowerCase().endsWith('plants') ? '' : ' Plants'),
+      dbName: cat.name,
+      image: cat.image,
+      tag: cat.tag,
+    })),
     {
       name: "All Plants",
       dbName: "",
@@ -28,6 +21,7 @@ const CategoriesSection = () => {
       tag: "Browse All",
     },
   ];
+
 
   return (
     <section id="categories" className="py-20 bg-[#0f1f13]">

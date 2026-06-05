@@ -4,6 +4,7 @@ import DeleteProductButton from "../../../../components/admin/DeleteProductButto
 import UpdateStockButton from "../../../../components/admin/UpdateStockButton";
 import AddProductSection from "../../../../components/admin/AddProductSection";
 import UpdateImageButton from "../../../../components/admin/UpdateImageButton";
+import EditProductButton from "../../../../components/admin/EditProductButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -83,6 +84,7 @@ export default async function AdminProducts() {
                       </td>
                       <td className="p-4">
                         <div className="flex gap-2">
+                          <EditProductButton product={product} />
                           <UpdateImageButton productId={product.id} currentImage={imageUrl} />
                           <DeleteProductButton productId={product.id} />
                         </div>

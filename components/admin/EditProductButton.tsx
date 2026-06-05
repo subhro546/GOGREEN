@@ -1,26 +1,51 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaTimes, FaSpinner } from "react-icons/fa";
+import { FaTimes, FaSpinner, FaEdit } from "react-icons/fa";
 import ImageUploadDropzone from "./ImageUploadDropzone";
 
-export default function AddProductSection() {
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  stock: number;
+  images: string; // JSON array string
+  isIndoor: boolean;
+}
+
+interface EditProductButtonProps {
+  product: Product;
+}
+
+export default function EditProductButton({ product }: EditProductButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
   // Form states
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("Indoor Plant");
+  const [name, setName] = useState(product.name);
+  const [description, setDescription] = useState(product.description);
+  const [price, setPrice] = useState(product.price.toString());
+  const [category, setCategory] = useState(product.category);
   const [categories, setCategories] = useState<string[]>([]);
-  const [stock, setStock] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [stock, setStock] = useState(product.stock.toString());
+  
+  const parsedImage = (() => {
+    try {
+      const parsed = JSON.parse(product.images);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed[0] : "";
+    } catch {
+      return "";
+    }
+  })();
+  const [imageUrl, setImageUrl] = useState(parsedImage);
   const [useUrlInput, setUseUrlInput] = useState(false);
-  const [isIndoor, setIsIndoor] = useState(true);
+  const [isIndoor, setIsIndoor] = useState(product.isIndoor);
 
   useEffect(() => {
     const fetchCats = async () => {
@@ -30,8 +55,9 @@ export default function AddProductSection() {
           const data = await res.json();
           const names = data.map((c: { name: string }) => c.name);
           setCategories(names);
-          if (names.length > 0) {
-            setCategory(names[0]);
+          // If current category is not in the fetched list (e.g. deleted or custom), add it as an option
+          if (product.category && !names.includes(product.category)) {
+            setCategories(prev => [product.category, ...prev]);
           }
         }
       } catch (err) {
@@ -41,20 +67,20 @@ export default function AddProductSection() {
     if (isOpen) {
       fetchCats();
     }
-  }, [isOpen]);
+  }, [isOpen, product.category]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!imageUrl.trim()) {
-      setError("Product image URL is required");
+      setError("Product image is required");
       return;
     }
     setLoading(true);
     setError("");
 
     try {
-      const res = await fetch("/api/admin/products", {
-        method: "POST",
+      const res = await fetch(`/api/admin/products/${product.id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -71,23 +97,13 @@ export default function AddProductSection() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Failed to create product");
+        throw new Error(data.message || "Failed to update product");
       }
 
-      // Reset form & close
-      setName("");
-      setDescription("");
-      setPrice("");
-      setStock("");
-      setImageUrl("");
-      setIsIndoor(true);
       setIsOpen(false);
-
-      // Refresh the page data
       router.refresh();
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong";
-      setError(message);
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -97,9 +113,10 @@ export default function AddProductSection() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="bg-brand-secondary text-white px-6 py-2.5 rounded-xl font-bold hover:bg-brand-topbar transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0"
+        className="p-2 text-brand-secondary hover:bg-brand-hero/50 rounded-xl transition-all inline-flex items-center gap-1.5 border border-brand/5 bg-white shadow-sm"
+        title="Edit Product"
       >
-        + Add Product
+        <FaEdit size={14} />
       </button>
 
       {isOpen && (
@@ -111,7 +128,7 @@ export default function AddProductSection() {
           ></div>
 
           {/* Modal Container */}
-          <div className="relative bg-white rounded-3xl w-full max-w-lg p-8 shadow-2xl border border-brand/10 max-h-[90vh] overflow-y-auto animate-scale-in z-10">
+          <div className="relative bg-white rounded-3xl w-full max-w-lg p-8 shadow-2xl border border-brand/10 max-h-[90vh] overflow-y-auto z-10">
             <button
               onClick={() => setIsOpen(false)}
               disabled={loading}
@@ -120,7 +137,7 @@ export default function AddProductSection() {
               <FaTimes size={18} />
             </button>
 
-            <h3 className="text-2xl font-serif font-bold text-brand-secondary mb-6 italic">Add New Plant</h3>
+            <h3 className="text-2xl font-serif font-bold text-brand-secondary mb-6 italic">Edit Product</h3>
 
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium">
@@ -152,7 +169,7 @@ export default function AddProductSection() {
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Tell customers about this plant's features, soil needs..."
+                  placeholder="Tell customers about this plant..."
                   className="w-full px-4 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent resize-none transition-all"
                 />
               </div>
@@ -196,7 +213,7 @@ export default function AddProductSection() {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent bg-white transition-all"
+                    className="w-full px-4 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent bg-white transition-all text-sm"
                   >
                     {categories.map((catName) => (
                       <option key={catName} value={catName}>{catName}</option>
@@ -276,10 +293,10 @@ export default function AddProductSection() {
                   {loading ? (
                     <>
                       <FaSpinner className="animate-spin" />
-                      Adding...
+                      Saving...
                     </>
                   ) : (
-                    "Add Product"
+                    "Save Changes"
                   )}
                 </button>
               </div>
