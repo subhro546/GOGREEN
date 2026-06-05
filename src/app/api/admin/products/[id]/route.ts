@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../../../lib/authOptions";
 import { prisma } from "../../../../../lib/prisma";
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export async function DELETE(
   req: Request,
@@ -20,6 +21,8 @@ export async function DELETE(
       where: { id },
     });
 
+    revalidatePath('/', 'page');
+    revalidatePath('/shop', 'page');
     return NextResponse.json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error("Delete product error:", error);
@@ -61,6 +64,8 @@ export async function PATCH(
       data: updateData,
     });
 
+    revalidatePath('/', 'page');
+    revalidatePath('/shop', 'page');
     return NextResponse.json(updatedProduct);
   } catch (error) {
     console.error("Update product error:", error);

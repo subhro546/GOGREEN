@@ -4,6 +4,8 @@ import CategoriesSection from "../../components/CategoriesSection";
 import FeaturedProducts from "../../components/FeaturedProducts";
 import Footer from "../../components/Footer";
 
+export const dynamic = 'force-dynamic';
+
 export default function HomePage() {
   return (
     <>
