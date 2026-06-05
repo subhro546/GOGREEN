@@ -122,7 +122,7 @@ export default function OrdersTable({ initialOrders }: { initialOrders: Order[] 
                         </span>
                       </td>
                       <td className="p-4 font-bold text-brand-secondary">
-                        ${order.totalAmount.toFixed(2)}
+                        ₹{order.totalAmount.toFixed(2)}
                       </td>
                       <td className="p-4" onClick={(e) => e.stopPropagation()}>
                         <UpdateOrderStatus orderId={order.id} currentStatus={order.status} />
@@ -179,16 +179,16 @@ export default function OrdersTable({ initialOrders }: { initialOrders: Order[] 
                                     <div key={item.id} className="flex justify-between items-center py-2 border-b border-brand/5 last:border-b-0 text-text-dark/80">
                                       <div>
                                         <p className="font-medium">{item.product.name}</p>
-                                        <p className="text-xs text-text-dark/50">Qty: {item.quantity} × ${item.price.toFixed(2)}</p>
+                                        <p className="text-xs text-text-dark/50">Qty: {item.quantity} × ₹{item.price.toFixed(2)}</p>
                                       </div>
-                                      <p className="font-semibold text-brand-secondary">${(item.quantity * item.price).toFixed(2)}</p>
+                                      <p className="font-semibold text-brand-secondary">₹{(item.quantity * item.price).toFixed(2)}</p>
                                     </div>
                                   ))}
                                 </div>
 
                                 <div className="flex justify-between items-center pt-2 border-t border-brand/5 font-bold text-text-dark">
                                   <span>Total Amount:</span>
-                                  <span className="text-base text-brand-secondary">${order.totalAmount.toFixed(2)}</span>
+                                  <span className="text-base text-brand-secondary">₹{order.totalAmount.toFixed(2)}</span>
                                 </div>
                               </div>
                             </div>

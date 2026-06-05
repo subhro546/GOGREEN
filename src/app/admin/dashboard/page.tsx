@@ -31,7 +31,7 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-brand/5">
           <p className="text-sm font-medium text-text-dark/60 mb-1">Total Revenue</p>
-          <p className="text-3xl font-bold text-brand-secondary">${totalRevenue.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-brand-secondary">₹{totalRevenue.toFixed(2)}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-brand/5">
           <p className="text-sm font-medium text-text-dark/60 mb-1">Orders</p>
@@ -90,7 +90,7 @@ export default async function AdminDashboard() {
                       </span>
                     </td>
                     <td className="p-4 font-bold">
-                      ${order.totalAmount.toFixed(2)}
+                      ₹{order.totalAmount.toFixed(2)}
                     </td>
                   </tr>
                 ))

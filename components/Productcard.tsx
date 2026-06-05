@@ -9,11 +9,12 @@ interface ProductCardProps {
   name: string;
   price: number;
   category: string;
+  description?: string;
   isNew?: boolean;
   images?: string;
 }
 
-const ProductCard = ({ id, name, price, category, isNew, images }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, category, description, isNew, images }: ProductCardProps) => {
   const { addItem } = useCart();
 
   let imageUrl = '/placeholder.png';
@@ -29,7 +30,7 @@ const ProductCard = ({ id, name, price, category, isNew, images }: ProductCardPr
   }
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // prevent navigating when clicking "Add to Cart"
+    e.preventDefault();
     addItem({ id, name, price, category, quantity: 1, image: imageUrl });
   };
 
@@ -55,9 +56,13 @@ const ProductCard = ({ id, name, price, category, isNew, images }: ProductCardPr
         {/* Info + button */}
         <div className="flex flex-col flex-1 p-3 gap-1">
           <p className="text-[10px] text-text-dark/50 font-semibold uppercase tracking-widest">{category}</p>
-          <p className="text-sm font-serif font-bold text-text-dark leading-snug line-clamp-2 group-hover:text-brand-secondary transition-colors">
+          <p className="text-sm font-serif font-bold text-text-dark leading-snug line-clamp-1 group-hover:text-brand-secondary transition-colors">
             {name}
           </p>
+
+          {description && (
+            <p className="text-[11px] text-text-dark/50 line-clamp-2 leading-snug">{description}</p>
+          )}
 
           {/* Stars */}
           <div className="flex gap-0.5 mt-0.5">
@@ -68,7 +73,7 @@ const ProductCard = ({ id, name, price, category, isNew, images }: ProductCardPr
             ))}
           </div>
 
-          <span className="text-base font-bold text-brand-secondary mt-auto">${price.toFixed(2)}</span>
+          <span className="text-base font-bold text-brand-secondary mt-auto">₹{price.toFixed(2)}</span>
 
           <button
             onClick={handleAddToCart}
@@ -114,11 +119,14 @@ const ProductCard = ({ id, name, price, category, isNew, images }: ProductCardPr
 
         <div className="p-5 flex-1 flex flex-col">
           <p className="text-sm text-text-dark/50 font-medium mb-1 uppercase tracking-wider">{category}</p>
-          <span className="text-lg font-serif font-bold text-text-dark group-hover:text-brand-secondary transition-colors mb-2 line-clamp-2">
+          <span className="text-lg font-serif font-bold text-text-dark group-hover:text-brand-secondary transition-colors mb-1 line-clamp-2">
             {name}
           </span>
+          {description && (
+            <p className="text-xs text-text-dark/50 line-clamp-2 mb-2 leading-relaxed">{description}</p>
+          )}
           <div className="mt-auto flex items-center justify-between">
-            <span className="text-xl font-semibold text-brand-secondary">${price.toFixed(2)}</span>
+            <span className="text-xl font-semibold text-brand-secondary">₹{price.toFixed(2)}</span>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-yellow-400">

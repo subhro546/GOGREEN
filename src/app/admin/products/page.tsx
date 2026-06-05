@@ -76,7 +76,7 @@ export default async function AdminProducts() {
                         </span>
                       </td>
                       <td className="p-4 font-bold text-brand-secondary">
-                        ${product.price.toFixed(2)}
+                        ₹{product.price.toFixed(2)}
                       </td>
                       <td className="p-4">
                         <UpdateStockButton productId={product.id} currentStock={product.stock} />

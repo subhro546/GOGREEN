@@ -53,7 +53,7 @@ export default async function ProductPage({
                 <span className="text-sm font-bold tracking-widest text-brand-topbar uppercase">{product.category}</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-serif font-bold text-text-dark mb-4">{product.name}</h1>
-              <p className="text-2xl font-semibold text-brand-secondary mb-6">${product.price.toFixed(2)}</p>
+              <p className="text-2xl font-semibold text-brand-secondary mb-6">₹{product.price.toFixed(2)}</p>
               
               <div className="prose text-text-dark/70 mb-8">
                 <p>{product.description}</p>

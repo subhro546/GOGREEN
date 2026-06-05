@@ -84,6 +84,7 @@ export default async function ShopPage({
                       price={product.price}
                       category={product.category}
                       images={product.images}
+                      description={product.description ?? undefined}
                     />
                   ))}
                 </div>

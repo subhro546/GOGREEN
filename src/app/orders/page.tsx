@@ -100,7 +100,7 @@ export default async function OrdersPage() {
                           <p className="text-sm text-text-dark/50">Qty: {item.quantity}</p>
                         </div>
                         <p className="font-bold text-brand-secondary">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ₹{(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
                     ))}
@@ -120,7 +120,7 @@ export default async function OrdersPage() {
                       {order.items.length} item{order.items.length > 1 ? "s" : ""}
                     </p>
                     <p className="text-xl font-bold text-brand-secondary">
-                      Total: ${order.totalAmount.toFixed(2)}
+                      Total: ₹{order.totalAmount.toFixed(2)}
                     </p>
                   </div>
                 </div>

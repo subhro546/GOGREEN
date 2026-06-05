@@ -18,7 +18,7 @@ export default function AddProductSection() {
   const [category, setCategory] = useState("Indoor Plant");
   const [stock, setStock] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [useUrlInput, setUseUrlInput] = useState(true);
+  const [useUrlInput, setUseUrlInput] = useState(false);
   const [isIndoor, setIsIndoor] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,7 +60,7 @@ export default function AddProductSection() {
       setImageUrl("");
       setIsIndoor(true);
       setIsOpen(false);
-      
+
       // Refresh the page data
       router.refresh();
     } catch (err) {
@@ -83,7 +83,7 @@ export default function AddProductSection() {
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => !loading && setIsOpen(false)}
           ></div>
@@ -212,7 +212,7 @@ export default function AddProductSection() {
                     {useUrlInput ? "Upload from Device" : "Enter Image URL"}
                   </button>
                 </div>
-                
+
                 {useUrlInput ? (
                   <input
                     type="url"
