@@ -213,26 +213,31 @@ export default function CartPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
               {/* ── Cart Items ── */}
-              <div className="lg:col-span-2 space-y-4">
+              <div className="lg:col-span-2 space-y-3">
                 {items.map((item) => (
-                  <div key={item.id} className="flex flex-col sm:flex-row items-center gap-6 bg-white p-5 rounded-2xl shadow-sm border border-brand/5">
-                    <div className="w-20 h-20 bg-brand-hero rounded-xl overflow-hidden shrink-0">
+                  <div key={item.id} className="flex items-center gap-3 bg-white p-3 sm:p-5 rounded-2xl shadow-sm border border-brand/5">
+                    {/* Image */}
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-brand-hero rounded-xl overflow-hidden shrink-0">
                       {item.image
                         ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                        : <span className="flex h-full items-center justify-center text-3xl">🪴</span>}
+                        : <span className="flex h-full items-center justify-center text-2xl">🪴</span>}
                     </div>
-                    <div className="flex-1 text-center sm:text-left">
-                      <h3 className="text-lg font-bold text-text-dark">{item.name}</h3>
-                      <p className="text-xs text-text-dark/50 uppercase tracking-wider mb-2">{item.category}</p>
-                      <button onClick={() => removeItem(item.id)} className="text-red-400 text-xs font-semibold hover:underline">Remove</button>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-bold text-text-dark truncate">{item.name}</h3>
+                      <p className="text-[10px] text-text-dark/50 uppercase tracking-wider mb-1">{item.category}</p>
+                      <p className="text-sm font-bold text-brand-secondary">₹{(item.price * item.quantity).toFixed(2)}</p>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center border border-foreground/20 rounded-lg overflow-hidden">
-                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-3 py-2 bg-brand-hero hover:bg-brand-light transition-colors text-sm">-</button>
-                        <span className="px-3 py-2 text-sm font-medium w-10 text-center">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-3 py-2 bg-brand-hero hover:bg-brand-light transition-colors text-sm">+</button>
+
+                    {/* Quantity + Remove */}
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <div className="flex items-center border border-text-dark/15 rounded-lg overflow-hidden">
+                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-2.5 py-1.5 bg-brand-hero hover:bg-brand-light transition-colors text-sm font-bold">-</button>
+                        <span className="px-2.5 py-1.5 text-sm font-semibold min-w-[2rem] text-center">{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-2.5 py-1.5 bg-brand-hero hover:bg-brand-light transition-colors text-sm font-bold">+</button>
                       </div>
-                      <p className="text-base font-bold text-brand-secondary min-w-[4.5rem] text-right">₹{(item.price * item.quantity).toFixed(2)}</p>
+                      <button onClick={() => removeItem(item.id)} className="text-red-400 text-xs font-semibold hover:underline">Remove</button>
                     </div>
                   </div>
                 ))}
