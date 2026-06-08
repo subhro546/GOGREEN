@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '../src/context/CartContext';
 
@@ -17,17 +18,26 @@ interface ProductCardProps {
 const ProductCard = ({ id, name, price, category, description, isNew, images }: ProductCardProps) => {
   const { addItem } = useCart();
 
-  let imageUrl = '/placeholder.png';
-  if (images) {
+  const parsedImages: string[] = (() => {
     try {
-      const parsed = JSON.parse(images);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        imageUrl = parsed[0];
-      }
+      const parsed = JSON.parse(images || "[]");
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : [];
     } catch {
-      // ignore
+      return [];
     }
-  }
+  })();
+
+  const [currentIdx, setCurrentIdx] = useState(0);
+
+  useEffect(() => {
+    if (parsedImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIdx((prev) => (prev + 1) % parsedImages.length);
+    }, 3000); // Cycle every 3 seconds
+    return () => clearInterval(interval);
+  }, [parsedImages.length]);
+
+  const imageUrl = parsedImages[0] || '/placeholder.png';
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -46,11 +56,24 @@ const ProductCard = ({ id, name, price, category, description, isNew, images }: 
               NEW
             </span>
           )}
-          <img
-            src={imageUrl}
-            alt={name}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+          {parsedImages.length > 0 ? (
+            parsedImages.map((url, idx) => (
+              <img
+                key={idx}
+                src={url}
+                alt={name}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  idx === currentIdx ? "opacity-100" : "opacity-0"
+                } group-hover:scale-105`}
+              />
+            ))
+          ) : (
+            <img
+              src="/placeholder.png"
+              alt={name}
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          )}
         </div>
 
         {/* Info + button */}
@@ -101,11 +124,24 @@ const ProductCard = ({ id, name, price, category, description, isNew, images }: 
             </svg>
           </button>
 
-          <img
-            src={imageUrl}
-            alt={name}
-            className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-          />
+          {parsedImages.length > 0 ? (
+            parsedImages.map((url, idx) => (
+              <img
+                key={idx}
+                src={url}
+                alt={name}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  idx === currentIdx ? "opacity-100" : "opacity-0"
+                } group-hover:scale-110`}
+              />
+            ))
+          ) : (
+            <img
+              src="/placeholder.png"
+              alt={name}
+              className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+            />
+          )}
 
           <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <button
