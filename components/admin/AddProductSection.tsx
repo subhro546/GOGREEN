@@ -18,9 +18,17 @@ export default function AddProductSection() {
   const [category, setCategory] = useState("Indoor Plant");
   const [categories, setCategories] = useState<string[]>([]);
   const [stock, setStock] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imagesList, setImagesList] = useState<string[]>([]);
+  const [urlInput, setUrlInput] = useState("");
   const [useUrlInput, setUseUrlInput] = useState(false);
   const [isIndoor, setIsIndoor] = useState(true);
+
+  const handleAddUrl = () => {
+    if (urlInput.trim()) {
+      setImagesList((prev) => [...prev, urlInput.trim()]);
+      setUrlInput("");
+    }
+  };
 
   useEffect(() => {
     const fetchCats = async () => {
@@ -45,8 +53,8 @@ export default function AddProductSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!imageUrl.trim()) {
-      setError("Product image URL is required");
+    if (imagesList.length === 0) {
+      setError("Please add at least one product image");
       return;
     }
     setLoading(true);
@@ -64,7 +72,7 @@ export default function AddProductSection() {
           price: parseFloat(price),
           category,
           stock: parseInt(stock),
-          images: [imageUrl.trim()],
+          images: imagesList,
           isIndoor,
         }),
       });
@@ -79,7 +87,8 @@ export default function AddProductSection() {
       setDescription("");
       setPrice("");
       setStock("");
-      setImageUrl("");
+      setImagesList([]);
+      setUrlInput("");
       setIsIndoor(true);
       setIsOpen(false);
 
@@ -226,15 +235,37 @@ export default function AddProductSection() {
               </div>
 
               <div>
+                <label className="block text-sm font-semibold text-text-dark/80 mb-2">
+                  Product Images (Add one or more) *
+                </label>
+
+                {imagesList.length > 0 && (
+                  <div className="grid grid-cols-4 gap-2 mb-3">
+                    {imagesList.map((url, idx) => (
+                      <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-brand/10 bg-brand-hero group shadow-sm">
+                        <img src={url} alt={`Upload preview ${idx}`} className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setImagesList((prev) => prev.filter((_, i) => i !== idx))}
+                          className="absolute -top-1 -right-1 p-1 bg-red-600 hover:bg-red-700 text-white rounded-full transition-all shadow-md"
+                          title="Remove image"
+                        >
+                          <FaTimes size={8} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="block text-sm font-semibold text-text-dark/80">
-                    Product Image *
-                  </label>
+                  <span className="text-xs text-text-dark/50">
+                    {useUrlInput ? "Paste a URL and click Add" : "Upload files one by one"}
+                  </span>
                   <button
                     type="button"
                     onClick={() => {
                       setUseUrlInput(!useUrlInput);
-                      setImageUrl("");
+                      setUrlInput("");
                     }}
                     className="text-xs text-brand-secondary hover:underline font-bold"
                   >
@@ -243,18 +274,28 @@ export default function AddProductSection() {
                 </div>
 
                 {useUrlInput ? (
-                  <input
-                    type="url"
-                    required
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="e.g. https://images.unsplash.com/..."
-                    className="w-full px-4 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent transition-all text-sm bg-white"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      value={urlInput}
+                      onChange={(e) => setUrlInput(e.target.value)}
+                      placeholder="e.g. https://images.unsplash.com/..."
+                      className="flex-1 px-4 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddUrl}
+                      className="bg-brand-secondary text-white px-4 py-2.5 rounded-xl font-bold hover:bg-brand-topbar text-sm shadow-md"
+                    >
+                      Add
+                    </button>
+                  </div>
                 ) : (
                   <ImageUploadDropzone
-                    onUploadSuccess={(url) => setImageUrl(url)}
-                    defaultImageUrl={imageUrl}
+                    onUploadSuccess={(url) => {
+                      if (url) setImagesList((prev) => [...prev, url]);
+                    }}
+                    defaultImageUrl=""
                   />
                 )}
               </div>

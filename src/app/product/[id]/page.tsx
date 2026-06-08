@@ -1,8 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 import { prisma } from "../../../lib/prisma";
 import Navbar from "../../../../components/Navbar";
 import Footer from "../../../../components/Footer";
 import AddToCartButton from "../../../../components/AddToCartButton";
+import ProductImageGallery from "../../../../components/ProductImageGallery";
 import { notFound } from "next/navigation";
 
 export default async function ProductPage({
@@ -19,17 +19,14 @@ export default async function ProductPage({
     notFound();
   }
 
-  let imageUrl = '/placeholder.png';
-  if (product.images) {
+  const parsedImages: string[] = (() => {
     try {
       const parsed = JSON.parse(product.images);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        imageUrl = parsed[0];
-      }
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
-      // ignore
+      return [];
     }
-  }
+  })();
 
   return (
     <>
@@ -38,13 +35,9 @@ export default async function ProductPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-brand/5 grid grid-cols-1 md:grid-cols-2 gap-12">
             
-            {/* Product Image Area */}
-            <div className="relative aspect-square bg-brand-hero rounded-2xl overflow-hidden border border-brand/5 flex items-center justify-center">
-              <img 
-                src={imageUrl} 
-                alt={product.name}
-                className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
-              />
+            {/* Product Image Gallery Area */}
+            <div>
+              <ProductImageGallery images={parsedImages} productName={product.name} />
             </div>
 
             {/* Product Details Area */}
