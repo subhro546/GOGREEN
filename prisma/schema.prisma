@@ -20,6 +20,7 @@ model User {
   updatedAt DateTime @updatedAt
   orders    Order[]
   addresses Address[]
+  reviews   Review[]
 }
 
 model Product {
@@ -28,12 +29,14 @@ model Product {
   description String
   price       Float
   category    String
+  subcategory String      @default("")
   stock       Int
   images      String      // JSON stringified array of URLs
   isIndoor    Boolean     @default(true)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   orderItems  OrderItem[]
+  reviews     Review[]
 }
 
 model Order {
@@ -79,3 +82,14 @@ model Category {
   updatedAt DateTime @updatedAt
 }
 
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int      // 1 to 5
+  comment   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

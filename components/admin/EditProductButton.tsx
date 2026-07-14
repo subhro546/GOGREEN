@@ -12,6 +12,7 @@ interface Product {
   description: string;
   price: number;
   category: string;
+  subcategory: string;
   stock: number;
   images: string; // JSON array string
   isIndoor: boolean;
@@ -32,6 +33,7 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
   const [description, setDescription] = useState(product.description);
   const [price, setPrice] = useState(product.price.toString());
   const [category, setCategory] = useState(product.category);
+  const [subcategory, setSubcategory] = useState(product.subcategory || "");
   const [categories, setCategories] = useState<string[]>([]);
   const [stock, setStock] = useState(product.stock.toString());
   
@@ -97,6 +99,7 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
           description,
           price: parseFloat(price),
           category,
+          subcategory,
           stock: parseInt(stock),
           images: imagesList,
           isIndoor,
@@ -248,6 +251,20 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
                     <span className="text-sm font-semibold text-text-dark/80">Indoor Plant?</span>
                   </label>
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-text-dark/80 mb-1.5">
+                  Subcategory
+                </label>
+                <input
+                  type="text"
+                  value={subcategory}
+                  onChange={(e) => setSubcategory(e.target.value)}
+                  placeholder="e.g. Adenium, Bougainvillea, Money Plant"
+                  className="w-full px-4 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent transition-all"
+                />
+                <p className="text-xs text-text-dark/40 mt-1">Used for drilldown navigation in the menu</p>
               </div>
 
               <div>

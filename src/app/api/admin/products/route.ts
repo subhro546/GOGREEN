@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { name, description, price, category, stock, images, isIndoor } = body;
+    const { name, description, price, category, subcategory, stock, images, isIndoor } = body;
 
     // Validation
     if (!name || !description || price === undefined || !category || stock === undefined) {
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
         description,
         price: parseFloat(price),
         category,
+        subcategory: (subcategory || "").trim(),
         stock: parseInt(stock),
         images: JSON.stringify(imgArray),
         isIndoor: !!isIndoor,

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { Providers } from "../../components/Providers";
 import TopBar from "../../components/TopBar";
 import WhatsAppWidget from "../../components/WhatsAppWidget";
+import NavigationProgress from "../../components/NavigationProgress";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -31,6 +33,9 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} antialiased min-h-screen flex flex-col`}
       >
         <Providers>
+          <Suspense fallback={null}>
+            <NavigationProgress />
+          </Suspense>
           <TopBar />
           {children}
           <WhatsAppWidget />

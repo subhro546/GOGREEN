@@ -75,6 +75,11 @@ export default async function AdminProducts() {
                         <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-brand-hero text-brand-secondary">
                           {product.category}
                         </span>
+                        {product.subcategory && (
+                          <span className="block mt-1 text-[11px] text-text-dark/50 font-medium pl-1">
+                            └ {product.subcategory}
+                          </span>
+                        )}
                       </td>
                       <td className="p-4 font-bold text-brand-secondary">
                         ₹{product.price.toFixed(2)}

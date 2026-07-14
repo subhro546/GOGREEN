@@ -42,6 +42,7 @@ module.exports = {
         'float-delay': 'float 8s ease-in-out 2s infinite',
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'blob': 'blob 7s infinite',
+        'slide-down': 'slideDown 0.25s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -61,6 +62,10 @@ module.exports = {
           '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
           '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
           '100%': { transform: 'translate(0px, 0px) scale(1)' },
+        },
+        slideDown: {
+          '0%': { opacity: '0', transform: 'translateY(-8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         }
       },
       backgroundImage: {

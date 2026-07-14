@@ -2,26 +2,49 @@ import { prisma } from "../../lib/prisma";
 import ProductCard from "../../../components/Productcard";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
+import ShopSidebar from "../../../components/ShopSidebar";
 
 export const dynamic = 'force-dynamic';
 
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ category?: string; subcategory?: string }>;
 }) {
   const resolvedParams = await searchParams;
   const category = resolvedParams.category;
+  const subcategory = resolvedParams.subcategory;
   
+  // Build filter
+  const where: { category?: string; subcategory?: string } = {};
+  if (category) where.category = category;
+  if (subcategory) where.subcategory = subcategory;
+
   const products = await prisma.product.findMany({
-    where: category ? { category } : undefined,
+    where: Object.keys(where).length > 0 ? where : undefined,
     orderBy: { createdAt: "desc" },
   });
 
-  const categories = await prisma.product.findMany({
-    select: { category: true },
-    distinct: ["category"],
+  // Build category → subcategory tree for sidebar
+  const allProducts = await prisma.product.findMany({
+    select: { category: true, subcategory: true },
+    distinct: ["category", "subcategory"],
+    orderBy: [{ category: "asc" }, { subcategory: "asc" }],
   });
+
+  const categoryTree: { name: string; subcategories: string[] }[] = [];
+  const catMap = new Map<string, string[]>();
+  for (const p of allProducts) {
+    if (!catMap.has(p.category)) catMap.set(p.category, []);
+    if (p.subcategory && p.subcategory.trim() !== "") {
+      const subs = catMap.get(p.category)!;
+      if (!subs.includes(p.subcategory)) subs.push(p.subcategory);
+    }
+  }
+  for (const [catName, subs] of catMap) {
+    categoryTree.push({ name: catName, subcategories: subs.sort() });
+  }
+  categoryTree.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <>
@@ -31,40 +54,25 @@ export default async function ShopPage({
           
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 border-b border-brand/10 pb-8">
             <div>
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary italic mb-4">Our Plants</h1>
+              <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary italic mb-4">
+                {subcategory ? subcategory : category ? category : 'Our Plants'}
+              </h1>
               <p className="text-text-dark max-w-2xl">
-                Browse our entire collection of healthy, beautiful plants carefully curated for your home and office.
+                {subcategory
+                  ? `Showing all ${subcategory} plants${category ? ` in ${category}` : ''}.`
+                  : category
+                    ? `Browse all plants in the ${category} category.`
+                    : 'Browse our entire collection of healthy, beautiful plants carefully curated for your home and office.'}
               </p>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row gap-8">
-            {/* Filters Sidebar */}
-            <div className="w-full md:w-64 shrink-0">
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-brand/5 sticky top-28">
-                <h3 className="font-bold text-lg mb-4 text-brand-secondary">Categories</h3>
-                <ul className="space-y-3">
-                  <li>
-                    <a 
-                      href="/shop" 
-                      className={`block text-sm ${!category ? 'font-bold text-brand-topbar' : 'text-text-dark/70 hover:text-brand-topbar transition-colors'}`}
-                    >
-                      All Plants
-                    </a>
-                  </li>
-                  {categories.map((c) => (
-                    <li key={c.category}>
-                      <a 
-                        href={`/shop?category=${encodeURIComponent(c.category)}`}
-                        className={`block text-sm ${category === c.category ? 'font-bold text-brand-topbar' : 'text-text-dark/70 hover:text-brand-topbar transition-colors'}`}
-                      >
-                        {c.category}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <ShopSidebar
+              categoryTree={categoryTree}
+              activeCategory={category || null}
+              activeSubcategory={subcategory || null}
+            />
 
             {/* Product Grid */}
             <div className="flex-1">

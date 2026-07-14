@@ -45,13 +45,14 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await req.json();
-    const { name, description, price, category, stock, images, isIndoor } = body;
+    const { name, description, price, category, subcategory, stock, images, isIndoor } = body;
 
     const updateData: Prisma.ProductUpdateInput = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (price !== undefined) updateData.price = parseFloat(price);
     if (category !== undefined) updateData.category = category;
+    if (subcategory !== undefined) updateData.subcategory = subcategory;
     if (stock !== undefined) updateData.stock = parseInt(stock);
     if (images !== undefined) {
       const imgArray = Array.isArray(images) ? images : [images];

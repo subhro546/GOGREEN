@@ -3,6 +3,7 @@ import Navbar from "../../../../components/Navbar";
 import Footer from "../../../../components/Footer";
 import AddToCartButton from "../../../../components/AddToCartButton";
 import ProductImageGallery from "../../../../components/ProductImageGallery";
+import ProductReviews from "../../../../components/ProductReviews";
 import { notFound } from "next/navigation";
 
 export default async function ProductPage({
@@ -66,6 +67,9 @@ export default async function ProductPage({
             </div>
 
           </div>
+          
+          {/* Reviews Section */}
+          <ProductReviews productId={product.id} />
         </div>
       </main>
       <Footer />
