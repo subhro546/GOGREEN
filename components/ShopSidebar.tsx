@@ -42,6 +42,7 @@ export default function ShopSidebar({
           <li>
             <Link
               href="/shop"
+              onClick={() => setIsMobileMenuOpen(false)}
               className={`block text-sm px-3 py-2 rounded-lg transition-colors ${
                 !activeCategory
                   ? "font-bold text-brand-topbar bg-brand-hero"
@@ -86,6 +87,7 @@ export default function ShopSidebar({
                     <li>
                       <Link
                         href={`/shop?category=${encodeURIComponent(cat.name)}`}
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg transition-colors ${
                           isActive
                             ? "font-bold text-brand-topbar bg-brand-hero"
@@ -103,6 +105,7 @@ export default function ShopSidebar({
                         <li key={sub}>
                           <Link
                             href={`/shop?category=${encodeURIComponent(cat.name)}&subcategory=${encodeURIComponent(sub)}`}
+                            onClick={() => setIsMobileMenuOpen(false)}
                             className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg transition-colors ${
                               isSubActive
                                 ? "font-bold text-brand-topbar bg-brand-hero"
