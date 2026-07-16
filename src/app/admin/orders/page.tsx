@@ -9,7 +9,7 @@ export default async function AdminOrders() {
     include: {
       user: { select: { name: true, email: true } },
       items: {
-        include: { product: { select: { name: true } } }
+        include: { product: true }
       }
     }
   });

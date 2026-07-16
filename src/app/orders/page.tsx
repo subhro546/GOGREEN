@@ -27,6 +27,7 @@ export default async function OrdersPage() {
 
   const statusColors: Record<string, string> = {
     PENDING: "bg-yellow-100 text-yellow-700",
+    APPROVED: "bg-indigo-100 text-indigo-700 border border-indigo-200/50",
     PAID: "bg-green-100 text-green-700",
     SHIPPED: "bg-blue-100 text-blue-700",
     DELIVERED: "bg-brand-secondary text-white",
@@ -63,14 +64,24 @@ export default async function OrdersPage() {
                 >
                   {/* Order Header */}
                   <div className="px-6 py-4 bg-brand-hero/50 border-b border-brand/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-6">
                       <div>
                         <p className="text-xs text-text-dark/50 font-medium">ORDER ID</p>
                         <p className="font-mono text-sm font-bold text-text-dark">{order.id.slice(-8).toUpperCase()}</p>
                       </div>
                       <div>
+                        <p className="text-xs text-text-dark/50 font-medium">PAYMENT</p>
+                        <span className={`inline-block mt-0.5 text-xs font-black px-2 py-0.5 rounded ${
+                          order.razorpayOrderId?.startsWith("cod_") 
+                            ? "bg-amber-100 text-amber-800 border border-amber-200" 
+                            : "bg-blue-100 text-blue-800 border border-blue-200"
+                        }`}>
+                          {order.razorpayOrderId?.startsWith("cod_") ? "COD" : "PREPAID"}
+                        </span>
+                      </div>
+                      <div>
                         <p className="text-xs text-text-dark/50 font-medium">PLACED ON</p>
-                        <p className="text-sm font-medium text-text-dark">
+                        <p className="text-sm font-semibold text-text-dark">
                           {new Date(order.createdAt).toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "short",

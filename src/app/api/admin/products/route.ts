@@ -12,7 +12,13 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { name, description, price, category, subcategory, stock, images, isIndoor } = body;
+    const { 
+      name, description, price, category, subcategory, stock, images, isIndoor,
+      mrp, shippingCharge, sku, weight, length, width, height,
+      plantHeight, plantAge, returnable, potIncluded, isSeed,
+      isFlowerPlant, isFruitPlant, maintenance, sellWithCod, plantType,
+      seoTitle, seoDescription, seoKeywords
+    } = body;
 
     // Validation
     if (!name || !description || price === undefined || !category || stock === undefined) {
@@ -37,6 +43,26 @@ export async function POST(req: Request) {
         stock: parseInt(stock),
         images: JSON.stringify(imgArray),
         isIndoor: !!isIndoor,
+        mrp: mrp !== undefined && mrp !== null && mrp !== "" ? parseFloat(mrp) : null,
+        shippingCharge: shippingCharge !== undefined && shippingCharge !== null && shippingCharge !== "" ? parseFloat(shippingCharge) : null,
+        sku: sku || null,
+        weight: weight !== undefined && weight !== null && weight !== "" ? parseFloat(weight) : null,
+        length: length !== undefined && length !== null && length !== "" ? parseFloat(length) : null,
+        width: width !== undefined && width !== null && width !== "" ? parseFloat(width) : null,
+        height: height !== undefined && height !== null && height !== "" ? parseFloat(height) : null,
+        plantHeight: plantHeight !== undefined && plantHeight !== null && plantHeight !== "" ? parseFloat(plantHeight) : null,
+        plantAge: plantAge !== undefined && plantAge !== null && plantAge !== "" ? parseFloat(plantAge) : null,
+        returnable: returnable === undefined ? true : !!returnable,
+        potIncluded: potIncluded || "Pot Included",
+        isSeed: !!isSeed,
+        isFlowerPlant: !!isFlowerPlant,
+        isFruitPlant: !!isFruitPlant,
+        maintenance: maintenance || "Low Maintenance",
+        sellWithCod: sellWithCod === undefined ? true : !!sellWithCod,
+        plantType: plantType || null,
+        seoTitle: seoTitle || null,
+        seoDescription: seoDescription || null,
+        seoKeywords: seoKeywords || null,
       },
     });
 

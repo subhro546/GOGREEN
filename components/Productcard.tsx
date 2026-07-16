@@ -13,9 +13,15 @@ interface ProductCardProps {
   description?: string;
   isNew?: boolean;
   images?: string;
+  sku?: string | null;
+  weight?: number | null;
+  potIncluded?: string;
+  mrp?: number | null;
 }
 
-const ProductCard = ({ id, name, price, category, description, isNew, images }: ProductCardProps) => {
+const ProductCard = ({ 
+  id, name, price, category, description, isNew, images, sku, weight, potIncluded, mrp 
+}: ProductCardProps) => {
   const { addItem } = useCart();
 
   const parsedImages: string[] = (() => {
@@ -84,6 +90,27 @@ const ProductCard = ({ id, name, price, category, description, isNew, images }: 
             {name}
           </p>
 
+          {/* Mobile Specs Badges */}
+          {(sku || weight || (potIncluded && potIncluded !== "None")) && (
+            <div className="flex flex-wrap gap-1 mt-0.5 mb-1">
+              {sku && (
+                <span className="text-[9px] font-mono bg-brand-hero text-text-dark/60 px-1.5 py-0.5 rounded">
+                  {sku}
+                </span>
+              )}
+              {weight && (
+                <span className="text-[9px] bg-brand-hero text-brand-secondary px-1.5 py-0.5 rounded font-semibold">
+                  ⚖️ {weight} kg
+                </span>
+              )}
+              {potIncluded && potIncluded !== "None" && (
+                <span className="text-[9px] bg-green-50 text-green-700 px-1.5 py-0.5 rounded font-semibold border border-green-100/50">
+                  🪴 {potIncluded.split(" ")[0]}
+                </span>
+              )}
+            </div>
+          )}
+
           {description && (
             <p className="text-[11px] text-text-dark/50 line-clamp-2 leading-snug">{description}</p>
           )}
@@ -97,7 +124,12 @@ const ProductCard = ({ id, name, price, category, description, isNew, images }: 
             ))}
           </div>
 
-          <span className="text-base font-bold text-brand-secondary mt-auto">₹{price.toFixed(2)}</span>
+          <div className="flex items-baseline gap-2 mt-auto flex-wrap">
+            <span className="text-base font-bold text-brand-secondary">₹{price.toFixed(2)}</span>
+            {mrp && mrp > price && (
+              <span className="text-xs text-red-500 line-through font-semibold">₹{mrp.toFixed(2)}</span>
+            )}
+          </div>
 
           <button
             onClick={handleAddToCart}
@@ -159,11 +191,37 @@ const ProductCard = ({ id, name, price, category, description, isNew, images }: 
           <span className="text-lg font-serif font-bold text-text-dark group-hover:text-brand-secondary transition-colors mb-1 line-clamp-2">
             {name}
           </span>
+
+          {/* Desktop Specs Badges */}
+          {(sku || weight || (potIncluded && potIncluded !== "None")) && (
+            <div className="flex flex-wrap gap-1.5 mb-2 mt-1">
+              {sku && (
+                <span className="text-[10px] font-mono bg-brand-hero text-text-dark/60 px-2 py-0.5 rounded-full border border-brand/5">
+                  SKU: {sku}
+                </span>
+              )}
+              {weight && (
+                <span className="text-[10px] bg-brand-hero text-brand-secondary px-2 py-0.5 rounded-full font-semibold border border-brand/5">
+                  ⚖️ {weight} kg
+                </span>
+              )}
+              {potIncluded && potIncluded !== "None" && (
+                <span className="text-[10px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-semibold border border-green-100/50">
+                  🪴 {potIncluded}
+                </span>
+              )}
+            </div>
+          )}
           {description && (
             <p className="text-xs text-text-dark/50 line-clamp-2 mb-2 leading-relaxed">{description}</p>
           )}
-          <div className="mt-auto flex items-center justify-between">
-            <span className="text-xl font-semibold text-brand-secondary">₹{price.toFixed(2)}</span>
+          <div className="mt-auto flex items-baseline justify-between w-full flex-wrap gap-1">
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl font-bold text-brand-secondary">₹{price.toFixed(2)}</span>
+              {mrp && mrp > price && (
+                <span className="text-xs text-red-500 line-through font-semibold">₹{mrp.toFixed(2)}</span>
+              )}
+            </div>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-yellow-400">

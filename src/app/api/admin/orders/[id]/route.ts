@@ -17,15 +17,34 @@ export async function PATCH(
     const body = await req.json();
     const { status } = body;
 
-    const validStatuses = ["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"];
+    const validStatuses = ["PENDING", "APPROVED", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"];
     if (!validStatuses.includes(status)) {
       return NextResponse.json({ message: "Invalid status" }, { status: 400 });
     }
 
-    await prisma.order.update({
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        user: { select: { name: true, email: true } }
+      }
+    });
+
+    if (!order) {
+      return NextResponse.json({ message: "Order not found" }, { status: 404 });
+    }
+
+    const oldStatus = order.status;
+
+    const updatedOrder = await prisma.order.update({
       where: { id },
       data: { status },
+      include: {
+        user: { select: { name: true, email: true } }
+      }
     });
+
+    const { notifyOrderStatusUpdate } = await import("../../../../../lib/notifications");
+    await notifyOrderStatusUpdate(updatedOrder, oldStatus, status);
 
     return NextResponse.json({ message: "Order status updated" });
   } catch (error) {

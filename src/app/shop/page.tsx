@@ -87,11 +87,7 @@ export default async function ShopPage({
                   {products.map((product) => (
                     <ProductCard
                       key={product.id}
-                      id={product.id}
-                      name={product.name}
-                      price={product.price}
-                      category={product.category}
-                      images={product.images}
+                      {...product}
                       description={product.description ?? undefined}
                     />
                   ))}

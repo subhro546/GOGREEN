@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const STATUSES = ["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"];
+const STATUSES = ["PENDING", "APPROVED", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"];
 
 export default function UpdateOrderStatus({
   orderId,

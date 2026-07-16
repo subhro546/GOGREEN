@@ -45,7 +45,13 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await req.json();
-    const { name, description, price, category, subcategory, stock, images, isIndoor } = body;
+    const { 
+      name, description, price, category, subcategory, stock, images, isIndoor,
+      mrp, shippingCharge, sku, weight, length, width, height,
+      plantHeight, plantAge, returnable, potIncluded, isSeed,
+      isFlowerPlant, isFruitPlant, maintenance, sellWithCod, plantType,
+      seoTitle, seoDescription, seoKeywords
+    } = body;
 
     const updateData: Prisma.ProductUpdateInput = {};
     if (name !== undefined) updateData.name = name;
@@ -59,6 +65,26 @@ export async function PATCH(
       updateData.images = JSON.stringify(imgArray);
     }
     if (isIndoor !== undefined) updateData.isIndoor = !!isIndoor;
+    if (mrp !== undefined) updateData.mrp = mrp !== null && mrp !== "" ? parseFloat(mrp as string) : null;
+    if (shippingCharge !== undefined) updateData.shippingCharge = shippingCharge !== null && shippingCharge !== "" ? parseFloat(shippingCharge as string) : null;
+    if (sku !== undefined) updateData.sku = sku || null;
+    if (weight !== undefined) updateData.weight = weight !== null && weight !== "" ? parseFloat(weight as string) : null;
+    if (length !== undefined) updateData.length = length !== null && length !== "" ? parseFloat(length as string) : null;
+    if (width !== undefined) updateData.width = width !== null && width !== "" ? parseFloat(width as string) : null;
+    if (height !== undefined) updateData.height = height !== null && height !== "" ? parseFloat(height as string) : null;
+    if (plantHeight !== undefined) updateData.plantHeight = plantHeight !== null && plantHeight !== "" ? parseFloat(plantHeight as string) : null;
+    if (plantAge !== undefined) updateData.plantAge = plantAge !== null && plantAge !== "" ? parseFloat(plantAge as string) : null;
+    if (returnable !== undefined) updateData.returnable = !!returnable;
+    if (potIncluded !== undefined) updateData.potIncluded = potIncluded;
+    if (isSeed !== undefined) updateData.isSeed = !!isSeed;
+    if (isFlowerPlant !== undefined) updateData.isFlowerPlant = !!isFlowerPlant;
+    if (isFruitPlant !== undefined) updateData.isFruitPlant = !!isFruitPlant;
+    if (maintenance !== undefined) updateData.maintenance = maintenance;
+    if (sellWithCod !== undefined) updateData.sellWithCod = !!sellWithCod;
+    if (plantType !== undefined) updateData.plantType = plantType || null;
+    if (seoTitle !== undefined) updateData.seoTitle = seoTitle || null;
+    if (seoDescription !== undefined) updateData.seoDescription = seoDescription || null;
+    if (seoKeywords !== undefined) updateData.seoKeywords = seoKeywords || null;
 
     const updatedProduct = await prisma.product.update({
       where: { id },

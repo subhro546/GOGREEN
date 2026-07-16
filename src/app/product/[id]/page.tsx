@@ -47,7 +47,19 @@ export default async function ProductPage({
                 <span className="text-sm font-bold tracking-widest text-brand-topbar uppercase">{product.category}</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-serif font-bold text-text-dark mb-4">{product.name}</h1>
-              <p className="text-2xl font-semibold text-brand-secondary mb-6">₹{product.price.toFixed(2)}</p>
+              <div className="flex items-baseline gap-3 mb-6 flex-wrap">
+                <span className="text-3xl font-bold text-brand-secondary">₹{product.price.toFixed(2)}</span>
+                {product.mrp && product.mrp > product.price && (
+                  <>
+                    <span className="text-base text-red-500 line-through font-semibold">
+                      ₹{product.mrp.toFixed(2)}
+                    </span>
+                    <span className="text-xs bg-red-50 text-red-600 px-2 py-0.5 rounded-full font-bold border border-red-100">
+                      {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+                    </span>
+                  </>
+                )}
+              </div>
               
               <div className="prose text-text-dark/70 mb-8">
                 <p>{product.description}</p>
@@ -64,6 +76,85 @@ export default async function ProductPage({
               </div>
 
               <AddToCartButton product={product} />
+
+              {/* Plant Specifications Card */}
+              <div className="mt-8 p-6 bg-brand-hero rounded-3xl border border-brand/5 shadow-sm space-y-4 text-left">
+                <h3 className="font-serif font-bold text-lg text-brand-secondary">Plant Specifications</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-xs font-semibold text-text-dark/80">
+                  {product.sku && (
+                    <div className="flex justify-between border-b border-brand/10 pb-1">
+                      <span className="text-text-dark/50 font-normal">SKU</span>
+                      <span className="font-mono">{product.sku}</span>
+                    </div>
+                  )}
+                  {product.weight && (
+                    <div className="flex justify-between border-b border-brand/10 pb-1">
+                      <span className="text-text-dark/50 font-normal">Weight</span>
+                      <span>{product.weight} kg</span>
+                    </div>
+                  )}
+                  {product.mrp && (
+                    <div className="flex justify-between border-b border-brand/10 pb-1">
+                      <span className="text-text-dark/50 font-normal">MRP</span>
+                      <span className="line-through text-text-dark/45">₹{product.mrp.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {product.shippingCharge !== null && (
+                    <div className="flex justify-between border-b border-brand/10 pb-1">
+                      <span className="text-text-dark/50 font-normal">Shipping</span>
+                      <span>{product.shippingCharge > 0 ? `₹${product.shippingCharge.toFixed(2)}` : "Free"}</span>
+                    </div>
+                  )}
+                  {product.plantHeight && (
+                    <div className="flex justify-between border-b border-brand/10 pb-1">
+                      <span className="text-text-dark/50 font-normal">Height</span>
+                      <span>{product.plantHeight} inches</span>
+                    </div>
+                  )}
+                  {product.plantAge && (
+                    <div className="flex justify-between border-b border-brand/10 pb-1">
+                      <span className="text-text-dark/50 font-normal">Plant Age</span>
+                      <span>{product.plantAge} {product.plantAge === 1 ? "year" : "years"}</span>
+                    </div>
+                  )}
+                  {product.plantType && (
+                    <div className="flex justify-between border-b border-brand/10 pb-1">
+                      <span className="text-text-dark/50 font-normal">Plant Type</span>
+                      <span>{product.plantType}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between border-b border-brand/10 pb-1">
+                    <span className="text-text-dark/50 font-normal">Maintenance</span>
+                    <span>{product.maintenance}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-brand/10 pb-1">
+                    <span className="text-text-dark/50 font-normal">Pot Option</span>
+                    <span>{product.potIncluded}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-brand/10 pb-1">
+                    <span className="text-text-dark/50 font-normal">Return Policy</span>
+                    <span>{product.returnable ? "Returnable" : "Non-Returnable"}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-brand/10 pb-1">
+                    <span className="text-text-dark/50 font-normal">COD Available</span>
+                    <span>{product.sellWithCod ? "Yes" : "No"}</span>
+                  </div>
+                  {product.isSeed && (
+                    <div className="flex justify-between border-b border-brand/10 pb-1">
+                      <span className="text-text-dark/50 font-normal">Form</span>
+                      <span>Seed</span>
+                    </div>
+                  )}
+                  {(product.length || product.width || product.height) && (
+                    <div className="flex justify-between border-b border-brand/10 pb-1 sm:col-span-2">
+                      <span className="text-text-dark/50 font-normal">Package Dimensions</span>
+                      <span>
+                        {product.length || 0} × {product.width || 0} × {product.height || 0} cm
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
           </div>

@@ -24,19 +24,39 @@ model User {
 }
 
 model Product {
-  id          String      @id @default(cuid())
-  name        String
-  description String
-  price       Float
-  category    String
-  subcategory String      @default("")
-  stock       Int
-  images      String      // JSON stringified array of URLs
-  isIndoor    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  orderItems  OrderItem[]
-  reviews     Review[]
+  id              String      @id @default(cuid())
+  name            String
+  description     String
+  price           Float
+  category        String
+  subcategory     String      @default("")
+  stock           Int
+  images          String      // JSON stringified array of URLs
+  isIndoor        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  mrp             Float?
+  shippingCharge  Float?
+  sku             String?
+  weight          Float?
+  length          Float?
+  width           Float?
+  height          Float?
+  plantHeight     Float?
+  plantAge        Float?
+  returnable      Boolean     @default(true)
+  potIncluded     String      @default("Pot Included")
+  isSeed          Boolean     @default(false)
+  isFlowerPlant   Boolean     @default(false)
+  isFruitPlant    Boolean     @default(false)
+  maintenance     String      @default("Low Maintenance")
+  sellWithCod     Boolean     @default(true)
+  plantType       String?
+  seoTitle        String?
+  seoDescription  String?
+  seoKeywords     String?
+  orderItems      OrderItem[]
+  reviews         Review[]
 }
 
 model Order {

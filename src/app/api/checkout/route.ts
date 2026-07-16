@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { items, shippingAddress } = body;
+    const { items, shippingAddress, paymentMethod } = body;
 
     if (!items || items.length === 0) {
       return NextResponse.json({ message: "Cart is empty" }, { status: 400 });
@@ -36,6 +36,11 @@ export async function POST(req: Request) {
         return NextResponse.json({ message: `Product "${item.name}" not found` }, { status: 404 });
       }
       totalAmount += product.price * item.quantity;
+    }
+
+    // Add extra 49 rupees if COD order
+    if (paymentMethod === "cod") {
+      totalAmount += 49;
     }
 
     // Create DB Order
@@ -59,7 +64,9 @@ export async function POST(req: Request) {
     let amount = Math.round(totalAmount * 100);
     let currency = "INR";
 
-    if (!isMock) {
+    if (paymentMethod === "cod") {
+      razorpayOrderId = "cod_" + order.id.slice(-8);
+    } else if (!isMock) {
       // Create Razorpay Order
       const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
 

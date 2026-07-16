@@ -140,7 +140,7 @@ export default function CartPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ razorpay_payment_id: "cod_" + Date.now(), razorpay_order_id: data.id, razorpay_signature: "cod", orderDbId: data.orderDbId, isMock: true }),
         });
-        if (verifyRes.ok) { clearCart(); alert("Order placed! You will pay ₹" + totalPrice.toFixed(2) + " on delivery."); router.push("/orders"); }
+        if (verifyRes.ok) { clearCart(); alert("Order placed! You will pay ₹" + (totalPrice + 49).toFixed(2) + " on delivery (includes ₹49 COD fee)."); router.push("/orders"); }
         else alert("Failed to place order. Please try again.");
         setLoading(false);
         return;
@@ -304,7 +304,7 @@ export default function CartPage() {
                           <input type="radio" name="payment" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="w-4 h-4" />
                           <div>
                             <p className="font-bold text-text-dark">Cash on Delivery</p>
-                            <p className="text-xs text-text-dark/50">Pay ₹{totalPrice.toFixed(2)} at your door</p>
+                            <p className="text-xs text-text-dark/50">Pay ₹{(totalPrice + 49).toFixed(2)} at your door (includes ₹49.00 fee)</p>
                           </div>
                         </label>
                         <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">💡 COD available for orders under ₹{COD_THRESHOLD}</p>
@@ -319,10 +319,20 @@ export default function CartPage() {
                   </div>
 
                   {/* ── Total + CTA ── */}
-                  <div className="border-t border-brand/10 pt-5">
-                    <div className="flex justify-between items-center mb-5">
-                      <span className="text-lg font-bold text-text-dark">Total</span>
-                      <span className="text-2xl font-bold text-brand-secondary">₹{totalPrice.toFixed(2)}</span>
+                  <div className="border-t border-brand/10 pt-5 space-y-2">
+                    <div className="flex justify-between items-center text-sm text-text-dark/70">
+                      <span>Subtotal</span>
+                      <span>₹{totalPrice.toFixed(2)}</span>
+                    </div>
+                    {paymentMethod === "cod" && (
+                      <div className="flex justify-between items-center text-xs text-amber-700 font-bold bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100/50">
+                        <span>Cash on Delivery Fee</span>
+                        <span>+ ₹49.00</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center mb-5 pt-2 border-t border-brand/5">
+                      <span className="text-lg font-bold text-text-dark">Total Amount</span>
+                      <span className="text-2xl font-bold text-brand-secondary">₹{(totalPrice + (paymentMethod === "cod" ? 49 : 0)).toFixed(2)}</span>
                     </div>
                     <button
                       onClick={handleCheckout}
