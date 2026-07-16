@@ -20,7 +20,19 @@ const NavigationProgress = () => {
 
   // Listen for click events on anchor/link elements to start the progress bar
   const handleClick = useCallback((e: MouseEvent) => {
-    const target = (e.target as HTMLElement).closest("a");
+    const clickedElement = e.target as HTMLElement;
+    
+    // Ignore clicks on buttons, inputs, selects, or textareas nested inside links
+    if (
+      clickedElement.closest("button") ||
+      clickedElement.closest("input") ||
+      clickedElement.closest("select") ||
+      clickedElement.closest("textarea")
+    ) {
+      return;
+    }
+
+    const target = clickedElement.closest("a");
     if (!target) return;
 
     const href = target.getAttribute("href");

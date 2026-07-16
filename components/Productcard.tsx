@@ -41,6 +41,7 @@ const ProductCard = ({ id, name, price, category, description, isNew, images }: 
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     addItem({ id, name, price, category, quantity: 1, image: imageUrl });
   };
 
