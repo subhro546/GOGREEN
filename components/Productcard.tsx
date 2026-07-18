@@ -17,10 +17,12 @@ interface ProductCardProps {
   weight?: number | null;
   potIncluded?: string;
   mrp?: number | null;
+  shippingCharge?: number | null;
+  isSlider?: boolean;
 }
 
 const ProductCard = ({ 
-  id, name, price, category, description, isNew, images, sku, weight, potIncluded, mrp 
+  id, name, price, category, description, isNew, images, sku, weight, potIncluded, mrp, shippingCharge, isSlider = false
 }: ProductCardProps) => {
   const { addItem } = useCart();
 
@@ -48,100 +50,160 @@ const ProductCard = ({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem({ id, name, price, category, quantity: 1, image: imageUrl });
+    addItem({ id, name, price, category, quantity: 1, image: imageUrl, shippingCharge });
   };
 
   return (
-    <Link href={`/product/${id}`} className="block group">
+    <Link href={`/product/${id}`} className="block group h-full">
 
-      {/* ── MOBILE: Amazon-style horizontal row ── */}
-      <div className="flex sm:hidden bg-white rounded-2xl overflow-hidden border border-brand/5 shadow-sm hover:shadow-md transition-shadow duration-300">
-        {/* Image */}
-        <div className="relative w-32 shrink-0 bg-brand-hero overflow-hidden">
-          {isNew && (
-            <span className="absolute top-2 left-2 bg-brand-topbar text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
-              NEW
-            </span>
-          )}
-          {parsedImages.length > 0 ? (
-            parsedImages.map((url, idx) => (
+      {/* ── MOBILE ROW (When not in slider) ── */}
+      {!isSlider && (
+        <div className="flex sm:hidden bg-white rounded-2xl overflow-hidden border border-brand/5 shadow-sm hover:shadow-md transition-shadow duration-300">
+          {/* Image */}
+          <div className="relative w-32 shrink-0 bg-brand-hero overflow-hidden">
+            {isNew && (
+              <span className="absolute top-2 left-2 bg-brand-topbar text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                NEW
+              </span>
+            )}
+            {parsedImages.length > 0 ? (
+              parsedImages.map((url, idx) => (
+                <img
+                  key={idx}
+                  src={url}
+                  alt={name}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                    idx === currentIdx ? "opacity-100" : "opacity-0"
+                  } group-hover:scale-105`}
+                />
+              ))
+            ) : (
               <img
-                key={idx}
-                src={url}
+                src="/placeholder.png"
                 alt={name}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                  idx === currentIdx ? "opacity-100" : "opacity-0"
-                } group-hover:scale-105`}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-            ))
-          ) : (
-            <img
-              src="/placeholder.png"
-              alt={name}
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-          )}
-        </div>
-
-        {/* Info + button */}
-        <div className="flex flex-col flex-1 p-3 gap-1">
-          <p className="text-[10px] text-text-dark/50 font-semibold uppercase tracking-widest">{category}</p>
-          <p className="text-sm font-serif font-bold text-text-dark leading-snug line-clamp-1 group-hover:text-brand-secondary transition-colors">
-            {name}
-          </p>
-
-          {/* Mobile Specs Badges */}
-          {(sku || weight || (potIncluded && potIncluded !== "None")) && (
-            <div className="flex flex-wrap gap-1 mt-0.5 mb-1">
-              {sku && (
-                <span className="text-[9px] font-mono bg-brand-hero text-text-dark/60 px-1.5 py-0.5 rounded">
-                  {sku}
-                </span>
-              )}
-              {weight && (
-                <span className="text-[9px] bg-brand-hero text-brand-secondary px-1.5 py-0.5 rounded font-semibold">
-                  ⚖️ {weight} kg
-                </span>
-              )}
-              {potIncluded && potIncluded !== "None" && (
-                <span className="text-[9px] bg-green-50 text-green-700 px-1.5 py-0.5 rounded font-semibold border border-green-100/50">
-                  🪴 {potIncluded.split(" ")[0]}
-                </span>
-              )}
-            </div>
-          )}
-
-          {description && (
-            <p className="text-[11px] text-text-dark/50 line-clamp-2 leading-snug">{description}</p>
-          )}
-
-          {/* Stars */}
-          <div className="flex gap-0.5 mt-0.5">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400">
-                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007z" clipRule="evenodd" />
-              </svg>
-            ))}
-          </div>
-
-          <div className="flex items-baseline gap-2 mt-auto flex-wrap">
-            <span className="text-base font-bold text-brand-secondary">₹{price.toFixed(2)}</span>
-            {mrp && mrp > price && (
-              <span className="text-xs text-red-500 line-through font-semibold">₹{mrp.toFixed(2)}</span>
             )}
           </div>
 
-          <button
-            onClick={handleAddToCart}
-            className="mt-2 w-full bg-yellow-400 text-yellow-900 text-xs font-bold py-2 rounded-xl hover:bg-yellow-300 active:scale-95 transition-all shadow-sm"
-          >
-            Add to Cart
-          </button>
+          {/* Info + button */}
+          <div className="flex flex-col flex-1 p-3 gap-1">
+            <p className="text-[10px] text-text-dark/50 font-semibold uppercase tracking-widest">{category}</p>
+            <p className="text-sm font-serif font-bold text-text-dark leading-snug line-clamp-1 group-hover:text-brand-secondary transition-colors">
+              {name}
+            </p>
+
+            {/* Mobile Specs Badges */}
+            {(sku || weight || (potIncluded && potIncluded !== "None")) && (
+              <div className="flex flex-wrap gap-1 mt-0.5 mb-1">
+                {sku && (
+                  <span className="text-[9px] font-mono bg-brand-hero text-text-dark/60 px-1.5 py-0.5 rounded">
+                    {sku}
+                  </span>
+                )}
+                {weight && (
+                  <span className="text-[9px] bg-brand-hero text-brand-secondary px-1.5 py-0.5 rounded font-semibold">
+                    ⚖️ {weight} kg
+                  </span>
+                )}
+                {potIncluded && potIncluded !== "None" && (
+                  <span className="text-[9px] bg-green-50 text-green-700 px-1.5 py-0.5 rounded font-semibold border border-green-100/50">
+                    🪴 {potIncluded.split(" ")[0]}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {description && (
+              <p className="text-[11px] text-text-dark/50 line-clamp-2 leading-snug">{description}</p>
+            )}
+
+            {/* Stars */}
+            <div className="flex gap-0.5 mt-0.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400">
+                  <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007z" clipRule="evenodd" />
+                </svg>
+              ))}
+            </div>
+
+            <div className="flex items-baseline gap-2 mt-auto flex-wrap">
+              <span className="text-base font-bold text-brand-secondary">₹{price.toFixed(2)}</span>
+              {mrp && mrp > price && (
+                <span className="text-xs text-red-500 line-through font-semibold">₹{mrp.toFixed(2)}</span>
+              )}
+            </div>
+
+            <button
+              onClick={handleAddToCart}
+              className="mt-2 w-full bg-yellow-400 text-yellow-900 text-xs font-bold py-2 rounded-xl hover:bg-yellow-300 active:scale-95 transition-all shadow-sm"
+            >
+              Add to Cart
+            </button>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* ── MOBILE SLIDER CARD (When in slider) ── */}
+      {isSlider && (
+        <div className="flex sm:hidden flex-col bg-white rounded-2xl overflow-hidden border border-brand/5 h-full">
+          {/* Image */}
+          <div className="relative aspect-[4/5] bg-brand-hero overflow-hidden flex items-center justify-center">
+            {isNew && (
+              <div className="absolute top-2 left-2 bg-brand-topbar text-white text-[9px] font-bold px-2 py-0.5 rounded-full z-10">
+                NEW
+              </div>
+            )}
+            {parsedImages.length > 0 ? (
+              parsedImages.map((url, idx) => (
+                <img
+                  key={idx}
+                  src={url}
+                  alt={name}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                    idx === currentIdx ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              ))
+            ) : (
+              <img
+                src="/placeholder.png"
+                alt={name}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
+          </div>
+
+          {/* Info */}
+          <div className="p-3 flex-1 flex flex-col justify-between">
+            <div>
+              <p className="text-[10px] text-text-dark/50 font-medium mb-0.5 uppercase tracking-wider">{category}</p>
+              <span className="text-xs font-serif font-bold text-text-dark line-clamp-1">
+                {name}
+              </span>
+            </div>
+
+            <div className="mt-2 space-y-2">
+              <div className="flex items-baseline gap-1">
+                <span className="text-sm font-bold text-brand-secondary">₹{price.toFixed(2)}</span>
+                {mrp && mrp > price && (
+                  <span className="text-[10px] text-red-500 line-through font-semibold">₹{mrp.toFixed(2)}</span>
+                )}
+              </div>
+
+              <button
+                onClick={handleAddToCart}
+                className="w-full bg-yellow-400 text-yellow-900 py-1.5 rounded-xl text-[11px] font-bold hover:bg-yellow-300 transition-colors shadow-sm flex items-center justify-center gap-1"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── DESKTOP: Vertical card ── */}
-      <div className="hidden sm:flex flex-col bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-brand/5">
+      <div className="hidden sm:flex flex-col bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-brand/5 h-full">
         <div className="relative aspect-[4/5] bg-brand-hero overflow-hidden flex items-center justify-center">
           {isNew && (
             <div className="absolute top-4 left-4 bg-brand-topbar text-white text-xs font-bold px-3 py-1 rounded-full z-10">

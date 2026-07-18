@@ -4,6 +4,7 @@ import Footer from "../../../../components/Footer";
 import AddToCartButton from "../../../../components/AddToCartButton";
 import ProductImageGallery from "../../../../components/ProductImageGallery";
 import ProductReviews from "../../../../components/ProductReviews";
+import ProductCard from "../../../../components/Productcard";
 import { notFound } from "next/navigation";
 
 export default async function ProductPage({
@@ -19,6 +20,16 @@ export default async function ProductPage({
   if (!product) {
     notFound();
   }
+
+  // Fetch up to 4 related products from the same category (excluding current product)
+  const relatedProducts = await prisma.product.findMany({
+    where: {
+      category: product.category,
+      id: { not: product.id }
+    },
+    take: 4,
+    orderBy: { createdAt: "desc" }
+  });
 
   const parsedImages: string[] = (() => {
     try {
@@ -43,11 +54,15 @@ export default async function ProductPage({
 
             {/* Product Details Area */}
             <div className="flex flex-col justify-center">
+              <div className="pl-3 border-l-[3px] border-[#2e7d32] text-xs text-text-dark/80 mb-5 leading-relaxed bg-[#2e7d32]/5 py-2.5 pr-4 rounded-r-xl">
+                <strong>Note:</strong> Image for reference only. Product may vary.<br />
+                {product.returnable ? "Returnable." : "Replaceable, not returnable."}
+              </div>
               <div className="mb-2">
                 <span className="text-sm font-bold tracking-widest text-brand-topbar uppercase">{product.category}</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-serif font-bold text-text-dark mb-4">{product.name}</h1>
-              <div className="flex items-baseline gap-3 mb-6 flex-wrap">
+              <div className="flex items-baseline gap-3 mb-1.5 flex-wrap">
                 <span className="text-3xl font-bold text-brand-secondary">₹{product.price.toFixed(2)}</span>
                 {product.mrp && product.mrp > product.price && (
                   <>
@@ -59,6 +74,9 @@ export default async function ProductPage({
                     </span>
                   </>
                 )}
+              </div>
+              <div className="text-xs text-text-dark/45 font-medium mb-6">
+                (MRP Inclusive of all taxes)
               </div>
               
               <div className="prose text-text-dark/70 mb-8">
@@ -158,6 +176,24 @@ export default async function ProductPage({
             </div>
 
           </div>
+
+          {/* Related Products Section */}
+          {relatedProducts.length > 0 && (
+            <div className="mt-16 mb-12">
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-brand-secondary mb-8">You May Also Like</h2>
+              <div className="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 sm:overflow-visible">
+                {relatedProducts.map((related) => (
+                  <div key={related.id} className="w-[45vw] min-w-[150px] max-w-[185px] sm:w-full sm:max-w-none shrink-0 snap-start">
+                    <ProductCard
+                      {...related}
+                      description={related.description ?? undefined}
+                      isSlider={true}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           
           {/* Reviews Section */}
           <ProductReviews productId={product.id} />

@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   try {
     const keyId = process.env.RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
-    const isMock = !keyId || !keySecret;
+    const isMock = !keyId || !keySecret || keySecret.startsWith("PASTE_");
 
     const session = await getServerSession(authOptions);
     if (!session || !session.user?.id) {
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { items, shippingAddress, paymentMethod } = body;
+    const { items, shippingAddress, paymentMethod, couponCode } = body;
 
     if (!items || items.length === 0) {
       return NextResponse.json({ message: "Cart is empty" }, { status: 400 });
@@ -26,7 +26,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Shipping address is required" }, { status: 400 });
     }
 
-    // Verify prices from DB
+    // Verify prices and shipping charges from DB
+    let totalItemsSubtotal = 0;
     let totalAmount = 0;
     for (const item of items) {
       const product = await prisma.product.findUnique({
@@ -35,8 +36,33 @@ export async function POST(req: Request) {
       if (!product) {
         return NextResponse.json({ message: `Product "${item.name}" not found` }, { status: 404 });
       }
+      totalItemsSubtotal += product.price * item.quantity;
       totalAmount += product.price * item.quantity;
+      if (product.shippingCharge) {
+        totalAmount += product.shippingCharge * item.quantity;
+      }
     }
+
+    // Enforce minimum purchase limit of 499 (subtotal excluding shipping and COD fee)
+    if (totalItemsSubtotal < 499) {
+      return NextResponse.json({ message: "Minimum purchase amount is ₹499." }, { status: 400 });
+    }
+
+    // Validate coupon server-side
+    let calculatedDiscount = 0;
+    if (couponCode) {
+      const code = couponCode.trim().toUpperCase();
+      if (code === "GOGREEN10") {
+        calculatedDiscount = totalItemsSubtotal * 0.10;
+      } else if (code === "WELCOME100") {
+        if (totalItemsSubtotal >= 499) {
+          calculatedDiscount = 100;
+        }
+      }
+    }
+
+    // Deduct discount
+    totalAmount = Math.max(0, totalAmount - calculatedDiscount);
 
     // Add extra 49 rupees if COD order
     if (paymentMethod === "cod") {
@@ -48,6 +74,7 @@ export async function POST(req: Request) {
       data: {
         userId: session.user.id,
         totalAmount,
+        discount: calculatedDiscount,
         status: "PENDING",
         shippingAddress,
         items: {

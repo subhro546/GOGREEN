@@ -39,6 +39,7 @@ interface Order {
     email: string;
   };
   totalAmount: number;
+  discount: number;
   status: string;
   shippingAddress: string;
   razorpayOrderId: string | null;
@@ -69,6 +70,319 @@ export default function OrdersTable({ initialOrders }: { initialOrders: Order[] 
       ...prev,
       [itemId]: !prev[itemId],
     }));
+  };
+
+  const printReceipt = (order: Order) => {
+    const isCod = order.razorpayOrderId?.startsWith("cod_");
+    const orderIdShort = order.id.slice(-8).toUpperCase();
+    
+    // Extract phone & address lines
+    const addressLines = order.shippingAddress ? order.shippingAddress.split("\n").map(l => l.trim()).filter(Boolean) : [];
+    const customerName = addressLines[0] || order.user.name || "Guest";
+    const addressBody = addressLines.slice(1).join("\n");
+
+    const formatDate = (dateInput: Date | string) => {
+      const date = new Date(dateInput);
+      const day = date.getDate();
+      const month = date.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+      const year = date.getFullYear();
+      return `${day} ${month}, ${year}`;
+    };
+
+    // Calculate totals
+    let subtotal = 0;
+    order.items.forEach(item => {
+      subtotal += item.price * item.quantity;
+    });
+    
+    const codFee = isCod ? 49 : 0;
+    const shippingCharges = Math.max(0, order.totalAmount + (order.discount || 0) - subtotal - codFee);
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      alert("Please allow popups to print receipts");
+      return;
+    }
+
+    const itemsHtml = order.items.map(item => `
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ccc; text-align: left; vertical-align: top;">
+          <strong>${item.product.name}</strong><br>
+          <span style="font-size: 10px; color: #666; font-weight: bold; margin-top: 5px; display: block; font-family: monospace;">HSN: 06029090</span>
+          <span style="font-size: 10px; color: #666; font-weight: bold; display: block; font-family: monospace;">SAC: 06029090</span>
+        </td>
+        <td style="padding: 10px; border: 1px solid #ccc; text-align: right; vertical-align: top;">₹${item.price.toFixed(2)}</td>
+        <td style="padding: 10px; border: 1px solid #ccc; text-align: center; vertical-align: top;">${item.quantity}</td>
+        <td style="padding: 10px; border: 1px solid #ccc; text-align: right; vertical-align: top;">₹${(item.price * item.quantity).toFixed(2)}</td>
+        <td style="padding: 10px; border: 1px solid #ccc; text-align: center; vertical-align: top;">IGST</td>
+        <td style="padding: 10px; border: 1px solid #ccc; text-align: center; vertical-align: top;">0%</td>
+        <td style="padding: 10px; border: 1px solid #ccc; text-align: right; vertical-align: top;">₹0.00</td>
+        <td style="padding: 10px; border: 1px solid #ccc; text-align: right; vertical-align: top; font-weight: bold;">₹${(item.price * item.quantity).toFixed(2)}</td>
+      </tr>
+    `).join("");
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Tax_Invoice_Order_${orderIdShort}</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              color: #000;
+              margin: 0;
+              padding: 40px;
+              font-size: 12px;
+              line-height: 1.4;
+            }
+            .invoice-container {
+              max-width: 800px;
+              margin: 0 auto;
+              background: #fff;
+            }
+            .title-header {
+              text-align: center;
+              font-size: 24px;
+              font-weight: bold;
+              border-bottom: 2px solid #000;
+              padding-bottom: 8px;
+              margin-bottom: 25px;
+              letter-spacing: 0.5px;
+            }
+            .header-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 25px;
+            }
+            .header-table td {
+              vertical-align: middle;
+              border: none;
+              padding: 0;
+            }
+            .logo-text {
+              font-size: 26px;
+              font-weight: bold;
+              color: #1b4332;
+              font-family: Georgia, serif;
+            }
+            .invoice-details {
+              text-align: right;
+              font-size: 13px;
+            }
+            .invoice-details table {
+              float: right;
+              border-collapse: collapse;
+            }
+            .invoice-details td {
+              padding: 3px 0;
+              text-align: right;
+            }
+            .invoice-details td.label {
+              font-weight: bold;
+              padding-right: 10px;
+            }
+            .address-section {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 30px;
+              border-top: 1px solid #ccc;
+              border-bottom: 1px solid #ccc;
+            }
+            .address-col {
+              width: 33.33%;
+              padding: 15px 10px;
+              vertical-align: top;
+              box-sizing: border-box;
+            }
+            .address-title {
+              font-weight: bold;
+              font-size: 11px;
+              color: #444;
+              text-transform: uppercase;
+              margin-bottom: 8px;
+              letter-spacing: 0.5px;
+            }
+            .address-body {
+              font-size: 12px;
+              line-height: 1.4;
+              white-space: pre-wrap;
+            }
+            .items-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 20px;
+            }
+            .items-table th {
+              background: #fafafa;
+              font-weight: bold;
+              text-align: center;
+              border: 1px solid #ccc;
+              padding: 10px;
+              font-size: 12px;
+            }
+            .items-table td {
+              border: 1px solid #ccc;
+              padding: 10px;
+              font-size: 12px;
+            }
+            .summary-container {
+              width: 100%;
+              margin-top: 15px;
+            }
+            .summary-table {
+              width: 320px;
+              float: right;
+              border-collapse: collapse;
+              margin-bottom: 30px;
+            }
+            .summary-table td {
+              padding: 8px 12px;
+              border: 1px solid #ccc;
+              font-size: 12px;
+            }
+            .summary-table td.label {
+              text-align: right;
+              font-weight: 500;
+            }
+            .summary-table td.value {
+              text-align: right;
+              font-weight: bold;
+              width: 110px;
+            }
+            .summary-table tr.total-row td {
+              background: #fafafa;
+              font-size: 14px;
+              font-weight: bold;
+            }
+            @media print {
+              body {
+                padding: 0;
+              }
+              .invoice-container {
+                max-width: 100%;
+              }
+              @page {
+                margin: 1.5cm;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="invoice-container">
+            <div class="title-header">Tax Invoice</div>
+            
+            <table class="header-table">
+              <tr>
+                <td>
+                  <div class="logo-text">
+                    <span style="font-size: 28px;">🌿</span> GoGreen Nursery
+                  </div>
+                </td>
+                <td style="text-align: right;">
+                  <div class="invoice-details">
+                    <table>
+                      <tr>
+                        <td class="label">Invoice Number:</td>
+                        <td>GG-${orderIdShort}-INV</td>
+                      </tr>
+                      <tr>
+                        <td class="label">Order Number:</td>
+                        <td>${orderIdShort}</td>
+                      </tr>
+                      <tr>
+                        <td class="label">Order Date:</td>
+                        <td>${formatDate(order.createdAt)}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+            <table class="address-section">
+              <tr>
+                <td class="address-col" style="border-right: 1px solid #eee;">
+                  <div class="address-title">Sold By</div>
+                  <div class="address-body"><strong>Shankar kumar Das</strong>
+3 kalinagar link road
+Kolkata - 700066
+West Bengal | IN
+<strong>GSTIN: 19AFBPD8393K1Z1</strong></div>
+                </td>
+                <td class="address-col" style="border-right: 1px solid #eee;">
+                  <div class="address-title">Billing Address</div>
+                  <div class="address-body"><strong>${customerName}</strong>
+${addressBody}</div>
+                </td>
+                <td class="address-col">
+                  <div class="address-title">Shipping Address</div>
+                  <div class="address-body"><strong>${customerName}</strong>
+${addressBody}</div>
+                </td>
+              </tr>
+            </table>
+
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th rowspan="2" style="text-align: left; vertical-align: middle;">Product</th>
+                  <th rowspan="2" style="text-align: right; vertical-align: middle; width: 80px;">Unit Price</th>
+                  <th rowspan="2" style="text-align: center; vertical-align: middle; width: 40px;">Qty</th>
+                  <th rowspan="2" style="text-align: right; vertical-align: middle; width: 95px;">Taxable Amount</th>
+                  <th colspan="3" style="text-align: center; border-bottom: 1px solid #ccc; padding: 5px;">Tax</th>
+                  <th rowspan="2" style="text-align: right; vertical-align: middle; width: 95px;">Total</th>
+                </tr>
+                <tr>
+                  <th style="width: 50px; font-size: 11px; padding: 5px;">Name</th>
+                  <th style="width: 45px; font-size: 11px; padding: 5px;">Rate</th>
+                  <th style="width: 60px; font-size: 11px; padding: 5px;">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+            </table>
+
+            <div class="summary-container">
+              <table class="summary-table">
+                <tr>
+                  <td class="label">Sub Total:</td>
+                  <td class="value">₹${subtotal.toFixed(2)}</td>
+                </tr>
+                ${order.discount > 0 ? `
+                <tr>
+                  <td class="label">Coupon Discount:</td>
+                  <td class="value">- ₹${order.discount.toFixed(2)}</td>
+                </tr>
+                ` : ""}
+                ${shippingCharges > 0 ? `
+                <tr>
+                  <td class="label">Shipping Charges:</td>
+                  <td class="value">₹${shippingCharges.toFixed(2)}</td>
+                </tr>
+                ` : ""}
+                ${codFee > 0 ? `
+                <tr>
+                  <td class="label">Cash on Delivery Fee:</td>
+                  <td class="value">₹${codFee.toFixed(2)}</td>
+                </tr>
+                ` : ""}
+                <tr class="total-row">
+                  <td class="label">Total:</td>
+                  <td class="value">₹${order.totalAmount.toFixed(2)}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(function() { window.close(); }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   return (
@@ -359,6 +673,18 @@ export default function OrdersTable({ initialOrders }: { initialOrders: Order[] 
                       <div className="flex justify-between font-bold text-text-dark text-base pt-2">
                         <span>Total Paid Amount:</span>
                         <span className="text-brand-secondary">₹{order.totalAmount.toFixed(2)}</span>
+                      </div>
+                      <div className="pt-3 border-t border-brand/10 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => printReceipt(order)}
+                          className="bg-brand-secondary hover:bg-brand-topbar text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow active:scale-95 duration-200"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                          </svg>
+                          Print Invoice Receipt
+                        </button>
                       </div>
                     </div>
                   </div>

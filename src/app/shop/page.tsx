@@ -1,28 +1,52 @@
 import { prisma } from "../../lib/prisma";
+import { Prisma } from "@prisma/client";
 import ProductCard from "../../../components/Productcard";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import ShopSidebar from "../../../components/ShopSidebar";
+import ShopFilterHeader from "../../../components/ShopFilterHeader";
 
 export const dynamic = 'force-dynamic';
 
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; subcategory?: string }>;
+  searchParams: Promise<{ category?: string; subcategory?: string; search?: string; sort?: string; stock?: string }>;
 }) {
   const resolvedParams = await searchParams;
   const category = resolvedParams.category;
   const subcategory = resolvedParams.subcategory;
+  const search = resolvedParams.search;
+  const sort = resolvedParams.sort || "newest";
+  const stockOnly = resolvedParams.stock === "true";
   
-  // Build filter
-  const where: { category?: string; subcategory?: string } = {};
+  // Build query where filter
+  const where: Prisma.ProductWhereInput = {};
   if (category) where.category = category;
   if (subcategory) where.subcategory = subcategory;
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { description: { contains: search, mode: "insensitive" } }
+    ];
+  }
+  if (stockOnly) {
+    where.stock = { gt: 0 };
+  }
+
+  // Sorting
+  let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
+  if (sort === "price-asc") {
+    orderBy = { price: "asc" };
+  } else if (sort === "price-desc") {
+    orderBy = { price: "desc" };
+  } else if (sort === "newest") {
+    orderBy = { createdAt: "desc" };
+  }
 
   const products = await prisma.product.findMany({
-    where: Object.keys(where).length > 0 ? where : undefined,
-    orderBy: { createdAt: "desc" },
+    where,
+    orderBy,
   });
 
   // Build category → subcategory tree for sidebar
@@ -67,6 +91,9 @@ export default async function ShopPage({
             </div>
           </div>
 
+          {/* Filter & Search Header */}
+          <ShopFilterHeader />
+
           <div className="flex flex-col md:flex-row gap-8">
             <ShopSidebar
               categoryTree={categoryTree}
@@ -83,12 +110,13 @@ export default async function ShopPage({
                   <p className="text-text-dark/60 mt-2">Try adjusting your filters.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                   {products.map((product) => (
                     <ProductCard
                       key={product.id}
                       {...product}
                       description={product.description ?? undefined}
+                      isSlider={true}
                     />
                   ))}
                 </div>

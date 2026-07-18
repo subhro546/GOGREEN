@@ -1,64 +1,47 @@
+/* eslint-disable @next/next/no-img-element */
+"use client";
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const promos = [
-  {
-    id: 1,
-    title: 'A Living Gift - Upto 30% Off',
-    subtitle: 'Express true emotions with a gift that grows forever.',
-    image: 'https://images.unsplash.com/photo-1616844868137-7ee9659b9903?q=80&w=800&auto=format&fit=crop',
-    link: '/shop?category=Gifts',
-    bgColor: 'bg-[#f4f7e6]',
-    titleColor: 'text-[#8b2323]',
-    colSpan: 'lg:col-span-2',
-    height: 'h-[300px] md:h-[350px]',
-  },
-  {
-    id: 2,
-    title: 'Miniature Garden - Upto 30% Off',
-    subtitle: 'Enjoy a living garden even in tiny spaces.',
-    image: 'https://images.unsplash.com/photo-1416879594411-96f7c8fbd245?q=80&w=600&auto=format&fit=crop',
-    link: '/shop?category=Miniature%20Gardens',
-    bgColor: 'bg-[#e9f2d1]',
-    titleColor: 'text-[#1c5c2d]',
-    colSpan: 'lg:col-span-1',
-    height: 'h-[220px]',
-  },
-  {
-    id: 3,
-    title: 'Organic Seeds - 50% Off',
-    subtitle: 'Best quality seeds for organic lovers. No chemical No preservatives.',
-    image: 'https://images.unsplash.com/photo-1592194996534-4b0091b65b12?q=80&w=600&auto=format&fit=crop',
-    link: '/shop?category=Seeds',
-    bgColor: 'bg-[#f3ead1]',
-    titleColor: 'text-[#8b2323]',
-    colSpan: 'lg:col-span-1',
-    height: 'h-[220px]',
-  },
-  {
-    id: 4,
-    title: 'Microgreen Seeds - 50% Off',
-    subtitle: 'Grow own food full of nutrients, flavour, and freshness.',
-    image: 'https://images.unsplash.com/photo-1595858801931-e8d975a6c0c2?q=80&w=800&auto=format&fit=crop',
-    link: '/shop?category=Seeds&subcategory=Microgreens',
-    bgColor: 'bg-[#f5f8f0]',
-    titleColor: 'text-[#1c5c2d]',
-    colSpan: 'lg:col-span-2',
-    height: 'h-[300px] md:h-[350px]',
-  },
-  {
-    id: 5,
-    title: 'Event Gifts - Starting ₹119',
-    subtitle: "Corporate, Marriages, Conferences, Parties? You're covered.",
-    image: 'https://images.unsplash.com/photo-1599598425947-33001c3e6eb8?q=80&w=600&auto=format&fit=crop',
-    link: '/shop?category=Event%20Gifts',
-    bgColor: 'bg-[#fdf4e7]',
-    titleColor: 'text-[#4a4a4a]',
-    colSpan: 'lg:col-span-1',
-    height: 'h-[220px]',
-  }
-];
+interface Promo {
+  id: number;
+  title: string;
+  subtitle: string;
+  image: string;
+  link: string;
+  bgColor: string;
+  titleColor: string;
+  colSpan: string;
+  height: string;
+}
 
 export default function PromoGrid() {
+  const [promos, setPromos] = useState<Promo[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/promos')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setPromos(data);
+        }
+      })
+      .catch((err) => console.error("Failed to load promotional grid:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full py-16 bg-white flex items-center justify-center">
+        <span className="text-text-dark/40 animate-pulse text-sm font-medium">Loading deals...</span>
+      </div>
+    );
+  }
+
+  if (promos.length < 5) return null;
+
   return (
     <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

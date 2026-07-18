@@ -46,8 +46,54 @@ export default function CartPage() {
   const { data: session } = useSession();
   const router = useRouter();
 
+  // Coupon states
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+
+  const discount = (() => {
+    if (!appliedCoupon) return 0;
+    if (appliedCoupon === "GOGREEN10") {
+      return totalPrice * 0.10;
+    }
+    if (appliedCoupon === "WELCOME100") {
+      if (totalPrice < 499) return 0;
+      return 100;
+    }
+    return 0;
+  })();
+
+  const handleApplyCoupon = () => {
+    setCouponError(null);
+    const code = couponCode.trim().toUpperCase();
+    if (!code) return;
+
+    if (code === "GOGREEN10") {
+      setAppliedCoupon("GOGREEN10");
+    } else if (code === "WELCOME100") {
+      if (totalPrice < 499) {
+        setCouponError("WELCOME100 requires a minimum subtotal of ₹499.");
+        return;
+      }
+      setAppliedCoupon("WELCOME100");
+    } else {
+      setCouponError("Invalid coupon code.");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponCode("");
+    setAppliedCoupon(null);
+    setCouponError(null);
+  };
+
   const isCODEligible = totalPrice < COD_THRESHOLD;
   const isNewAddress = selectedAddressId === "new" || savedAddresses.length === 0;
+  const totalShipping = items.reduce((sum, item) => sum + (item.shippingCharge ?? 0) * item.quantity, 0);
+  const codFee = paymentMethod === "cod" ? 49 : 0;
+  const finalTotal = Math.max(0, totalPrice - discount + totalShipping + codFee);
+  const MIN_PURCHASE_LIMIT = 499;
+  const isMinLimitSatisfied = totalPrice >= MIN_PURCHASE_LIMIT;
 
   // Build the final shipping address string
   const shippingAddress = isNewAddress
@@ -131,7 +177,13 @@ export default function CartPage() {
         const res = await fetch("/api/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items, shippingAddress, paymentMethod: "cod" }),
+          body: JSON.stringify({ 
+            items, 
+            shippingAddress, 
+            paymentMethod: "cod",
+            couponCode: appliedCoupon || undefined,
+            discount: discount
+          }),
         });
         const data = await res.json();
         if (!res.ok) { alert(data.message || "Failed to create order"); setLoading(false); return; }
@@ -140,7 +192,7 @@ export default function CartPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ razorpay_payment_id: "cod_" + Date.now(), razorpay_order_id: data.id, razorpay_signature: "cod", orderDbId: data.orderDbId, isMock: true }),
         });
-        if (verifyRes.ok) { clearCart(); alert("Order placed! You will pay ₹" + (totalPrice + 49).toFixed(2) + " on delivery (includes ₹49 COD fee)."); router.push("/orders"); }
+        if (verifyRes.ok) { clearCart(); alert("Order placed! You will pay ₹" + finalTotal.toFixed(2) + " on delivery (includes shipping and ₹49 COD fee)."); router.push("/orders"); }
         else alert("Failed to place order. Please try again.");
         setLoading(false);
         return;
@@ -149,7 +201,13 @@ export default function CartPage() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items, shippingAddress, paymentMethod: "prepaid" }),
+        body: JSON.stringify({ 
+          items, 
+          shippingAddress, 
+          paymentMethod: "prepaid",
+          couponCode: appliedCoupon || undefined,
+          discount: discount
+        }),
       });
       const orderData = await res.json();
       if (!res.ok) { alert(orderData.message || "Failed to create order"); setLoading(false); return; }
@@ -304,7 +362,7 @@ export default function CartPage() {
                           <input type="radio" name="payment" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="w-4 h-4" />
                           <div>
                             <p className="font-bold text-text-dark">Cash on Delivery</p>
-                            <p className="text-xs text-text-dark/50">Pay ₹{(totalPrice + 49).toFixed(2)} at your door (includes ₹49.00 fee)</p>
+                            <p className="text-xs text-text-dark/50">Pay ₹{finalTotal.toFixed(2)} at your door (includes shipping and ₹49.00 fee)</p>
                           </div>
                         </label>
                         <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">💡 COD available for orders under ₹{COD_THRESHOLD}</p>
@@ -318,11 +376,61 @@ export default function CartPage() {
                     )}
                   </div>
 
+                  {/* ── Promo Code Card ── */}
+                  <div className="bg-brand-hero/40 p-4 rounded-2xl border border-brand/5 space-y-2 mb-4">
+                    <label className="block text-xs font-bold text-brand-secondary uppercase tracking-wider">
+                      Promo / Coupon Code
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="e.g. GOGREEN10"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        disabled={!!appliedCoupon}
+                        className="flex-1 px-3 py-2 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white uppercase disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      />
+                      {appliedCoupon ? (
+                        <button
+                          onClick={handleRemoveCoupon}
+                          className="px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 text-xs font-bold rounded-xl transition-colors"
+                        >
+                          Remove
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleApplyCoupon}
+                          className="px-4 py-2 bg-brand-secondary text-white hover:bg-brand-topbar text-xs font-bold rounded-xl transition-colors"
+                        >
+                          Apply
+                        </button>
+                      )}
+                    </div>
+                    {couponError && (
+                      <p className="text-[11px] text-red-600 font-semibold">{couponError}</p>
+                    )}
+                    {appliedCoupon && (
+                      <p className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
+                        <span>🎉</span> Coupon {appliedCoupon} applied successfully!
+                      </p>
+                    )}
+                  </div>
+
                   {/* ── Total + CTA ── */}
                   <div className="border-t border-brand/10 pt-5 space-y-2">
                     <div className="flex justify-between items-center text-sm text-text-dark/70">
                       <span>Subtotal</span>
                       <span>₹{totalPrice.toFixed(2)}</span>
+                    </div>
+                    {discount > 0 && (
+                      <div className="flex justify-between items-center text-sm text-emerald-700 font-semibold bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100/50">
+                        <span>Coupon Discount ({appliedCoupon})</span>
+                        <span>- ₹{discount.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-sm text-text-dark/70">
+                      <span>Shipping Charges</span>
+                      <span>{totalShipping > 0 ? `₹${totalShipping.toFixed(2)}` : "Free"}</span>
                     </div>
                     {paymentMethod === "cod" && (
                       <div className="flex justify-between items-center text-xs text-amber-700 font-bold bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100/50">
@@ -332,11 +440,19 @@ export default function CartPage() {
                     )}
                     <div className="flex justify-between items-center mb-5 pt-2 border-t border-brand/5">
                       <span className="text-lg font-bold text-text-dark">Total Amount</span>
-                      <span className="text-2xl font-bold text-brand-secondary">₹{(totalPrice + (paymentMethod === "cod" ? 49 : 0)).toFixed(2)}</span>
+                      <span className="text-2xl font-bold text-brand-secondary">₹{finalTotal.toFixed(2)}</span>
                     </div>
+                    {!isMinLimitSatisfied && (
+                      <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-xs text-red-600 font-medium space-y-1 mb-3">
+                        <p className="flex items-center gap-1.5 font-bold">
+                          <span>⚠️</span> Minimum purchase limit is ₹499
+                        </p>
+                        <p>Please add items worth ₹{(MIN_PURCHASE_LIMIT - totalPrice).toFixed(2)} more to place your order.</p>
+                      </div>
+                    )}
                     <button
                       onClick={handleCheckout}
-                      disabled={loading}
+                      disabled={loading || !isMinLimitSatisfied}
                       className="w-full bg-brand-secondary text-white py-4 rounded-xl font-bold hover:bg-brand-topbar transition-colors shadow-lg flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading ? "Processing..." : paymentMethod === "cod" ? "Place Order (COD)" : "Pay Now"}

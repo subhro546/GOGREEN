@@ -11,6 +11,7 @@ interface AddToCartButtonProps {
     category: string;
     stock: number;
     images?: string;
+    shippingCharge?: number | null;
   };
 }
 
@@ -46,6 +47,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       category: product.category,
       quantity,
       image: imageUrl,
+      shippingCharge: product.shippingCharge,
     });
   };
 

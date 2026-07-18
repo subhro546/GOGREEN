@@ -63,3 +63,91 @@ body {
     animation-delay: 4s;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   DARK MODE OVERRIDES (Placed at the end of stylesheet to ensure priority)
+   ────────────────────────────────────────────────────────────────────────── */
+html.dark {
+  --background: #0b130e; /* Elegant dark forest slate */
+  --foreground: #f1fdf4;
+}
+
+html.dark body {
+  background-color: #0b130e !important;
+  color: #f1fdf4 !important;
+}
+
+html.dark .bg-white {
+  background-color: #0b130e !important;
+}
+
+html.dark .bg-gray-50,
+html.dark .bg-\[\#f8faf8\],
+html.dark .bg-\[\#edf7ed\] {
+  background-color: #121c16 !important;
+}
+
+html.dark .bg-brand-hero,
+html.dark .bg-brand-hero\/50,
+html.dark .bg-brand-hero\/30,
+html.dark .bg-brand-hero\/40,
+html.dark .bg-green-100 {
+  background-color: #121c16 !important;
+}
+
+html.dark .bg-white\/90,
+html.dark .bg-white\/80,
+html.dark .bg-white\/70 {
+  background-color: rgba(18, 28, 22, 0.9) !important;
+}
+
+/* Borders */
+html.dark .border-gray-50,
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .border-gray-300,
+html.dark .border-brand\/5,
+html.dark .border-brand\/10 {
+  border-color: #1c2e24 !important;
+}
+
+/* Text Colors */
+html.dark .text-text-dark,
+html.dark .text-text-dark\/80,
+html.dark .text-text-dark\/70,
+html.dark .text-text-dark\/60,
+html.dark .text-text-dark\/50,
+html.dark .text-text-dark\/40 {
+  color: #f1fdf4 !important;
+}
+
+html.dark .text-gray-900,
+html.dark .text-gray-800,
+html.dark .text-gray-700,
+html.dark .text-gray-600,
+html.dark .text-gray-500 {
+  color: #d1d5db !important;
+}
+
+html.dark .text-brand-dark,
+html.dark .text-brand-secondary,
+html.dark .text-brand-topbar {
+  color: #81c784 !important;
+}
+
+/* Input Fields */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #121c16 !important;
+  color: #f1fdf4 !important;
+  border-color: #1c2e24 !important;
+}
+
+/* Card Shadows */
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg,
+html.dark .shadow-xl {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5) !important;
+}

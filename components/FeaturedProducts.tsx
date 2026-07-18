@@ -9,12 +9,12 @@ const FeaturedProducts = async () => {
   });
 
   return (
-    <section className="py-24 bg-white">
+    <section className="pt-6 pb-16 md:py-20 bg-white">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-6">
           <div className="max-w-2xl">
             <span className="inline-block bg-yellow-100 text-yellow-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-3 border border-yellow-200">
               Top Picks
@@ -37,9 +37,11 @@ const FeaturedProducts = async () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 sm:overflow-visible">
           {products.map((product) => (
-            <ProductCard key={product.id} {...product} description={product.description ?? undefined} />
+            <div key={product.id} className="w-[45vw] min-w-[150px] max-w-[185px] sm:w-full sm:max-w-none shrink-0 sm:shrink snap-start">
+              <ProductCard {...product} description={product.description ?? undefined} isSlider={true} />
+            </div>
           ))}
         </div>
 

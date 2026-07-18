@@ -18,6 +18,8 @@ export default function AdminLayoutClient({
     { href: "/admin/categories", label: "🗂️ Categories" },
     { href: "/admin/products", label: "🪴 Products" },
     { href: "/admin/orders", label: "📦 Orders" },
+    { href: "/admin/banners", label: "🖼️ Banners" },
+    { href: "/admin/reviews", label: "💬 Reviews" },
   ];
 
   const sidebarContent = (

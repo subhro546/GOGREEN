@@ -64,6 +64,7 @@ model Order {
   userId          String
   user            User        @relation(fields: [userId], references: [id])
   totalAmount     Float
+  discount        Float       @default(0)
   status          String      @default("PENDING") // PENDING, SHIPPED, DELIVERED, CANCELLED
   shippingAddress String
   razorpayOrderId String?
@@ -112,4 +113,26 @@ model Review {
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Banner {
+  id        String   @id @default(cuid())
+  src       String
+  alt       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PromoBanner {
+  id          Int      @id // 1 to 5 mapping for grid layout consistency
+  title       String
+  subtitle    String
+  image       String
+  link        String
+  bgColor     String
+  titleColor  String
+  colSpan     String
+  height      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
