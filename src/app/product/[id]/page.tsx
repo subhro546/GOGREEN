@@ -3,6 +3,7 @@ import Navbar from "../../../../components/Navbar";
 import Footer from "../../../../components/Footer";
 import AddToCartButton from "../../../../components/AddToCartButton";
 import ProductImageGallery from "../../../../components/ProductImageGallery";
+import ProductAccordions from "../../../../components/ProductAccordions";
 import ProductReviews from "../../../../components/ProductReviews";
 import ProductCard from "../../../../components/Productcard";
 import { notFound } from "next/navigation";
@@ -45,15 +46,15 @@ export default async function ProductPage({
       <Navbar />
       <main className="flex-1 pt-28 pb-16 bg-white min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-brand/5 grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="bg-white rounded-3xl shadow-xl border border-brand/5 overflow-hidden flex flex-col">
             
             {/* Product Image Gallery Area */}
-            <div>
+            <div className="w-full">
               <ProductImageGallery images={parsedImages} productName={product.name} />
             </div>
 
             {/* Product Details Area */}
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col p-6 md:p-12 max-w-5xl mx-auto w-full">
               <div className="pl-3 border-l-[3px] border-[#2e7d32] text-xs text-text-dark/80 mb-5 leading-relaxed bg-[#2e7d32]/5 py-2.5 pr-4 rounded-r-xl">
                 <strong>Note:</strong> Image for reference only. Product may vary.<br />
                 {product.returnable ? "Returnable." : "Replaceable, not returnable."}
@@ -173,6 +174,9 @@ export default async function ProductPage({
                   )}
                 </div>
               </div>
+
+              {/* Accordions for Plant Care and Delivery */}
+              <ProductAccordions />
             </div>
 
           </div>

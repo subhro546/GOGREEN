@@ -45,7 +45,7 @@ const BannerCarousel = () => {
 
   if (loading) {
     return (
-      <div className="w-full aspect-[21/9] sm:aspect-[2.5/1] bg-brand-hero flex items-center justify-center">
+      <div className="w-full aspect-[16/9] sm:aspect-[2/1] bg-brand-hero flex items-center justify-center">
         <span className="text-text-dark/40 animate-pulse text-sm font-medium">Loading showcase...</span>
       </div>
     );
@@ -55,7 +55,7 @@ const BannerCarousel = () => {
 
   return (
     <section className="relative w-full overflow-hidden bg-brand-hero">
-      <div className="relative w-full aspect-[21/9] sm:aspect-[2.5/1]">
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1]">
         {/* Images */}
         {banners.map((banner, idx) => (
           <img

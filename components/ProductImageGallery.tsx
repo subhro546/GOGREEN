@@ -16,7 +16,7 @@ export default function ProductImageGallery({ images, productName }: ProductImag
   return (
     <div className="space-y-4 w-full">
       {/* Main viewport */}
-      <div className="relative aspect-square bg-brand-hero rounded-3xl overflow-hidden border border-brand/5 flex items-center justify-center shadow-md">
+      <div className="relative w-full h-[55vh] md:h-[70vh] bg-brand-hero overflow-hidden flex items-center justify-center">
         <img
           src={activeUrl}
           alt={`${productName} view ${activeIdx + 1}`}
@@ -26,7 +26,7 @@ export default function ProductImageGallery({ images, productName }: ProductImag
 
       {/* Thumbnails row */}
       {imagesList.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto py-1 scrollbar-thin">
+        <div className="flex gap-3 overflow-x-auto py-2 px-4 md:px-8 scrollbar-thin">
           {imagesList.map((url, idx) => {
             const isActive = idx === activeIdx;
             return (
