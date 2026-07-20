@@ -23,15 +23,15 @@ const CategoriesSection = async () => {
   return (
     <section id="categories" className="py-6 sm:py-8 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-4 min-[400px]:grid-cols-5 sm:flex sm:flex-wrap items-start sm:items-center gap-2 sm:gap-8 justify-items-center sm:justify-center pb-2">
+        <div className="flex overflow-x-auto items-start gap-4 sm:gap-8 pb-4 scrollbar-thin scrollbar-thumb-brand-secondary/20 scrollbar-track-transparent snap-x snap-mandatory">
           {categories.map((category, index) => (
             <Link
               key={index}
               href={category.dbName ? `/shop?category=${encodeURIComponent(category.dbName)}` : `/shop`}
-              className="flex flex-col items-center gap-2 group shrink-0"
+              className="flex flex-col items-center gap-2 group shrink-0 snap-start"
             >
-              {/* Circular image */}
-              <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-gray-100 group-hover:border-brand-secondary transition-all duration-300 group-hover:shadow-lg group-hover:scale-105 bg-brand-hero">
+              {/* Category shape */}
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-brand/5 group-hover:border-brand-secondary transition-all duration-300 group-hover:shadow-lg group-hover:scale-105 bg-brand-hero shrink-0">
                 <img
                   src={category.image}
                   alt={category.name}
