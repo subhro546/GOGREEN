@@ -33,6 +33,7 @@ export default withAuth(
     return null;
   },
   {
+    secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
       authorized: () => true, // We handle the logic in the middleware function above
     },

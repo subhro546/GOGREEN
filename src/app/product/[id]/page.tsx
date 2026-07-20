@@ -7,6 +7,7 @@ import ProductAccordions from "../../../../components/ProductAccordions";
 import ProductCard from "../../../../components/Productcard";
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const ProductReviews = dynamic(() => import("../../../../components/ProductReviews"), {
   loading: () => <div className="animate-pulse bg-brand-hero/50 h-64 w-full rounded-2xl mt-8" />,
@@ -22,6 +23,7 @@ export default async function ProductPage({
   const resolvedParams = await params;
   const product = await prisma.product.findUnique({
     where: { id: resolvedParams.id },
+    include: { reviews: true },
   });
 
   if (!product) {
@@ -47,6 +49,11 @@ export default async function ProductPage({
     }
   })();
 
+  const reviewCount = product.reviews.length;
+  const averageRating = reviewCount > 0 
+    ? product.reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviewCount 
+    : 0;
+
   return (
     <>
       <Navbar />
@@ -68,7 +75,21 @@ export default async function ProductPage({
               <div className="mb-2">
                 <span className="text-sm font-bold tracking-widest text-brand-topbar uppercase">{product.category}</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-text-dark mb-4">{product.name}</h1>
+              <h1 className="text-4xl md:text-5xl font-serif font-bold text-text-dark mb-2">{product.name}</h1>
+              
+              {/* Reviews Summary */}
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center text-yellow-400 text-sm">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    if (averageRating >= star) return <FaStar key={star} />;
+                    if (averageRating >= star - 0.5) return <FaStarHalfAlt key={star} />;
+                    return <FaRegStar key={star} className="text-gray-300 dark:text-gray-600" />;
+                  })}
+                </div>
+                <a href="#reviews-section" className="text-sm font-medium text-text-dark/60 hover:text-brand-secondary transition-colors">
+                  {reviewCount > 0 ? `${averageRating.toFixed(1)} (${reviewCount} reviews)` : "(No reviews yet)"}
+                </a>
+              </div>
               <div className="flex items-baseline gap-3 mb-1.5 flex-wrap">
                 <span className="text-3xl font-bold text-brand-secondary">₹{product.price.toFixed(2)}</span>
                 {product.mrp && product.mrp > product.price && (
@@ -206,7 +227,9 @@ export default async function ProductPage({
           )}
           
           {/* Reviews Section */}
-          <ProductReviews productId={product.id} />
+          <div id="reviews-section" className="scroll-mt-32">
+            <ProductReviews productId={product.id} />
+          </div>
         </div>
       </main>
       <Footer />
