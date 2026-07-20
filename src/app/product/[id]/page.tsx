@@ -50,7 +50,7 @@ export default async function ProductPage({
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-28 pb-16 bg-gradient-to-br from-[#eaf5eb] via-[#f7fcf7] to-white dark:bg-none min-h-screen">
+      <main className="flex-1 pt-6 md:pt-12 lg:pt-20 pb-16 bg-gradient-to-br from-[#eaf5eb] via-[#f7fcf7] to-white dark:bg-none min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-brand/10 grid grid-cols-1 md:grid-cols-2 items-start relative">
             
