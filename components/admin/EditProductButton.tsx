@@ -691,7 +691,7 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
                           onChange={(e) => setIsSeed(e.target.checked)}
                           className="w-4.5 h-4.5 rounded border-text-dark/20 text-brand-secondary focus:ring-brand-secondary cursor-pointer"
                         />
-                        <span className="text-xs font-bold text-text-dark/85">Is Seed Option?</span>
+                        <span className="text-xs font-bold text-text-dark/85">Is Foliage?</span>
                       </label>
                     </div>
                   </div>

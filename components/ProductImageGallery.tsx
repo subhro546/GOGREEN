@@ -45,7 +45,7 @@ export default function ProductImageGallery({ images, productName }: ProductImag
     <div className="space-y-4 w-full">
       {/* Main viewport */}
       <div 
-        className="relative w-full h-[55vh] md:h-[70vh] bg-brand-hero overflow-hidden flex items-center justify-center cursor-pointer group"
+        className="relative w-full aspect-square md:aspect-[4/5] lg:aspect-square rounded-2xl md:rounded-[2rem] bg-brand-hero overflow-hidden flex items-center justify-center cursor-pointer group shadow-sm"
         onClick={() => setIsModalOpen(true)}
       >
         <Image

@@ -52,15 +52,15 @@ export default async function ProductPage({
       <Navbar />
       <main className="flex-1 pt-28 pb-16 bg-gradient-to-br from-[#eaf5eb] via-[#f7fcf7] to-white dark:bg-none min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-brand/10 overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-brand/10 grid grid-cols-1 md:grid-cols-2 items-start relative">
             
             {/* Product Image Gallery Area */}
-            <div className="w-full">
+            <div className="w-full md:sticky md:top-28 z-10 p-6 md:p-8 lg:p-12">
               <ProductImageGallery images={parsedImages} productName={product.name} />
             </div>
 
             {/* Product Details Area */}
-            <div className="flex flex-col p-6 md:p-10 lg:p-12 w-full justify-center">
+            <div className="flex flex-col p-6 md:p-8 lg:p-12 w-full">
               <div className="pl-3 border-l-[3px] border-[#2e7d32] text-xs text-text-dark/80 mb-5 leading-relaxed bg-[#2e7d32]/5 py-2.5 pr-4 rounded-r-xl">
                 <strong>Note:</strong> Image for reference only. Product may vary.<br />
                 {product.returnable ? "Returnable." : "Replaceable, not returnable."}
@@ -167,7 +167,7 @@ export default async function ProductPage({
                   {product.isSeed && (
                     <div className="flex justify-between border-b border-brand/10 pb-1">
                       <span className="text-text-dark/50 font-normal">Form</span>
-                      <span>Seed</span>
+                      <span>Foliage</span>
                     </div>
                   )}
                   {(product.length || product.width || product.height) && (
