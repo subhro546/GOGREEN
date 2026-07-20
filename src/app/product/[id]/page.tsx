@@ -4,9 +4,15 @@ import Footer from "../../../../components/Footer";
 import AddToCartButton from "../../../../components/AddToCartButton";
 import ProductImageGallery from "../../../../components/ProductImageGallery";
 import ProductAccordions from "../../../../components/ProductAccordions";
-import ProductReviews from "../../../../components/ProductReviews";
 import ProductCard from "../../../../components/Productcard";
 import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const ProductReviews = dynamic(() => import("../../../../components/ProductReviews"), {
+  loading: () => <div className="animate-pulse bg-brand-hero/50 h-64 w-full rounded-2xl mt-8" />,
+});
+
+export const revalidate = 3600;
 
 export default async function ProductPage({
   params,
@@ -44,7 +50,7 @@ export default async function ProductPage({
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-28 pb-16 bg-gradient-to-br from-[#eaf5eb] via-[#f7fcf7] to-white min-h-screen">
+      <main className="flex-1 pt-28 pb-16 bg-gradient-to-br from-[#eaf5eb] via-[#f7fcf7] to-white dark:bg-none min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-brand/10 overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             

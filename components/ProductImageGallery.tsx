@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -46,10 +48,12 @@ export default function ProductImageGallery({ images, productName }: ProductImag
         className="relative w-full h-[55vh] md:h-[70vh] bg-brand-hero overflow-hidden flex items-center justify-center cursor-pointer group"
         onClick={() => setIsModalOpen(true)}
       >
-        <img
+        <Image
           src={activeUrl}
           alt={`${productName} view ${activeIdx + 1}`}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {/* Hover overlay hint */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center pointer-events-none">
@@ -75,10 +79,12 @@ export default function ProductImageGallery({ images, productName }: ProductImag
                     : "border-brand/5 opacity-70 hover:opacity-100 hover:scale-102"
                 }`}
               >
-                <img
+                <Image
                   src={url}
                   alt={`${productName} thumbnail ${idx + 1}`}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="80px"
+                  className="object-cover"
                 />
               </button>
             );
@@ -96,12 +102,15 @@ export default function ProductImageGallery({ images, productName }: ProductImag
             <FaTimes size={24} />
           </button>
           
-          <img
-            src={activeUrl}
-            alt={`${productName} fullscreen`}
-            className="max-w-[95vw] max-h-[90vh] object-contain select-none bg-white rounded-xl shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          />
+          <div className="relative w-full h-full max-w-[95vw] max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <Image
+              src={activeUrl}
+              alt={`${productName} fullscreen`}
+              fill
+              className="object-contain bg-white rounded-xl shadow-2xl"
+              sizes="95vw"
+            />
+          </div>
 
           {imagesList.length > 1 && (
             <>

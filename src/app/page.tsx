@@ -7,7 +7,7 @@ import PromoGrid from "../../components/PromoGrid";
 import TestimonialSection from "../../components/TestimonialSection";
 import Footer from "../../components/Footer";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export default function HomePage() {
   return (

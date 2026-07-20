@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import Image from 'next/image';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '../src/context/CartContext';
@@ -68,20 +70,24 @@ const ProductCard = ({
             )}
             {parsedImages.length > 0 ? (
               parsedImages.map((url, idx) => (
-                <img
+                <Image
                   key={idx}
                   src={url}
                   alt={name}
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  fill
+                  sizes="128px"
+                  className={`object-cover transition-opacity duration-700 ${
                     idx === currentIdx ? "opacity-100" : "opacity-0"
                   } group-hover:scale-105`}
                 />
               ))
             ) : (
-              <img
+              <Image
                 src="/placeholder.png"
                 alt={name}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                fill
+                sizes="128px"
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
             )}
           </div>
@@ -156,20 +162,24 @@ const ProductCard = ({
             )}
             {parsedImages.length > 0 ? (
               parsedImages.map((url, idx) => (
-                <img
+                <Image
                   key={idx}
                   src={url}
                   alt={name}
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  fill
+                  sizes="200px"
+                  className={`object-cover transition-opacity duration-700 ${
                     idx === currentIdx ? "opacity-100" : "opacity-0"
                   }`}
                 />
               ))
             ) : (
-              <img
+              <Image
                 src="/placeholder.png"
                 alt={name}
-                className="absolute inset-0 w-full h-full object-cover"
+                fill
+                sizes="200px"
+                className="object-cover"
               />
             )}
           </div>
@@ -221,20 +231,24 @@ const ProductCard = ({
 
           {parsedImages.length > 0 ? (
             parsedImages.map((url, idx) => (
-              <img
+              <Image
                 key={idx}
                 src={url}
                 alt={name}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className={`object-cover transition-opacity duration-700 ${
                   idx === currentIdx ? "opacity-100" : "opacity-0"
                 } group-hover:scale-110`}
               />
             ))
           ) : (
-            <img
+            <Image
               src="/placeholder.png"
               alt={name}
-              className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover transform group-hover:scale-110 transition-transform duration-500"
             />
           )}
 
