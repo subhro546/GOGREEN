@@ -16,23 +16,23 @@ const TopBar = () => {
   const { data: session } = useSession();
 
   return (
-    <div className="bg-brand-topbar text-white text-xs py-2 px-4 sm:px-6 lg:px-8 hidden lg:block relative z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
+    <div className="bg-brand-topbar text-white text-[10px] sm:text-xs py-2 px-2 sm:px-6 lg:px-8 relative z-50">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
         {/* Left Section */}
-        <div className="flex items-center space-x-6">
+        <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 md:gap-0 md:space-x-6">
           <div className="flex items-center space-x-3">
             <a href="https://www.facebook.com/greenshankar2020" target="_blank" rel="noopener noreferrer" className="hover:text-brand-light transition-colors" aria-label="Facebook"><FaFacebookF /></a>
             <a href="https://www.instagram.com/nursery.gogreen/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-light transition-colors" aria-label="Instagram"><FaInstagram /></a>
             <a href="https://wa.me/917980028176" target="_blank" rel="noopener noreferrer" className="hover:text-brand-light transition-colors" aria-label="WhatsApp"><FaWhatsapp /></a>
           </div>
-          <div className="flex items-center space-x-4 border-l border-white/20 pl-4">
+          <div className="flex items-center space-x-2 md:space-x-4 border-l border-white/20 pl-2 md:pl-4">
             <a href="tel:+917596811595" className="hover:text-brand-light transition-colors">+91 7596811595</a>
-            <a href="mailto:gogreen.nursery20@gmail.com" className="border-l border-white/20 pl-4 hover:text-brand-light transition-colors">gogreen.nursery20@gmail.com</a>
+            <a href="mailto:gogreen.nursery20@gmail.com" className="border-l border-white/20 pl-2 md:pl-4 hover:text-brand-light transition-colors">gogreen.nursery20@gmail.com</a>
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center space-x-6">
+        <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 md:gap-0 md:space-x-6">
           <a 
             href="https://www.google.com/maps/search/?api=1&query=Go+Green+Nursery+Kolkata+Maheshtala"
             target="_blank" 
@@ -42,13 +42,13 @@ const TopBar = () => {
             <FaMapMarkerAlt />
             <span>Kolkata</span>
           </a>
-          <Link href="/orders" className="flex items-center space-x-1 border-l border-white/20 pl-4 hover:text-brand-light transition-colors">
+          <Link href="/orders" className="flex items-center space-x-1 border-l border-white/20 pl-2 md:pl-4 hover:text-brand-light transition-colors">
             <FaTruck />
             <span>Track Order</span>
           </Link>
           
           {session ? (
-            <div className="relative group border-l border-white/20 pl-4">
+            <div className="relative group border-l border-white/20 pl-2 md:pl-4">
               <button className="flex items-center space-x-1 hover:text-brand-light transition-colors">
                 <FaUser />
                 <span>{session.user?.name?.split(' ')[0] || 'My Account'}</span>
@@ -80,7 +80,7 @@ const TopBar = () => {
               </div>
             </div>
           ) : (
-            <Link href="/login" className="flex items-center space-x-1 border-l border-white/20 pl-4 hover:text-brand-light transition-colors">
+            <Link href="/login" className="flex items-center space-x-1 border-l border-white/20 pl-2 md:pl-4 hover:text-brand-light transition-colors">
               <FaUser />
               <span>Log In / Sign Up</span>
             </Link>
