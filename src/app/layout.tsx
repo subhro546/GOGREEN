@@ -30,14 +30,28 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${playfair.variable} antialiased min-h-screen flex flex-col`}
+        className={`${inter.variable} ${playfair.variable} antialiased min-h-screen flex flex-col relative`}
       >
+        {/* Subtle pattern background */}
+        <div
+          className="fixed inset-0 z-0 pointer-events-none"
+          style={{
+            backgroundImage: 'url(/pattern-bg.png)',
+            backgroundSize: '600px',
+            backgroundRepeat: 'repeat',
+            opacity: 0.04,
+            filter: 'blur(1px)',
+          }}
+          aria-hidden="true"
+        />
         <Providers>
           <Suspense fallback={null}>
             <NavigationProgress />
           </Suspense>
           <TopBar />
-          {children}
+          <div className="relative z-10 flex flex-col min-h-screen">
+            {children}
+          </div>
           <WhatsAppWidget />
         </Providers>
       </body>

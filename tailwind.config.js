@@ -69,6 +69,17 @@ module.exports = {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         }
       },
+      borderRadius: {
+        'none': '0',
+        'sm': '2px',
+        DEFAULT: '4px',
+        'md': '6px',
+        'lg': '8px',
+        'xl': '10px',
+        '2xl': '12px',
+        '3xl': '14px',
+        'full': '9999px',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'hero-gradient': 'linear-gradient(135deg, #e8f5e9 0%, #fff9e6 50%, #fce4ec 100%)',
