@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Product } from "@prisma/client";
 
 export interface IProductRepository {

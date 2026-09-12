@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "../lib/prisma";
 import { IOrderRepository } from "../interfaces/IOrderRepository";
 import { Order } from "@prisma/client";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IProductRepository } from "../interfaces/IProductRepository";
 import { IOrderRepository } from "../interfaces/IOrderRepository";
 import Razorpay from "razorpay";
