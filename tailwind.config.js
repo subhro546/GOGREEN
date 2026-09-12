@@ -6,6 +6,17 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    borderRadius: {
+      'none': '0',
+      'sm': '2px',
+      DEFAULT: '4px',
+      'md': '6px',
+      'lg': '8px',
+      'xl': '10px',
+      '2xl': '12px',
+      '3xl': '14px',
+      'full': '9999px',
+    },
     extend: {
       colors: {
         brand: {
@@ -68,17 +79,6 @@ module.exports = {
           '0%': { opacity: '0', transform: 'translateY(-8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         }
-      },
-      borderRadius: {
-        'none': '0',
-        'sm': '2px',
-        DEFAULT: '4px',
-        'md': '6px',
-        'lg': '8px',
-        'xl': '10px',
-        '2xl': '12px',
-        '3xl': '14px',
-        'full': '9999px',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
