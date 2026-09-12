@@ -54,56 +54,58 @@ const BannerCarousel = () => {
   if (banners.length === 0) return null;
 
   return (
-    <section className="relative w-full overflow-hidden bg-brand-hero">
-      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1]">
-        {/* Images */}
-        {banners.map((banner, idx) => (
-          <img
-            key={banner.id}
-            src={banner.src}
-            alt={banner.alt}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-              idx === current ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-        ))}
+    <section className="w-full bg-brand-hero/20 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative w-full overflow-hidden rounded-3xl shadow-xl aspect-[16/9] sm:aspect-[21/9]">
+          {/* Images */}
+          {banners.map((banner, idx) => (
+            <img
+              key={banner.id}
+              src={banner.src}
+              alt={banner.alt}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                idx === current ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ))}
 
-        {/* Gradient overlay for readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/20" />
+          {/* Gradient overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/20" />
 
-        {/* Nav arrows */}
-        {banners.length > 1 && (
-          <>
-            <button
-              onClick={prev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-700 p-2.5 rounded-full shadow transition-all hover:scale-110 z-10"
-              aria-label="Previous"
-            >
-              <FaChevronLeft size={14} />
-            </button>
-            <button
-              onClick={next}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-700 p-2.5 rounded-full shadow transition-all hover:scale-110 z-10"
-              aria-label="Next"
-            >
-              <FaChevronRight size={14} />
-            </button>
+          {/* Nav arrows */}
+          {banners.length > 1 && (
+            <>
+              <button
+                onClick={prev}
+                className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brand-dark p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+                aria-label="Previous"
+              >
+                <FaChevronLeft size={16} />
+              </button>
+              <button
+                onClick={next}
+                className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brand-dark p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+                aria-label="Next"
+              >
+                <FaChevronRight size={16} />
+              </button>
 
-            {/* Dots */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-              {banners.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrent(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    idx === current ? 'bg-white w-5' : 'bg-white/50 w-2'
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </>
-        )}
+              {/* Dots */}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                {banners.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrent(idx)}
+                    className={`h-2.5 rounded-full transition-all duration-300 shadow-sm ${
+                      idx === current ? 'bg-white w-8' : 'bg-white/60 w-2.5 hover:bg-white/80'
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </section>
   );

@@ -4,7 +4,7 @@ import { prisma } from '../src/lib/prisma';
 
 const FeaturedProducts = async () => {
   const products = await prisma.product.findMany({
-    take: 4,
+    take: 8,
     orderBy: { createdAt: 'desc' }
   });
 
@@ -37,9 +37,9 @@ const FeaturedProducts = async () => {
           </Link>
         </div>
 
-        <div className="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 sm:overflow-visible">
+        <div className="flex overflow-x-auto pb-6 gap-6 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-8 sm:overflow-visible">
           {products.map((product) => (
-            <div key={product.id} className="w-[45vw] min-w-[150px] max-w-[185px] sm:w-full sm:max-w-none shrink-0 sm:shrink snap-start">
+            <div key={product.id} className="w-[65vw] min-w-[200px] sm:w-full sm:max-w-none shrink-0 sm:shrink snap-start">
               <ProductCard {...product} description={product.description ?? undefined} isSlider={true} />
             </div>
           ))}

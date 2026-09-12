@@ -493,7 +493,7 @@ ${addressBody}</div>
                       </div>
                       <div className="pt-2 border-t border-brand/5">
                         <p className="text-xs font-bold text-text-dark/50">Full Shipping Address:</p>
-                        <p className="mt-1 bg-brand-hero/30 p-3.5 rounded-xl font-sans text-xs whitespace-pre-wrap leading-relaxed select-text border border-brand/5 text-text-dark/95">
+                        <p className="mt-1 bg-brand-hero/30 p-3.5 rounded-xl font-sans text-xs whitespace-pre-wrap leading-relaxed select-text border border-brand/5 text-text-dark/80">
                           {order.shippingAddress || "Not provided"}
                         </p>
                       </div>
@@ -550,7 +550,7 @@ ${addressBody}</div>
                               {/* Price summary details */}
                               <div className="text-right shrink-0 mr-2">
                                 <p className="font-bold text-brand-secondary text-xs sm:text-sm">₹{(item.quantity * item.price).toFixed(2)}</p>
-                                <p className="text-[9px] text-text-dark/45">
+                                <p className="text-[9px] text-text-dark/50">
                                   {item.quantity} × ₹{item.price.toFixed(2)}
                                 </p>
                               </div>

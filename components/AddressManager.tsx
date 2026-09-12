@@ -11,14 +11,26 @@ interface Address {
 
 export default function AddressManager({ initialAddresses }: { initialAddresses: Address[] }) {
   const [addresses, setAddresses] = useState<Address[]>(initialAddresses);
-  const [newAddress, setNewAddress] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+    phone: "",
+  });
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const router = useRouter();
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newAddress.trim()) return;
+    if (!formData.street || !formData.city || !formData.state || !formData.zip || !formData.phone) {
+      alert("Please fill all required fields, including phone number.");
+      return;
+    }
+
+    const fullAddress = `${formData.name ? formData.name + ', ' : ''}${formData.street}, ${formData.city}, ${formData.state} - ${formData.zip}. Phone: ${formData.phone}`;
 
     setLoading(true);
     try {
@@ -27,7 +39,7 @@ export default function AddressManager({ initialAddresses }: { initialAddresses:
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ address: newAddress }),
+        body: JSON.stringify({ address: fullAddress }),
       });
 
       if (!res.ok) {
@@ -36,7 +48,7 @@ export default function AddressManager({ initialAddresses }: { initialAddresses:
 
       const added = await res.json();
       setAddresses((prev) => [added, ...prev]);
-      setNewAddress("");
+      setFormData({ name: "", street: "", city: "", state: "", zip: "", phone: "" });
       router.refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Something went wrong");
@@ -76,28 +88,88 @@ export default function AddressManager({ initialAddresses }: { initialAddresses:
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   return (
     <div className="space-y-6">
       <h3 className="text-xl font-bold text-brand-secondary border-b border-brand/10 pb-3">Manage Shipping Addresses</h3>
 
       {/* Add Address Form */}
-      <form onSubmit={handleAdd} className="flex gap-4">
+      <form onSubmit={handleAdd} className="bg-white p-6 rounded-xl border border-text-dark/10 shadow-sm space-y-4">
+        <h4 className="font-semibold text-text-dark mb-2">Add New Address</h4>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Full Name (Optional)"
+            className="px-4 py-3 rounded-xl border border-text-dark/20 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
+          />
+          <input
+            type="tel"
+            name="phone"
+            required
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="Phone Number *"
+            className="px-4 py-3 rounded-xl border border-text-dark/20 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
+          />
+        </div>
+        
         <input
           type="text"
+          name="street"
           required
-          value={newAddress}
-          onChange={(e) => setNewAddress(e.target.value)}
-          placeholder="Add a new shipping address..."
-          className="flex-1 px-4 py-3 rounded-xl border border-text-dark/20 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
+          value={formData.street}
+          onChange={handleChange}
+          placeholder="Street Address *"
+          className="w-full px-4 py-3 rounded-xl border border-text-dark/20 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
         />
-        <button
-          type="submit"
-          disabled={loading || !newAddress.trim()}
-          className="bg-brand-secondary text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-topbar transition-colors shadow-md flex items-center gap-2 disabled:opacity-50"
-        >
-          {loading ? <FaSpinner className="animate-spin" /> : <FaPlus />}
-          <span>Add</span>
-        </button>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input
+            type="text"
+            name="city"
+            required
+            value={formData.city}
+            onChange={handleChange}
+            placeholder="City *"
+            className="px-4 py-3 rounded-xl border border-text-dark/20 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
+          />
+          <input
+            type="text"
+            name="state"
+            required
+            value={formData.state}
+            onChange={handleChange}
+            placeholder="State *"
+            className="px-4 py-3 rounded-xl border border-text-dark/20 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
+          />
+          <input
+            type="text"
+            name="zip"
+            required
+            value={formData.zip}
+            onChange={handleChange}
+            placeholder="ZIP / Postal Code *"
+            className="px-4 py-3 rounded-xl border border-text-dark/20 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
+          />
+        </div>
+
+        <div className="flex justify-end pt-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-brand-secondary text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-topbar transition-colors shadow-md flex items-center gap-2 disabled:opacity-50"
+          >
+            {loading ? <FaSpinner className="animate-spin" /> : <FaPlus />}
+            <span>Save Address</span>
+          </button>
+        </div>
       </form>
 
       {/* List of Addresses */}
