@@ -3,7 +3,8 @@ import Navbar from "../../../../components/Navbar";
 import Footer from "../../../../components/Footer";
 import AddToCartButton from "../../../../components/AddToCartButton";
 import ProductImageGallery from "../../../../components/ProductImageGallery";
-import ProductAccordions from "../../../../components/ProductAccordions";
+import ProductTabs from "../../../../components/ProductTabs";
+import ProductShareButton from "../../../../components/ProductShareButton";
 import ProductCard from "../../../../components/Productcard";
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -72,9 +73,19 @@ export default async function ProductPage({
                 <strong>Note:</strong> Image for reference only. Product may vary.<br />
                 {product.returnable ? "Returnable." : "Replaceable, not returnable."}
               </div>
-              <div className="mb-2">
+
+              {/* Category & Product Share Row */}
+              <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
                 <span className="text-sm font-bold tracking-widest text-brand-topbar uppercase">{product.category}</span>
+                <ProductShareButton
+                  productName={product.name}
+                  productId={product.id}
+                  productPrice={product.price}
+                  productCategory={product.category}
+                  productImage={parsedImages[0]}
+                />
               </div>
+
               <h1 className="text-4xl md:text-5xl font-serif font-bold text-text-dark mb-2">{product.name}</h1>
               
               {/* Reviews Summary */}
@@ -123,87 +134,8 @@ export default async function ProductPage({
 
               <AddToCartButton product={product} />
 
-              {/* Plant Specifications Card */}
-              <div className="mt-8 p-6 bg-brand-hero rounded-3xl border border-brand/5 shadow-sm space-y-4 text-left">
-                <h3 className="font-serif font-bold text-lg text-brand-secondary">Plant Specifications</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-xs font-semibold text-text-dark/80">
-                  {product.sku && (
-                    <div className="flex justify-between border-b border-brand/10 pb-1">
-                      <span className="text-text-dark/50 font-normal">SKU</span>
-                      <span className="font-mono">{product.sku}</span>
-                    </div>
-                  )}
-                  {product.weight && (
-                    <div className="flex justify-between border-b border-brand/10 pb-1">
-                      <span className="text-text-dark/50 font-normal">Weight</span>
-                      <span>{product.weight} kg</span>
-                    </div>
-                  )}
-                  {product.mrp && (
-                    <div className="flex justify-between border-b border-brand/10 pb-1">
-                      <span className="text-text-dark/50 font-normal">MRP</span>
-                      <span className="line-through text-text-dark/45">₹{product.mrp.toFixed(2)}</span>
-                    </div>
-                  )}
-                  {product.shippingCharge !== null && (
-                    <div className="flex justify-between border-b border-brand/10 pb-1">
-                      <span className="text-text-dark/50 font-normal">Shipping</span>
-                      <span>{product.shippingCharge > 0 ? `₹${product.shippingCharge.toFixed(2)}` : "Free"}</span>
-                    </div>
-                  )}
-                  {product.plantHeight && (
-                    <div className="flex justify-between border-b border-brand/10 pb-1">
-                      <span className="text-text-dark/50 font-normal">Height</span>
-                      <span>{product.plantHeight} inches</span>
-                    </div>
-                  )}
-                  {product.plantAge && (
-                    <div className="flex justify-between border-b border-brand/10 pb-1">
-                      <span className="text-text-dark/50 font-normal">Plant Age</span>
-                      <span>{product.plantAge} {product.plantAge === 1 ? "year" : "years"}</span>
-                    </div>
-                  )}
-                  {product.plantType && (
-                    <div className="flex justify-between border-b border-brand/10 pb-1">
-                      <span className="text-text-dark/50 font-normal">Plant Type</span>
-                      <span>{product.plantType}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between border-b border-brand/10 pb-1">
-                    <span className="text-text-dark/50 font-normal">Maintenance</span>
-                    <span>{product.maintenance}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-brand/10 pb-1">
-                    <span className="text-text-dark/50 font-normal">Pot Option</span>
-                    <span>{product.potIncluded}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-brand/10 pb-1">
-                    <span className="text-text-dark/50 font-normal">Return Policy</span>
-                    <span>{product.returnable ? "Returnable" : "Non-Returnable"}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-brand/10 pb-1">
-                    <span className="text-text-dark/50 font-normal">COD Available</span>
-                    <span>{product.sellWithCod ? "Yes" : "No"}</span>
-                  </div>
-                  {product.isSeed && (
-                    <div className="flex justify-between border-b border-brand/10 pb-1">
-                      <span className="text-text-dark/50 font-normal">Form</span>
-                      <span>Foliage</span>
-                    </div>
-                  )}
-                  {(product.length || product.width || product.height) && (
-                    <div className="flex justify-between border-b border-brand/10 pb-1 sm:col-span-2">
-                      <span className="text-text-dark/50 font-normal">Package Dimensions</span>
-                      <span>
-                        {product.length || 0} × {product.width || 0} × {product.height || 0} cm
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Accordions for Plant Care and Delivery */}
-              <ProductAccordions />
+              {/* ── GENERAL INFORMATION SECTION (TABS: PLANT CARE, DISCLAIMER, SPECS, DELIVERY) ── */}
+              <ProductTabs product={product} />
             </div>
 
           </div>
