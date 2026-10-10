@@ -116,13 +116,13 @@ export default function FeaturedProductsSlider({ products }: { products: Product
         <div
           ref={scrollRef}
           onScroll={checkScroll}
-          className="w-full flex flex-nowrap overflow-x-auto gap-2.5 sm:gap-5 md:gap-6 px-4 sm:px-10 md:px-16 lg:px-24 pb-6 pt-2 snap-x snap-mandatory scroll-smooth scrollbar-hide"
+          className="w-full flex flex-nowrap overflow-x-auto gap-2.5 sm:gap-6 px-4 sm:px-14 md:px-20 lg:px-28 pb-6 pt-2 snap-x snap-mandatory scroll-smooth scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {products.map((product) => (
             <div
               key={product.id}
-              className="w-[36vw] min-w-[125px] max-w-[155px] sm:w-[260px] md:w-[300px] shrink-0 snap-start transition-transform hover:-translate-y-1 duration-300"
+              className="w-[36vw] min-w-[125px] max-w-[155px] sm:w-[280px] md:w-[310px] lg:w-[330px] sm:min-w-0 sm:max-w-none shrink-0 snap-start transition-transform hover:-translate-y-1 duration-300"
             >
               <ProductCard
                 id={product.id}
@@ -144,7 +144,7 @@ export default function FeaturedProductsSlider({ products }: { products: Product
       </div>
 
       {/* ── BOTTOM CTA BANNER ── */}
-      <div className="w-full px-4 sm:px-10 md:px-16 lg:px-24 mt-6">
+      <div className="w-full px-4 sm:px-14 md:px-20 lg:px-28 mt-6">
         <div
           className="rounded-3xl overflow-hidden relative shadow-lg"
           style={{ background: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 50%, #f9a825 100%)' }}
