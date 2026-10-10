@@ -32,6 +32,6 @@ export async function GET() {
     return NextResponse.json(dbBanners);
   } catch (error) {
     console.error("Get banners error:", error);
-    return NextResponse.json({ message: "Failed to get banners" }, { status: 500 });
+    return NextResponse.json(DEFAULT_BANNERS);
   }
 }

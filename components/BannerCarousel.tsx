@@ -104,7 +104,7 @@ const BannerCarousel = () => {
 
   return (
     <section
-      className="w-full py-6 sm:py-10 bg-gradient-to-b from-brand-hero/20 via-white to-transparent overflow-hidden"
+      className="w-full pt-6 pb-8 sm:pt-10 sm:pb-12 bg-gradient-to-b from-brand-hero/20 via-white to-transparent overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={handleTouchStart}
@@ -200,6 +200,11 @@ const BannerCarousel = () => {
             </div>
           );
         })}
+
+        {/* ── STAGE EDGE BLUR OVERLAYS ── */}
+        {/* These wide gradient bands make it obvious the carousel is scrollable */}
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-r from-white via-white/85 to-transparent pointer-events-none z-25" style={{ backdropFilter: 'blur(3px)' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-white via-white/85 to-transparent pointer-events-none z-25" style={{ backdropFilter: 'blur(3px)' }} />
 
         {/* ── FLOATING NAVIGATION CHEVRONS ── */}
         <button
