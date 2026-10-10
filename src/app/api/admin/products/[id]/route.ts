@@ -50,7 +50,8 @@ export async function PATCH(
       mrp, shippingCharge, sku, weight, length, width, height,
       plantHeight, plantAge, returnable, potIncluded, isSeed,
       isFlowerPlant, isFruitPlant, maintenance, sellWithCod, plantType,
-      seoTitle, seoDescription, seoKeywords
+      seoTitle, seoDescription, seoKeywords,
+      careDetails, disclaimer
     } = body;
 
     const updateData: Prisma.ProductUpdateInput = {};
@@ -85,6 +86,12 @@ export async function PATCH(
     if (seoTitle !== undefined) updateData.seoTitle = seoTitle || null;
     if (seoDescription !== undefined) updateData.seoDescription = seoDescription || null;
     if (seoKeywords !== undefined) updateData.seoKeywords = seoKeywords || null;
+    if (careDetails !== undefined) {
+      updateData.careDetails = careDetails ? (typeof careDetails === "string" ? careDetails : JSON.stringify(careDetails)) : null;
+    }
+    if (disclaimer !== undefined) {
+      updateData.disclaimer = disclaimer ? (typeof disclaimer === "string" ? disclaimer : JSON.stringify(disclaimer)) : null;
+    }
 
     const updatedProduct = await prisma.product.update({
       where: { id },
@@ -93,6 +100,7 @@ export async function PATCH(
 
     revalidatePath('/', 'page');
     revalidatePath('/shop', 'page');
+    revalidatePath(`/product/${id}`, 'page');
     return NextResponse.json(updatedProduct);
   } catch (error) {
     console.error("Update product error:", error);

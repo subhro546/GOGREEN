@@ -54,6 +54,94 @@ export default function AddProductSection() {
   const [seoDescription, setSeoDescription] = useState("");
   const [seoKeywords, setSeoKeywords] = useState("");
 
+  // Form states - Plant Care Customization
+  const [carePlacement, setCarePlacement] = useState("");
+  const [careWatering, setCareWatering] = useState("");
+  const [careLight, setCareLight] = useState("");
+  const [careWateringSchedule, setCareWateringSchedule] = useState("");
+  const [careTemperature, setCareTemperature] = useState("");
+  const [careSoil, setCareSoil] = useState("");
+  const [careTip, setCareTip] = useState("");
+  const [careGeneral, setCareGeneral] = useState("");
+
+  // Form states - Disclaimer Customization
+  const [discBannerTitle, setDiscBannerTitle] = useState("");
+  const [discBannerText, setDiscBannerText] = useState("");
+  const [discVariations, setDiscVariations] = useState("");
+  const [discTransit, setDiscTransit] = useState("");
+  const [discPot, setDiscPot] = useState("");
+  const [discReturns, setDiscReturns] = useState("");
+  const [discSafety, setDiscSafety] = useState("");
+  const [discGeneral, setDiscGeneral] = useState("");
+
+  const handleLoadCareDefaults = () => {
+    setCarePlacement(isIndoor ? "Indoor / Indirect Light" : "Outdoor / Bright Light");
+    setCareWatering("When top soil dries");
+    setCareLight(
+      isIndoor
+        ? "Place in a spot with medium to bright, indirect sunlight (e.g. near east or north-facing windows). Direct scorching midday sun can burn sensitive foliage."
+        : "Enjoys ample natural light and partial to full morning sun. Ensure sheltered protection from extreme afternoon heat during peak summer months."
+    );
+    setCareWateringSchedule(
+      "Water thoroughly only when the top 1–2 inches of soil feel dry to touch. Always allow excess water to drain out from the drainage holes. Never let roots sit in standing water."
+    );
+    setCareTemperature(
+      "Prefers a temperature range of 18°C – 30°C. Keep away from extreme drafts, cold AC vents, or hot radiators. Light misting on foliage once or twice a week keeps leaves fresh."
+    );
+    setCareSoil(
+      "Use well-draining, aerated potting soil with vermicompost and coco peat. Feed with organic balanced liquid fertilizer once a month during spring and summer growing seasons."
+    );
+    setCareTip(
+      "Gently wipe leaves with a soft damp cloth every few weeks to remove dust. Clean leaves absorb light much better and produce richer chlorophyll!"
+    );
+  };
+
+  const handleClearCareFields = () => {
+    setCarePlacement("");
+    setCareWatering("");
+    setCareLight("");
+    setCareWateringSchedule("");
+    setCareTemperature("");
+    setCareSoil("");
+    setCareTip("");
+    setCareGeneral("");
+  };
+
+  const handleLoadDisclaimerDefaults = () => {
+    setDiscBannerTitle("Important Purchase & Product Disclaimers");
+    setDiscBannerText(
+      "Please review these standard nursery guidelines before placing your order to ensure the best possible experience."
+    );
+    setDiscVariations(
+      "Plants are natural living organisms. Each specimen has its own unique branch structure, foliage count, leaf size, and coloration. Catalog photographs serve as reference representations of healthy mature plants."
+    );
+    setDiscTransit(
+      "During courier transit in closed boxes, plants may experience temporary transport shock (slight leaf drooping or 1–2 shed bottom leaves). Place your plant in bright indirect light, water lightly, and allow 3–5 days to fully recover."
+    );
+    setDiscPot(
+      `The pot provided corresponds to your selected option (${potIncluded || "Standard Nursery Pot"}). Decorative ceramic or fiber pots shown in styled lifestyle photos are for staging unless explicitly chosen in product specs.`
+    );
+    setDiscReturns(
+      returnable
+        ? "This plant is returnable or replaceable within 14 days if received damaged. Please capture an unboxing video or clear photo upon arrival."
+        : "Due to the perishable nature of live plants, this product is non-returnable once opened. However, plants severely damaged during transit are 100% eligible for immediate free replacement upon sharing unboxing proof within 48 hours."
+    );
+    setDiscSafety(
+      "Certain ornamental houseplants can cause mild stomach upset if chewed or ingested by curious cats, dogs, or small children. Please research plant toxicity if placing within reach of pets."
+    );
+  };
+
+  const handleClearDisclaimerFields = () => {
+    setDiscBannerTitle("");
+    setDiscBannerText("");
+    setDiscVariations("");
+    setDiscTransit("");
+    setDiscPot("");
+    setDiscReturns("");
+    setDiscSafety("");
+    setDiscGeneral("");
+  };
+
   const handleAddUrl = () => {
     if (urlInput.trim()) {
       setImagesList((prev) => [...prev, urlInput.trim()]);
@@ -150,6 +238,30 @@ export default function AddProductSection() {
           seoTitle: seoTitle.trim() || null,
           seoDescription: seoDescription.trim() || null,
           seoKeywords: seoKeywords.trim() || null,
+          careDetails: (carePlacement || careWatering || careLight || careWateringSchedule || careTemperature || careSoil || careTip || careGeneral)
+            ? {
+                placement: carePlacement.trim() || undefined,
+                watering: careWatering.trim() || undefined,
+                light: careLight.trim() || undefined,
+                wateringSchedule: careWateringSchedule.trim() || undefined,
+                temperature: careTemperature.trim() || undefined,
+                soil: careSoil.trim() || undefined,
+                tip: careTip.trim() || undefined,
+                general: careGeneral.trim() || undefined,
+              }
+            : null,
+          disclaimer: (discBannerTitle || discBannerText || discVariations || discTransit || discPot || discReturns || discSafety || discGeneral)
+            ? {
+                bannerTitle: discBannerTitle.trim() || undefined,
+                bannerText: discBannerText.trim() || undefined,
+                variations: discVariations.trim() || undefined,
+                transit: discTransit.trim() || undefined,
+                pot: discPot.trim() || undefined,
+                returns: discReturns.trim() || undefined,
+                safety: discSafety.trim() || undefined,
+                general: discGeneral.trim() || undefined,
+              }
+            : null,
         }),
       });
 
@@ -284,6 +396,28 @@ export default function AddProductSection() {
                 }`}
               >
                 🔍 SEO Tab
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("care")}
+                className={`py-2 px-4 font-bold text-xs border-b-2 transition-all shrink-0 uppercase tracking-wider ${
+                  activeTab === "care"
+                    ? "border-brand-secondary text-brand-secondary"
+                    : "border-transparent text-text-dark/55 hover:text-brand-secondary"
+                }`}
+              >
+                🌱 Plant Care
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("disclaimer")}
+                className={`py-2 px-4 font-bold text-xs border-b-2 transition-all shrink-0 uppercase tracking-wider ${
+                  activeTab === "disclaimer"
+                    ? "border-brand-secondary text-brand-secondary"
+                    : "border-transparent text-text-dark/55 hover:text-brand-secondary"
+                }`}
+              >
+                ⚠️ Disclaimer
               </button>
             </div>
 
@@ -754,6 +888,275 @@ export default function AddProductSection() {
                     <p className="text-xs text-text-dark/60 leading-relaxed">
                       Optimizing your SEO fields makes your plants much easier to discover on Google, Bing, and other search engines. Default SEO parameters will be generated if left blank.
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {/* ── TAB: PLANT CARE CUSTOMIZATION ── */}
+              {activeTab === "care" && (
+                <div className="space-y-5 animate-fade-in text-left">
+                  <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h4 className="font-bold text-sm text-emerald-950">🌱 Customize Plant Care Guide</h4>
+                      <p className="text-xs text-emerald-800/80 mt-0.5">
+                        Customize any instruction below. Leave any field blank to automatically use the dynamic default.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={handleLoadCareDefaults}
+                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                      >
+                        Load Defaults
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleClearCareFields}
+                        className="px-3 py-1.5 border border-emerald-300 hover:bg-emerald-100/60 text-emerald-900 rounded-xl text-xs font-semibold transition-all"
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                        Placement Summary Badge
+                      </label>
+                      <input
+                        type="text"
+                        value={carePlacement}
+                        onChange={(e) => setCarePlacement(e.target.value)}
+                        placeholder={isIndoor ? "Indoor / Indirect Light" : "Outdoor / Bright Light"}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                        Watering Summary Badge
+                      </label>
+                      <input
+                        type="text"
+                        value={careWatering}
+                        onChange={(e) => setCareWatering(e.target.value)}
+                        placeholder="When top soil dries"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      ☀️ Sunlight & Light Needs
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={careLight}
+                      onChange={(e) => setCareLight(e.target.value)}
+                      placeholder="e.g. Place in bright, indirect sunlight near a window..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      💧 Watering Schedule
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={careWateringSchedule}
+                      onChange={(e) => setCareWateringSchedule(e.target.value)}
+                      placeholder="e.g. Water thoroughly when top 1-2 inches of soil feel dry..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      🌡️ Temperature & Humidity
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={careTemperature}
+                      onChange={(e) => setCareTemperature(e.target.value)}
+                      placeholder="e.g. Prefers 18°C – 30°C. Keep away from cold drafts..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      🪴 Soil & Fertilizing
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={careSoil}
+                      onChange={(e) => setCareSoil(e.target.value)}
+                      placeholder="e.g. Use well-draining aerated potting mix. Feed monthly in spring..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      💡 Pro Care Tip
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={careTip}
+                      onChange={(e) => setCareTip(e.target.value)}
+                      placeholder="e.g. Wipe leaves with a damp cloth every few weeks..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      📝 Additional Plant Care Notes (Optional)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={careGeneral}
+                      onChange={(e) => setCareGeneral(e.target.value)}
+                      placeholder="Any extra species-specific instructions or seasonal advice..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* ── TAB: DISCLAIMER CUSTOMIZATION ── */}
+              {activeTab === "disclaimer" && (
+                <div className="space-y-5 animate-fade-in text-left">
+                  <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h4 className="font-bold text-sm text-amber-950">⚠️ Customize Purchase Disclaimers</h4>
+                      <p className="text-xs text-amber-800/80 mt-0.5">
+                        Customize disclaimer notices for this product. Leave blank to use standard nursery policies.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={handleLoadDisclaimerDefaults}
+                        className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                      >
+                        Load Defaults
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleClearDisclaimerFields}
+                        className="px-3 py-1.5 border border-amber-300 hover:bg-amber-100/60 text-amber-900 rounded-xl text-xs font-semibold transition-all"
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      Banner Title
+                    </label>
+                    <input
+                      type="text"
+                      value={discBannerTitle}
+                      onChange={(e) => setDiscBannerTitle(e.target.value)}
+                      placeholder="Important Purchase & Product Disclaimers"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      Banner Notice Text
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={discBannerText}
+                      onChange={(e) => setDiscBannerText(e.target.value)}
+                      placeholder="Please review these standard nursery guidelines before placing your order..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      🌿 Living Plant Natural Variations
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={discVariations}
+                      onChange={(e) => setDiscVariations(e.target.value)}
+                      placeholder="Plants are natural living organisms. Each specimen has its own unique branch structure..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      📦 Transit Stress & Acclimatization
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={discTransit}
+                      onChange={(e) => setDiscTransit(e.target.value)}
+                      placeholder="During courier transit in closed boxes, plants may experience temporary transport shock..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      🪴 Pot & Planter Specifications
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={discPot}
+                      onChange={(e) => setDiscPot(e.target.value)}
+                      placeholder="The pot provided corresponds to your selected option..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      🛡️ Returns & Replacement Terms
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={discReturns}
+                      onChange={(e) => setDiscReturns(e.target.value)}
+                      placeholder="Eligible for replacement if damaged in transit upon sharing unboxing photos within 48 hours..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      🐾 Pet & Household Safety Caution
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={discSafety}
+                      onChange={(e) => setDiscSafety(e.target.value)}
+                      placeholder="Certain ornamental houseplants can cause mild stomach upset if ingested by pets..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark/80 mb-1">
+                      📝 Additional Disclaimer Notes (Optional)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={discGeneral}
+                      onChange={(e) => setDiscGeneral(e.target.value)}
+                      placeholder="Any additional store terms or disclaimers for this item..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-text-dark/15 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-xs sm:text-sm bg-white resize-y"
+                    />
                   </div>
                 </div>
               )}

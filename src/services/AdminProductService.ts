@@ -10,7 +10,8 @@ export class AdminProductService {
       mrp, shippingCharge, sku, weight, length, width, height,
       plantHeight, plantAge, returnable, potIncluded, isSeed,
       isFlowerPlant, isFruitPlant, maintenance, sellWithCod, plantType,
-      seoTitle, seoDescription, seoKeywords
+      seoTitle, seoDescription, seoKeywords,
+      careDetails, disclaimer
     } = data;
 
     if (!name || !description || price === undefined || !category || stock === undefined) {
@@ -50,6 +51,8 @@ export class AdminProductService {
       seoTitle: seoTitle || null,
       seoDescription: seoDescription || null,
       seoKeywords: seoKeywords || null,
+      careDetails: careDetails ? (typeof careDetails === "string" ? careDetails : JSON.stringify(careDetails)) : null,
+      disclaimer: disclaimer ? (typeof disclaimer === "string" ? disclaimer : JSON.stringify(disclaimer)) : null,
     });
   }
 }

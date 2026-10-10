@@ -36,6 +36,8 @@ interface ProductTabsProps {
     plantType?: string | null;
     shippingCharge?: number | null;
     mrp?: number | null;
+    careDetails?: string | null;
+    disclaimer?: string | null;
   };
 }
 
@@ -43,6 +45,54 @@ type TabKey = "care" | "disclaimer" | "specs" | "delivery";
 
 export default function ProductTabs({ product }: ProductTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("care");
+
+  // ── CUSTOM / DEFAULT PLANT CARE ──
+  const parsedCare = (() => {
+    if (!product.careDetails) return {};
+    try {
+      return JSON.parse(product.careDetails);
+    } catch {
+      return { general: product.careDetails };
+    }
+  })();
+
+  const care = {
+    placement: parsedCare.placement || (product.isIndoor ? "Indoor / Indirect Light" : "Outdoor / Bright Light"),
+    watering: parsedCare.watering || "When top soil dries",
+    maintenance: parsedCare.maintenance || (product.maintenance || "Low Maintenance"),
+    potting: parsedCare.potting || (product.potIncluded || "Pot Included"),
+    light: parsedCare.light || (product.isIndoor
+      ? "Place in a spot with medium to bright, indirect sunlight (e.g. near east or north-facing windows). Direct scorching midday sun can burn sensitive foliage."
+      : "Enjoys ample natural light and partial to full morning sun. Ensure sheltered protection from extreme afternoon heat during peak summer months."),
+    wateringSchedule: parsedCare.wateringSchedule || "Water thoroughly only when the top 1–2 inches of soil feel dry to touch. Always allow excess water to drain out from the drainage holes. Never let roots sit in standing water.",
+    temperature: parsedCare.temperature || "Prefers a temperature range of 18°C – 30°C. Keep away from extreme drafts, cold AC vents, or hot radiators. Light misting on foliage once or twice a week keeps leaves fresh.",
+    soil: parsedCare.soil || "Use well-draining, aerated potting soil with vermicompost and coco peat. Feed with organic balanced liquid fertilizer once a month during spring and summer growing seasons.",
+    tip: parsedCare.tip || "Gently wipe leaves with a soft damp cloth every few weeks to remove dust. Clean leaves absorb light much better and produce richer chlorophyll!",
+    general: parsedCare.general || null,
+  };
+
+  // ── CUSTOM / DEFAULT DISCLAIMER ──
+  const parsedDisclaimer = (() => {
+    if (!product.disclaimer) return {};
+    try {
+      return JSON.parse(product.disclaimer);
+    } catch {
+      return { general: product.disclaimer };
+    }
+  })();
+
+  const disclaimer = {
+    bannerTitle: parsedDisclaimer.bannerTitle || "Important Purchase & Product Disclaimers",
+    bannerText: parsedDisclaimer.bannerText || "Please review these standard nursery guidelines before placing your order to ensure the best possible experience.",
+    variations: parsedDisclaimer.variations || "Plants are natural living organisms. Each specimen has its own unique branch structure, foliage count, leaf size, and coloration. Catalog photographs serve as reference representations of healthy mature plants.",
+    transit: parsedDisclaimer.transit || "During courier transit in closed boxes, plants may experience temporary transport shock (slight leaf drooping or 1–2 shed bottom leaves). Place your plant in bright indirect light, water lightly, and allow 3–5 days to fully recover.",
+    pot: parsedDisclaimer.pot || `The pot provided corresponds to your selected option (${product.potIncluded || "Standard Nursery Pot"}). Decorative ceramic or fiber pots shown in styled lifestyle photos are for staging unless explicitly chosen in product specs.`,
+    returns: parsedDisclaimer.returns || (product.returnable
+      ? "This plant is returnable or replaceable within 14 days if received damaged. Please capture an unboxing video or clear photo upon arrival."
+      : "Due to the perishable nature of live plants, this product is non-returnable once opened. However, plants severely damaged during transit are 100% eligible for immediate free replacement upon sharing unboxing proof within 48 hours."),
+    safety: parsedDisclaimer.safety || "Certain ornamental houseplants can cause mild stomach upset if chewed or ingested by curious cats, dogs, or small children. Please research plant toxicity if placing within reach of pets.",
+    general: parsedDisclaimer.general || null,
+  };
 
   const tabs = [
     {
@@ -128,26 +178,34 @@ export default function ProductTabs({ product }: ProductTabsProps) {
               <div className="p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-100 flex flex-col">
                 <span className="text-[11px] uppercase font-bold text-emerald-800 tracking-wider">Placement</span>
                 <span className="text-sm font-bold text-gray-900 mt-1">
-                  {product.isIndoor ? "Indoor / Indirect Light" : "Outdoor / Bright Light"}
+                  {care.placement}
                 </span>
               </div>
               <div className="p-3.5 bg-blue-50/80 rounded-2xl border border-blue-100 flex flex-col">
                 <span className="text-[11px] uppercase font-bold text-blue-800 tracking-wider">Watering</span>
-                <span className="text-sm font-bold text-gray-900 mt-1">When top soil dries</span>
+                <span className="text-sm font-bold text-gray-900 mt-1">{care.watering}</span>
               </div>
               <div className="p-3.5 bg-amber-50/80 rounded-2xl border border-amber-100 flex flex-col">
                 <span className="text-[11px] uppercase font-bold text-amber-800 tracking-wider">Maintenance</span>
                 <span className="text-sm font-bold text-gray-900 mt-1">
-                  {product.maintenance || "Low Maintenance"}
+                  {care.maintenance}
                 </span>
               </div>
               <div className="p-3.5 bg-purple-50/80 rounded-2xl border border-purple-100 flex flex-col">
                 <span className="text-[11px] uppercase font-bold text-purple-800 tracking-wider">Potting</span>
                 <span className="text-sm font-bold text-gray-900 mt-1">
-                  {product.potIncluded || "Pot Included"}
+                  {care.potting}
                 </span>
               </div>
             </div>
+
+            {/* Optional General Custom Care Instructions Note */}
+            {care.general && (
+              <div className="p-4 bg-white rounded-2xl border border-emerald-200/80 shadow-xs">
+                <h4 className="text-sm font-bold text-emerald-900 mb-1">Custom Plant Care Guide</h4>
+                <p className="text-xs sm:text-sm text-gray-700 whitespace-pre-line leading-relaxed">{care.general}</p>
+              </div>
+            )}
 
             {/* Detailed Plant Care Instructions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
@@ -157,10 +215,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   <FaSun size={15} />
                   <span>Sunlight & Light Needs</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  {product.isIndoor
-                    ? "Place in a spot with medium to bright, indirect sunlight (e.g. near east or north-facing windows). Direct scorching midday sun can burn sensitive foliage."
-                    : "Enjoys ample natural light and partial to full morning sun. Ensure sheltered protection from extreme afternoon heat during peak summer months."}
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {care.light}
                 </p>
               </div>
 
@@ -170,8 +226,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   <FaTint size={15} />
                   <span>Watering Schedule</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  Water thoroughly only when the top 1–2 inches of soil feel dry to touch. Always allow excess water to drain out from the drainage holes. Never let roots sit in standing water.
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {care.wateringSchedule}
                 </p>
               </div>
 
@@ -181,8 +237,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   <FaThermometerHalf size={15} />
                   <span>Temperature & Humidity</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  Prefers a temperature range of 18°C – 30°C. Keep away from extreme drafts, cold AC vents, or hot radiators. Light misting on foliage once or twice a week keeps leaves fresh.
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {care.temperature}
                 </p>
               </div>
 
@@ -192,22 +248,24 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   <FaSeedling size={15} />
                   <span>Soil & Fertilizing</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  Use well-draining, aerated potting soil with vermicompost and coco peat. Feed with organic balanced liquid fertilizer once a month during spring and summer growing seasons.
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {care.soil}
                 </p>
               </div>
             </div>
 
             {/* Pro Tip Callout */}
-            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200/80 flex items-start gap-3">
-              <span className="text-emerald-700 text-lg mt-0.5">💡</span>
-              <div className="text-xs sm:text-sm">
-                <strong className="text-emerald-900 block font-bold mb-0.5">GoGreen Care Tip:</strong>
-                <span className="text-emerald-900/80">
-                  Gently wipe leaves with a soft damp cloth every few weeks to remove dust. Clean leaves absorb light much better and produce richer chlorophyll!
-                </span>
+            {care.tip && (
+              <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200/80 flex items-start gap-3">
+                <span className="text-emerald-700 text-lg mt-0.5">💡</span>
+                <div className="text-xs sm:text-sm">
+                  <strong className="text-emerald-900 block font-bold mb-0.5">GoGreen Care Tip:</strong>
+                  <span className="text-emerald-900/80 whitespace-pre-line">
+                    {care.tip}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -217,12 +275,19 @@ export default function ProductTabs({ product }: ProductTabsProps) {
             <div className="p-4 sm:p-5 bg-amber-50/70 border border-amber-200/80 rounded-2xl">
               <div className="flex items-center gap-2.5 text-amber-900 font-bold text-sm sm:text-base mb-2">
                 <FaExclamationTriangle className="text-amber-600 shrink-0" size={16} />
-                <span>Important Purchase & Product Disclaimers</span>
+                <span>{disclaimer.bannerTitle}</span>
               </div>
-              <p className="text-xs sm:text-sm text-amber-900/80 leading-relaxed">
-                Please review these standard nursery guidelines before placing your order to ensure the best possible experience.
+              <p className="text-xs sm:text-sm text-amber-900/80 leading-relaxed whitespace-pre-line">
+                {disclaimer.bannerText}
               </p>
             </div>
+
+            {disclaimer.general && (
+              <div className="p-4 bg-white rounded-2xl border border-amber-200/80 shadow-xs">
+                <h4 className="text-sm font-bold text-amber-900 mb-1">Additional Notice</h4>
+                <p className="text-xs sm:text-sm text-gray-700 whitespace-pre-line leading-relaxed">{disclaimer.general}</p>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
               {/* Natural Variation */}
@@ -231,8 +296,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   <FaLeaf size={14} className="text-emerald-600" />
                   <span>Living Plant Natural Variations</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  Plants are natural living organisms. Each specimen has its own unique branch structure, foliage count, leaf size, and coloration. Catalog photographs serve as reference representations of healthy mature plants.
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {disclaimer.variations}
                 </p>
               </div>
 
@@ -242,8 +307,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   <FaBoxOpen size={14} className="text-blue-600" />
                   <span>Transit Stress & Acclimatization</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  During courier transit in closed boxes, plants may experience temporary transport shock (slight leaf drooping or 1–2 shed bottom leaves). Place your plant in bright indirect light, water lightly, and allow 3–5 days to fully recover.
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {disclaimer.transit}
                 </p>
               </div>
 
@@ -253,8 +318,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   <FaCheckCircle size={14} className="text-purple-600" />
                   <span>Pot & Planter Specifications</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  The pot provided corresponds to your selected option ({product.potIncluded || "Standard Nursery Pot"}). Decorative ceramic or fiber pots shown in styled lifestyle photos are for staging unless explicitly chosen in product specs.
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {disclaimer.pot}
                 </p>
               </div>
 
@@ -264,10 +329,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   <FaShieldAlt size={14} className="text-emerald-600" />
                   <span>Returns & Replacement Terms</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  {product.returnable
-                    ? "This plant is returnable or replaceable within 14 days if received damaged. Please capture an unboxing video or clear photo upon arrival."
-                    : "Due to the perishable nature of live plants, this product is non-returnable once opened. However, plants severely damaged during transit are 100% eligible for immediate free replacement upon sharing unboxing proof within 48 hours."}
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {disclaimer.returns}
                 </p>
               </div>
             </div>
@@ -275,8 +338,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
             {/* Pet Safety Caution */}
             <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200 text-xs sm:text-sm text-gray-600">
               <strong className="text-gray-900 font-bold block mb-1">🐾 Pet & Household Safety:</strong>
-              <span>
-                Certain ornamental houseplants can cause mild stomach upset if chewed or ingested by curious cats, dogs, or small children. Please research plant toxicity if placing within reach of pets.
+              <span className="whitespace-pre-line">
+                {disclaimer.safety}
               </span>
             </div>
           </div>

@@ -55,6 +55,8 @@ model Product {
   seoTitle        String?
   seoDescription  String?
   seoKeywords     String?
+  careDetails     String?
+  disclaimer      String?
   orderItems      OrderItem[]
   reviews         Review[]
 }
