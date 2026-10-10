@@ -46,9 +46,9 @@ const CategoryBar = () => {
   if (categories.length === 0) return null;
 
   return (
-    <div className="bg-white border-b border-gray-100 sticky top-[81px] z-30 shadow-sm block">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center gap-0.5 py-1 -mx-1 relative">
+    <div className="bg-white border-b border-gray-100 sticky top-[81px] z-30 shadow-xs block w-full">
+      <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16">
+        <div className="flex flex-wrap items-center justify-between sm:justify-evenly gap-1 py-1 relative">
           {categories.map((cat) => {
             const hasSubs = cat.subcategories.length > 0;
             const isHovered = hoveredCat === cat.name;
