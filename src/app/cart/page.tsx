@@ -182,18 +182,13 @@ export default function CartPage() {
             shippingAddress, 
             paymentMethod: "cod",
             couponCode: appliedCoupon || undefined,
-            discount: discount
           }),
         });
         const data = await res.json();
         if (!res.ok) { alert(data.message || "Failed to create order"); setLoading(false); return; }
-        const verifyRes = await fetch("/api/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ razorpay_payment_id: "cod_" + Date.now(), razorpay_order_id: data.id, razorpay_signature: "cod", orderDbId: data.orderDbId, isMock: true }),
-        });
-        if (verifyRes.ok) { clearCart(); alert("Order placed! You will pay ₹" + finalTotal.toFixed(2) + " on delivery (includes shipping and ₹49 COD fee)."); router.push("/orders"); }
-        else alert("Failed to place order. Please try again.");
+        clearCart(); 
+        alert("Order placed! You will pay ₹" + finalTotal.toFixed(2) + " on delivery (includes shipping and ₹49 COD fee)."); 
+        router.push("/orders");
         setLoading(false);
         return;
       }

@@ -1,7 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IProductRepository } from "../interfaces/IProductRepository";
 import { IOrderRepository } from "../interfaces/IOrderRepository";
+import { prisma } from "../lib/prisma";
+import { notifyOrderPlacement } from "../lib/notifications";
 import Razorpay from "razorpay";
+
+export interface CartCheckoutItem {
+  id: string;
+  quantity: number;
+}
 
 export class CheckoutService {
   constructor(
@@ -11,32 +17,79 @@ export class CheckoutService {
 
   async processCheckout(
     userId: string,
-    items: { id: string; quantity: number; price: number; name: string }[],
-    shippingAddress: any,
+    items: CartCheckoutItem[],
+    shippingAddress: string,
     paymentMethod: string,
     couponCode?: string
   ) {
-    if (!items || items.length === 0) {
+    if (!items || !Array.isArray(items) || items.length === 0) {
       throw new Error("Cart is empty");
     }
 
-    if (!shippingAddress) {
-      throw new Error("Shipping address is required");
+    if (items.length > 50) {
+      throw new Error("Too many unique items in cart");
     }
 
-    let totalItemsSubtotal = 0;
-    let totalAmount = 0;
+    if (!shippingAddress || typeof shippingAddress !== "string" || !shippingAddress.trim()) {
+      throw new Error("A valid shipping address is required");
+    }
 
+    const cleanAddress = shippingAddress.trim().slice(0, 1000);
+
+    const cleanMethod = paymentMethod?.toLowerCase()?.trim();
+    if (cleanMethod !== "prepaid" && cleanMethod !== "cod") {
+      throw new Error("Invalid payment method selected");
+    }
+
+    // Validate quantities and collect unique items
+    const sanitizedItems: { id: string; quantity: number }[] = [];
     for (const item of items) {
+      if (!item || typeof item.id !== "string" || !item.id.trim()) {
+        throw new Error("Invalid item in cart");
+      }
+      const qty = Number(item.quantity);
+      if (!Number.isInteger(qty) || qty < 1 || qty > 50) {
+        throw new Error("Quantity must be a positive integer between 1 and 50");
+      }
+      sanitizedItems.push({ id: item.id.trim(), quantity: qty });
+    }
+
+    // Verify products exist, check stock, and calculate authoritative pricing from DB
+    let totalItemsSubtotal = 0;
+    let totalShipping = 0;
+    const verifiedProducts: Array<{
+      id: string;
+      name: string;
+      price: number;
+      stock: number;
+      quantity: number;
+      shippingCharge: number;
+    }> = [];
+
+    for (const item of sanitizedItems) {
       const product = await this.productRepository.findById(item.id);
       if (!product) {
-        throw new Error(`Product "${item.name}" not found`);
+        throw new Error("Product not found");
       }
+
+      if (product.stock < item.quantity) {
+        throw new Error(
+          `Insufficient stock for "${product.name}". Only ${product.stock} available.`
+        );
+      }
+
+      const itemShipping = (product.shippingCharge || 0) * item.quantity;
       totalItemsSubtotal += product.price * item.quantity;
-      totalAmount += product.price * item.quantity;
-      if (product.shippingCharge) {
-        totalAmount += product.shippingCharge * item.quantity;
-      }
+      totalShipping += itemShipping;
+
+      verifiedProducts.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        stock: product.stock,
+        quantity: item.quantity,
+        shippingCharge: itemShipping,
+      });
     }
 
     if (totalItemsSubtotal < 499) {
@@ -44,7 +97,7 @@ export class CheckoutService {
     }
 
     let calculatedDiscount = 0;
-    if (couponCode) {
+    if (couponCode && typeof couponCode === "string") {
       const code = couponCode.trim().toUpperCase();
       if (code === "GOGREEN10") {
         calculatedDiscount = totalItemsSubtotal * 0.10;
@@ -55,23 +108,88 @@ export class CheckoutService {
       }
     }
 
-    totalAmount = Math.max(0, totalAmount - calculatedDiscount);
+    let totalAmount = Math.max(0, totalItemsSubtotal + totalShipping - calculatedDiscount);
 
-    if (paymentMethod === "cod") {
-      totalAmount += 49;
+    if (cleanMethod === "cod") {
+      if (totalItemsSubtotal >= 1000) {
+        throw new Error("Cash on Delivery is only available for orders below ₹1000.");
+      }
+      totalAmount += 49; // Standard COD fee
     }
 
+    // Explicit Cash on Delivery flow: Atomically verify stock, decrement inventory, and create order
+    if (cleanMethod === "cod") {
+      const order = await prisma.$transaction(async (tx) => {
+        // Re-check inventory atomically
+        for (const vp of verifiedProducts) {
+          const current = await tx.product.findUnique({
+            where: { id: vp.id },
+            select: { stock: true, name: true },
+          });
+          if (!current || current.stock < vp.quantity) {
+            throw new Error(`Insufficient stock for "${vp.name}". Please update your cart.`);
+          }
+        }
+
+        // Decrement stock
+        for (const vp of verifiedProducts) {
+          await tx.product.update({
+            where: { id: vp.id },
+            data: { stock: { decrement: vp.quantity } },
+          });
+        }
+
+        // Create COD order
+        const createdOrder = await tx.order.create({
+          data: {
+            userId,
+            totalAmount,
+            discount: calculatedDiscount,
+            status: "PENDING", // PENDING fulfillment, NOT paid
+            shippingAddress: cleanAddress,
+            razorpayOrderId: `cod_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+            items: {
+              create: verifiedProducts.map((p) => ({
+                productId: p.id,
+                quantity: p.quantity,
+                price: p.price, // STRICTLY TRUSTED DATABASE PRICE
+              })),
+            },
+          },
+          include: {
+            user: { select: { name: true, email: true } },
+            items: { include: { product: true } },
+          },
+        });
+
+        return createdOrder;
+      });
+
+      // Send placement notification
+      await notifyOrderPlacement(order);
+
+      return {
+        id: order.razorpayOrderId,
+        orderDbId: order.id,
+        paymentMethod: "cod",
+        totalAmount: order.totalAmount,
+        currency: "INR",
+        success: true,
+      };
+    }
+
+    // Prepaid flow: Create pending order with trusted prices; stock is decremented upon payment verification
     const order = await this.orderRepository.create({
       userId,
       totalAmount,
       discount: calculatedDiscount,
       status: "PENDING",
-      shippingAddress,
+      shippingAddress: cleanAddress,
       items: {
-        create: items.map((item) => ({
-          productId: item.id,
-          quantity: item.quantity,
-          price: item.price,
+        create: verifiedProducts.map((p) => ({
+          productId: p.id,
+          quantity: p.quantity,
+          price: p.price, // STRICTLY TRUSTED DATABASE PRICE
         })),
       },
     });
@@ -79,14 +197,13 @@ export class CheckoutService {
     const keyId = process.env.RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
     const isMock = !keyId || !keySecret || keySecret.startsWith("PASTE_");
+    const isProd = process.env.NODE_ENV === "production";
 
     let razorpayOrderId = "";
-    let amount = Math.round(totalAmount * 100);
-    let currency = "INR";
+    const amount = Math.round(totalAmount * 100);
+    const currency = "INR";
 
-    if (paymentMethod === "cod") {
-      razorpayOrderId = "cod_" + order.id.slice(-8);
-    } else if (!isMock) {
+    if (!isMock) {
       const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
       const razorpayOrder = await razorpay.orders.create({
         amount,
@@ -94,11 +211,11 @@ export class CheckoutService {
         receipt: order.id,
       });
       razorpayOrderId = razorpayOrder.id;
-      amount = Number(razorpayOrder.amount);
-      currency = razorpayOrder.currency;
     } else {
-      console.log("Razorpay credentials not configured. Using Mock payment flow.");
-      razorpayOrderId = "order_mock_" + order.id.slice(-8);
+      if (isProd) {
+        throw new Error("Payment gateway is not properly configured for production.");
+      }
+      razorpayOrderId = `order_mock_${order.id.slice(-8)}`;
     }
 
     await this.orderRepository.update(order.id, { razorpayOrderId });
@@ -109,6 +226,8 @@ export class CheckoutService {
       amount,
       orderDbId: order.id,
       isMock,
+      paymentMethod: "prepaid",
     };
   }
 }
+

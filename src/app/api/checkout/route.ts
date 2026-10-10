@@ -29,10 +29,19 @@ export async function POST(req: Request) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Checkout Error:", error);
+    const errorMsg = error instanceof Error ? error.message : "Something went wrong during checkout.";
+    const isClientError = error instanceof Error && (
+      errorMsg.includes("Cart is empty") ||
+      errorMsg.includes("Invalid") ||
+      errorMsg.includes("Insufficient stock") ||
+      errorMsg.includes("Minimum purchase") ||
+      errorMsg.includes("shipping address") ||
+      errorMsg.includes("Too many") ||
+      errorMsg.includes("Cash on Delivery is only available")
+    );
     return NextResponse.json(
-      { message: error instanceof Error ? error.message : "Something went wrong during checkout." },
-      { status: 500 }
+      { message: errorMsg },
+      { status: isClientError ? 400 : 500 }
     );
   }
 }

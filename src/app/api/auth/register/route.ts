@@ -13,9 +13,42 @@ export async function POST(req: Request) {
       );
     }
 
+    if (typeof email !== "string" || typeof password !== "string" || typeof name !== "string") {
+      return NextResponse.json(
+        { message: "Invalid input types" },
+        { status: 400 }
+      );
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(normalizedEmail)) {
+      return NextResponse.json(
+        { message: "Please provide a valid email address" },
+        { status: 400 }
+      );
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json(
+        { message: "Password must be at least 8 characters long" },
+        { status: 400 }
+      );
+    }
+
+    if (password.length > 128) {
+      return NextResponse.json(
+        { message: "Password exceeds maximum permitted length" },
+        { status: 400 }
+      );
+    }
+
+    const cleanName = name.trim().slice(0, 100);
+    const cleanAddress = address.trim().slice(0, 500);
+
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -28,16 +61,16 @@ export async function POST(req: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user and address
+    // Create user with explicit USER role only
     await prisma.user.create({
       data: {
-        name,
-        email,
+        name: cleanName,
+        email: normalizedEmail,
         password: hashedPassword,
-        role: email === "admin@gogreen.com" ? "ADMIN" : "USER",
+        role: "USER", // STRICTLY USER ROLE FOR ALL PUBLIC REGISTRATIONS
         addresses: {
           create: {
-            address: address.trim(),
+            address: cleanAddress,
           },
         },
       },
@@ -48,7 +81,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Registration error:", error instanceof Error ? error.message : "Internal error");
     return NextResponse.json(
       { message: "An error occurred during registration" },
       { status: 500 }

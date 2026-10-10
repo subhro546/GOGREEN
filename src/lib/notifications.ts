@@ -18,13 +18,27 @@ const smtpFrom = process.env.SMTP_FROM || "GoGreen Nursery <notifications@gogree
 const isTwilioConfigured = !!(accountSid && authToken);
 const isSmtpConfigured = !!(smtpHost && smtpUser && smtpPass);
 
+function maskEmail(email: string): string {
+  if (!email || !email.includes("@")) return "***";
+  const [user, domain] = email.split("@");
+  return `${user.slice(0, 2)}***@${domain}`;
+}
+
+function maskPhone(phone: string): string {
+  if (!phone) return "***";
+  const clean = phone.replace(/\D/g, "");
+  if (clean.length < 4) return "***";
+  return `***${clean.slice(-4)}`;
+}
+
 /**
- * Sends an email using SMTP. Falls back to console log if SMTP is not configured.
+ * Sends an email using SMTP. Falls back to safe log in development if SMTP is not configured.
  */
 export async function sendEmail(to: string, subject: string, text: string, html?: string) {
   if (!isSmtpConfigured) {
-    console.log(`[MOCK EMAIL] To: ${to} | Subject: ${subject}`);
-    console.log(`[MOCK EMAIL CONTENT]\n${text}\n-------------------`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`[DEV NOTIFICATION] Mock Email queued for: ${maskEmail(to)} | Subject: ${subject}`);
+    }
     return;
   }
 
@@ -46,18 +60,20 @@ export async function sendEmail(to: string, subject: string, text: string, html?
       text,
       html: html || text.replace(/\n/g, "<br>"),
     });
-    console.log(`Email successfully sent to ${to}`);
+    console.log(`Email successfully sent to ${maskEmail(to)}`);
   } catch (error) {
-    console.error("Email sending error:", error);
+    console.error("Email sending error:", error instanceof Error ? error.message : "Error");
   }
 }
 
 /**
- * Sends an SMS message via Twilio. Falls back to console log if not configured.
+ * Sends an SMS message via Twilio. Falls back to safe log in development if not configured.
  */
 export async function sendSms(to: string, message: string) {
   if (!isTwilioConfigured || !fromSmsNumber) {
-    console.log(`[MOCK SMS] To: ${to} | Message: ${message}`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`[DEV NOTIFICATION] Mock SMS queued for: ${maskPhone(to)}`);
+    }
     return;
   }
 
@@ -82,21 +98,23 @@ export async function sendSms(to: string, message: string) {
       const errData = await res.json();
       throw new Error(errData.message || "Failed to send Twilio SMS");
     }
-    console.log(`SMS successfully sent to ${to}`);
+    console.log(`SMS successfully sent to ${maskPhone(to)}`);
   } catch (error) {
-    console.error("SMS sending error:", error);
+    console.error("SMS sending error:", error instanceof Error ? error.message : "Error");
   }
 }
 
 /**
- * Sends a WhatsApp message via Twilio WhatsApp API. Falls back to console log if not configured.
+ * Sends a WhatsApp message via Twilio WhatsApp API. Falls back to safe log in development if not configured.
  */
 export async function sendWhatsApp(to: string, message: string) {
   const formattedTo = to.startsWith("whatsapp:") ? to : `whatsapp:${to}`;
   const formattedFrom = fromWhatsAppNumber.startsWith("whatsapp:") ? fromWhatsAppNumber : `whatsapp:${fromWhatsAppNumber}`;
 
   if (!isTwilioConfigured || !fromWhatsAppNumber) {
-    console.log(`[MOCK WHATSAPP] To: ${formattedTo} | Message: ${message}`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`[DEV NOTIFICATION] Mock WhatsApp queued for: ${maskPhone(formattedTo)}`);
+    }
     return;
   }
 
@@ -121,9 +139,9 @@ export async function sendWhatsApp(to: string, message: string) {
       const errData = await res.json();
       throw new Error(errData.message || "Failed to send Twilio WhatsApp");
     }
-    console.log(`WhatsApp successfully sent to ${formattedTo}`);
+    console.log(`WhatsApp successfully sent to ${maskPhone(formattedTo)}`);
   } catch (error) {
-    console.error("WhatsApp sending error:", error);
+    console.error("WhatsApp sending error:", error instanceof Error ? error.message : "Error");
   }
 }
 
