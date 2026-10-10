@@ -100,14 +100,14 @@ export default function FeaturedProductsSlider({ products }: { products: Product
       <div className="w-full relative group">
         {/* Left edge blur overlay */}
         <div
-          className={`absolute left-0 top-0 bottom-6 w-8 sm:w-16 md:w-24 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[#0b130e] dark:via-[#0b130e]/80 dark:to-transparent backdrop-blur-[2px] pointer-events-none z-10 transition-opacity duration-300 ${
+          className={`absolute left-0 top-0 bottom-6 w-5 sm:w-16 md:w-24 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[#0b130e] dark:via-[#0b130e]/80 dark:to-transparent backdrop-blur-[2px] pointer-events-none z-10 transition-opacity duration-300 ${
             canScrollLeft ? 'opacity-100' : 'opacity-0'
           }`}
         />
 
         {/* Right edge blur overlay */}
         <div
-          className={`absolute right-0 top-0 bottom-6 w-8 sm:w-16 md:w-24 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-[#0b130e] dark:via-[#0b130e]/80 dark:to-transparent backdrop-blur-[2px] pointer-events-none z-10 transition-opacity duration-300 ${
+          className={`absolute right-0 top-0 bottom-6 w-5 sm:w-16 md:w-24 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-[#0b130e] dark:via-[#0b130e]/80 dark:to-transparent backdrop-blur-[2px] pointer-events-none z-10 transition-opacity duration-300 ${
             canScrollRight ? 'opacity-100' : 'opacity-0'
           }`}
         />
@@ -116,13 +116,13 @@ export default function FeaturedProductsSlider({ products }: { products: Product
         <div
           ref={scrollRef}
           onScroll={checkScroll}
-          className="w-full flex flex-nowrap overflow-x-auto gap-4 sm:gap-6 px-6 sm:px-14 md:px-20 lg:px-28 pb-6 pt-2 snap-x snap-mandatory scroll-smooth scrollbar-hide"
+          className="w-full flex flex-nowrap overflow-x-auto gap-2.5 sm:gap-5 md:gap-6 px-4 sm:px-10 md:px-16 lg:px-24 pb-6 pt-2 snap-x snap-mandatory scroll-smooth scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {products.map((product) => (
             <div
               key={product.id}
-              className="w-[260px] sm:w-[280px] md:w-[310px] shrink-0 snap-start transition-transform hover:-translate-y-1 duration-300"
+              className="w-[36vw] min-w-[125px] max-w-[155px] sm:w-[260px] md:w-[300px] shrink-0 snap-start transition-transform hover:-translate-y-1 duration-300"
             >
               <ProductCard
                 id={product.id}
@@ -144,7 +144,7 @@ export default function FeaturedProductsSlider({ products }: { products: Product
       </div>
 
       {/* ── BOTTOM CTA BANNER ── */}
-      <div className="w-full px-6 sm:px-14 md:px-20 lg:px-28 mt-6">
+      <div className="w-full px-4 sm:px-10 md:px-16 lg:px-24 mt-6">
         <div
           className="rounded-3xl overflow-hidden relative shadow-lg"
           style={{ background: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 50%, #f9a825 100%)' }}
