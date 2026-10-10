@@ -186,58 +186,71 @@ const Navbar = () => {
     <nav className="bg-white dark:bg-[#0b130e] w-full z-40 border-b border-gray-100 dark:border-gray-800 sticky top-0 shadow-sm transition-colors duration-300">
       {/* Colourful top accent strip */}
       <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #2e7d32, #66bb6a, #f9a825, #f97316, #f43f5e)' }} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="flex justify-between items-center h-20 gap-4">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
+          <div className="flex-shrink-0 flex items-center mr-2 sm:mr-6 lg:mr-8 xl:mr-12">
             <Link href="/" className="text-lg sm:text-2xl font-serif font-bold text-brand-dark dark:text-brand-light flex items-center gap-1.5 sm:gap-2">
               <img src="/logo.png" alt="GoGreen Nursery Logo" className="h-8 w-8 sm:h-10 sm:w-10 object-contain" />
-              <span>GoGreen<span className="hidden min-[380px]:inline"> Nursery</span></span>
+              <span className="whitespace-nowrap">GoGreen<span className="hidden min-[380px]:inline"> Nursery</span></span>
             </Link>
           </div>
 
           {/* Navigation Menu (Desktop Only) */}
-          <div className="hidden lg:flex space-x-8 items-center">
-            <Link href="/" className="text-sm text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light font-medium transition-colors">HOME</Link>
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8 shrink-0">
+            <Link 
+              href="/" 
+              className="text-xs xl:text-sm uppercase tracking-wider font-semibold text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light transition-colors whitespace-nowrap"
+            >
+              HOME
+            </Link>
             
             {/* Categories Drilldown Trigger */}
             <div className="relative" ref={desktopTriggerRef}>
               <button
                 onMouseEnter={() => setIsDesktopMenuOpen(true)}
                 onClick={() => setIsDesktopMenuOpen(!isDesktopMenuOpen)}
-                className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                className={`text-xs xl:text-sm uppercase tracking-wider font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap ${
                   isDesktopMenuOpen ? 'text-brand-dark dark:text-brand-light' : 'text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light'
                 }`}
               >
-                PRODUCTS
+                <span>PRODUCTS</span>
                 <FaChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${isDesktopMenuOpen ? 'rotate-180' : ''}`} />
               </button>
             </div>
-            <Link href="/wishlist" className="text-sm text-text-dark dark:text-gray-200 hover:text-red-500 dark:hover:text-red-400 font-medium transition-colors flex items-center gap-1.5">
-              <span>WISHLIST</span>
-              {mounted && totalWishlistItems > 0 && (
-                <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">
-                  {totalWishlistItems}
-                </span>
-              )}
+
+            <Link 
+              href="/more" 
+              className="text-xs xl:text-sm uppercase tracking-wider font-semibold text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light transition-colors whitespace-nowrap"
+            >
+              SERVICES
             </Link>
-            <Link href="/more" className="text-sm text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light font-medium transition-colors">SERVICES</Link>
-            <Link href="/about" className="text-sm text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light font-medium transition-colors">ABOUT US</Link>
-            <Link href="/more" className="text-sm text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light font-medium transition-colors">MORE</Link>
+            <Link 
+              href="/about" 
+              className="text-xs xl:text-sm uppercase tracking-wider font-semibold text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light transition-colors whitespace-nowrap"
+            >
+              ABOUT US
+            </Link>
+            <Link 
+              href="/more" 
+              className="text-xs xl:text-sm uppercase tracking-wider font-semibold text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light transition-colors whitespace-nowrap"
+            >
+              MORE
+            </Link>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center space-x-1.5 sm:space-x-4">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto lg:ml-6">
             {/* Search Bar (Desktop Only) */}
             <div ref={searchContainerRef} className="relative hidden lg:block">
               <form onSubmit={handleSearchSubmit}>
                 <input 
                   type="text" 
-                  placeholder="Search..." 
+                  placeholder="Search plants, pots..." 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setShowSuggestions(true)}
-                  className="pl-4 pr-10 py-2 border border-gray-200 dark:border-gray-700 rounded-full focus:outline-none focus:border-brand-topbar text-sm w-48 md:w-64 lg:w-72 focus:w-64 md:focus:w-80 lg:focus:w-96 bg-white dark:bg-[#121c16] text-text-dark dark:text-white transition-all duration-300 shadow-sm"
+                  className="pl-4 pr-10 py-2 border border-gray-200 dark:border-gray-700 rounded-full focus:outline-none focus:border-brand-topbar text-xs xl:text-sm w-36 md:w-44 lg:w-52 xl:w-64 focus:w-48 md:focus:w-56 lg:focus:w-64 xl:focus:w-80 bg-white dark:bg-[#121c16] text-text-dark dark:text-white transition-all duration-300 shadow-sm"
                 />
                 <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-dark dark:hover:text-brand-light" aria-label="Submit search">
                   <FaSearch className="w-3.5 h-3.5" />
@@ -247,20 +260,30 @@ const Navbar = () => {
             </div>
             
             {/* Wishlist Icon */}
-            <Link href="/wishlist" className="p-2 text-text-dark dark:text-gray-200 hover:text-red-500 dark:hover:text-red-400 transition-colors relative group" aria-label="Wishlist">
-              <FaHeart className="w-5 h-5 transition-transform group-hover:scale-110" />
+            <Link 
+              href="/wishlist" 
+              className="w-10 h-10 rounded-full flex items-center justify-center text-text-dark dark:text-gray-200 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50/70 dark:hover:bg-red-950/30 transition-all relative group" 
+              title="My Wishlist"
+              aria-label="Wishlist"
+            >
+              <FaHeart className="w-[18px] h-[18px] transition-transform group-hover:scale-110" />
               {mounted && totalWishlistItems > 0 && (
-                <span className="absolute top-0 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">
+                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center px-1 rounded-full border-2 border-white dark:border-[#0b130e] group-hover:scale-110 transition-transform shadow-sm">
                   {totalWishlistItems}
                 </span>
               )}
             </Link>
 
             {/* Cart Icon */}
-            <Link href="/cart" className="p-2 text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light transition-colors relative group" aria-label="Cart">
-              <FaShoppingCart className="w-5 h-5" />
+            <Link 
+              href="/cart" 
+              className="w-10 h-10 rounded-full flex items-center justify-center text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light hover:bg-emerald-50/70 dark:hover:bg-emerald-950/30 transition-all relative group" 
+              title="Shopping Cart"
+              aria-label="Cart"
+            >
+              <FaShoppingCart className="w-[18px] h-[18px] transition-transform group-hover:scale-110" />
               {mounted && totalItems > 0 && (
-                <span className="absolute top-0 -right-1 bg-brand-dark text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">
+                <span className="absolute -top-0.5 -right-0.5 bg-brand-dark text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center px-1 rounded-full border-2 border-white dark:border-[#0b130e] group-hover:scale-110 transition-transform shadow-sm">
                   {totalItems}
                 </span>
               )}
@@ -270,8 +293,9 @@ const Navbar = () => {
             {mounted && (
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-full text-text-dark hover:text-brand-dark transition-all duration-300 active:scale-95 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-text-dark hover:text-brand-dark transition-all duration-300 active:scale-95 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
                 title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+                aria-label="Toggle theme"
               >
                 {theme === "light" ? (
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
