@@ -41,17 +41,17 @@ export default function FeaturedProductsSlider({ products }: { products: Product
   };
 
   return (
-    <section className="w-full pt-8 pb-14 bg-white overflow-hidden relative">
+    <section className="w-full pt-8 pb-14 bg-white dark:bg-[#0b130e] overflow-hidden relative">
       {/* ── HEADER WITH GENEROUS SIDE PADDING ── */}
       <div className="w-full px-6 sm:px-14 md:px-20 lg:px-28 flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-4">
         <div>
-          <span className="inline-block bg-emerald-50 text-emerald-800 text-xs font-bold px-3.5 py-1 rounded-full mb-2 border border-emerald-200 uppercase tracking-wider">
+          <span className="inline-block bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-xs font-bold px-3.5 py-1 rounded-full mb-2 border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider">
             🌿 Top Picks
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gray-900 italic tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white italic tracking-tight">
             Featured Plants
           </h2>
-          <p className="mt-1 text-sm sm:text-base text-gray-500 max-w-xl">
+          <p className="mt-1 text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-xl">
             Our most loved nursery favorites, hand-picked and ready to thrive.
           </p>
         </div>
@@ -65,8 +65,8 @@ export default function FeaturedProductsSlider({ products }: { products: Product
               disabled={!canScrollLeft}
               className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all ${
                 canScrollLeft
-                  ? 'border-gray-300 text-gray-700 hover:bg-gray-100 hover:scale-105 active:scale-95 shadow-sm'
-                  : 'border-gray-200 text-gray-300 cursor-not-allowed opacity-50'
+                  ? 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-105 active:scale-95 shadow-sm dark:shadow-black/50'
+                  : 'border-gray-200 dark:border-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50'
               }`}
               aria-label="Slide left"
             >
@@ -77,8 +77,8 @@ export default function FeaturedProductsSlider({ products }: { products: Product
               disabled={!canScrollRight}
               className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all ${
                 canScrollRight
-                  ? 'border-gray-300 text-gray-700 hover:bg-gray-100 hover:scale-105 active:scale-95 shadow-sm'
-                  : 'border-gray-200 text-gray-300 cursor-not-allowed opacity-50'
+                  ? 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-105 active:scale-95 shadow-sm dark:shadow-black/50'
+                  : 'border-gray-200 dark:border-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50'
               }`}
               aria-label="Slide right"
             >
@@ -100,14 +100,14 @@ export default function FeaturedProductsSlider({ products }: { products: Product
       <div className="w-full relative group">
         {/* Left edge blur overlay */}
         <div
-          className={`absolute left-0 top-0 bottom-6 w-8 sm:w-16 md:w-24 bg-gradient-to-r from-white via-white/80 to-transparent backdrop-blur-[2px] pointer-events-none z-10 transition-opacity duration-300 ${
+          className={`absolute left-0 top-0 bottom-6 w-8 sm:w-16 md:w-24 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[#0b130e] dark:via-[#0b130e]/80 dark:to-transparent backdrop-blur-[2px] pointer-events-none z-10 transition-opacity duration-300 ${
             canScrollLeft ? 'opacity-100' : 'opacity-0'
           }`}
         />
 
         {/* Right edge blur overlay */}
         <div
-          className={`absolute right-0 top-0 bottom-6 w-8 sm:w-16 md:w-24 bg-gradient-to-l from-white via-white/80 to-transparent backdrop-blur-[2px] pointer-events-none z-10 transition-opacity duration-300 ${
+          className={`absolute right-0 top-0 bottom-6 w-8 sm:w-16 md:w-24 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-[#0b130e] dark:via-[#0b130e]/80 dark:to-transparent backdrop-blur-[2px] pointer-events-none z-10 transition-opacity duration-300 ${
             canScrollRight ? 'opacity-100' : 'opacity-0'
           }`}
         />

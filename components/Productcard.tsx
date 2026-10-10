@@ -60,9 +60,9 @@ const ProductCard = ({
 
       {/* ── MOBILE ROW (When not in slider) ── */}
       {!isSlider && (
-        <div className="flex sm:hidden bg-white rounded-2xl overflow-hidden border border-brand/5 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="flex sm:hidden bg-white dark:bg-[#121c16] rounded-2xl overflow-hidden border border-brand/5 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-300">
           {/* Image */}
-          <div className="relative w-32 shrink-0 bg-brand-hero overflow-hidden">
+          <div className="relative w-32 shrink-0 bg-brand-hero dark:bg-[#0b130e] overflow-hidden">
             {isNew && (
               <span className="absolute top-2 left-2 bg-brand-topbar text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
                 NEW
@@ -152,9 +152,9 @@ const ProductCard = ({
 
       {/* ── MOBILE SLIDER CARD (When in slider) ── */}
       {isSlider && (
-        <div className="flex sm:hidden flex-col bg-white rounded-2xl overflow-hidden border border-brand/5 h-full">
+        <div className="flex sm:hidden flex-col bg-white dark:bg-[#121c16] rounded-2xl overflow-hidden border border-brand/5 dark:border-white/5 h-full">
           {/* Image */}
-          <div className="relative aspect-[4/5] bg-brand-hero overflow-hidden flex items-center justify-center">
+          <div className="relative aspect-[4/5] bg-brand-hero dark:bg-[#0b130e] overflow-hidden flex items-center justify-center">
             {isNew && (
               <div className="absolute top-2 left-2 bg-brand-topbar text-white text-[9px] font-bold px-2 py-0.5 rounded-full z-10">
                 NEW
@@ -213,8 +213,8 @@ const ProductCard = ({
       )}
 
       {/* ── DESKTOP: Vertical card ── */}
-      <div className="hidden sm:flex flex-col bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-brand/5 h-full">
-        <div className="relative aspect-[4/5] bg-brand-hero overflow-hidden flex items-center justify-center">
+      <div className="hidden sm:flex flex-col bg-white dark:bg-[#121c16] rounded-2xl overflow-hidden hover:shadow-xl dark:hover:shadow-black/70 transition-all duration-300 border border-brand/5 dark:border-white/5 h-full">
+        <div className="relative aspect-[4/5] bg-brand-hero dark:bg-[#0b130e] overflow-hidden flex items-center justify-center">
           {isNew && (
             <div className="absolute top-4 left-4 bg-brand-topbar text-white text-xs font-bold px-3 py-1 rounded-full z-10">
               NEW
@@ -222,7 +222,7 @@ const ProductCard = ({
           )}
           <button
             onClick={handleAddToCart}
-            className="absolute top-4 right-4 p-2 bg-white/50 backdrop-blur-md rounded-full text-foreground/50 hover:text-red-500 hover:bg-white transition-all z-10 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+            className="absolute top-4 right-4 p-2 bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-full text-foreground/50 dark:text-white/60 hover:text-red-500 dark:hover:text-red-400 hover:bg-white dark:hover:bg-black/80 transition-all z-10 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
@@ -272,17 +272,17 @@ const ProductCard = ({
           {(sku || weight || (potIncluded && potIncluded !== "None")) && (
             <div className="flex flex-wrap gap-1.5 mb-2 mt-1">
               {sku && (
-                <span className="text-[10px] font-mono bg-brand-hero text-text-dark/60 px-2 py-0.5 rounded-full border border-brand/5">
+                <span className="text-[10px] font-mono bg-brand-hero dark:bg-white/5 text-text-dark/60 dark:text-gray-300 px-2 py-0.5 rounded-full border border-brand/5 dark:border-white/5">
                   SKU: {sku}
                 </span>
               )}
               {weight && (
-                <span className="text-[10px] bg-brand-hero text-brand-secondary px-2 py-0.5 rounded-full font-semibold border border-brand/5">
+                <span className="text-[10px] bg-brand-hero dark:bg-emerald-950/60 text-brand-secondary dark:text-emerald-400 px-2 py-0.5 rounded-full font-semibold border border-brand/5 dark:border-emerald-800/40">
                   ⚖️ {weight} kg
                 </span>
               )}
               {potIncluded && potIncluded !== "None" && (
-                <span className="text-[10px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-semibold border border-green-100/50">
+                <span className="text-[10px] bg-green-50 dark:bg-green-950/60 text-green-700 dark:text-green-300 px-2 py-0.5 rounded-full font-semibold border border-green-100/50 dark:border-green-800/40">
                   🪴 {potIncluded}
                 </span>
               )}

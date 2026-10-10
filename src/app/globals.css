@@ -145,9 +145,48 @@ html.dark textarea {
 }
 
 /* Card Shadows */
+html.dark .shadow-xs,
 html.dark .shadow-sm,
+html.dark .shadow,
 html.dark .shadow-md,
 html.dark .shadow-lg,
-html.dark .shadow-xl {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5) !important;
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.8), 0 2px 6px -1px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Dark Mode Gradient Fallbacks for White Blurs and Stage Overlays */
+html.dark .from-white {
+  --tw-gradient-from: #0b130e var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(11, 19, 14, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+html.dark .via-white {
+  --tw-gradient-to: rgba(11, 19, 14, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #0b130e var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+html.dark .via-white\/80 {
+  --tw-gradient-to: rgba(11, 19, 14, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), rgba(11, 19, 14, 0.8) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+html.dark .via-white\/85 {
+  --tw-gradient-to: rgba(11, 19, 14, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), rgba(11, 19, 14, 0.85) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+html.dark .via-white\/70 {
+  --tw-gradient-to: rgba(11, 19, 14, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), rgba(11, 19, 14, 0.7) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+html.dark .via-white\/30 {
+  --tw-gradient-to: rgba(11, 19, 14, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), rgba(11, 19, 14, 0.3) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+html.dark .to-white {
+  --tw-gradient-to: #0b130e var(--tw-gradient-to-position) !important;
 }

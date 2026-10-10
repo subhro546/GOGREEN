@@ -77,8 +77,8 @@ const BannerCarousel = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-[260px] sm:h-[380px] md:h-[460px] bg-brand-hero/40 flex items-center justify-center">
-        <span className="text-text-dark/40 animate-pulse text-sm font-medium">Loading showcase...</span>
+      <div className="w-full h-[260px] sm:h-[380px] md:h-[460px] bg-brand-hero/40 dark:bg-[#121c16] flex items-center justify-center">
+        <span className="text-text-dark/40 dark:text-gray-400 animate-pulse text-sm font-medium">Loading showcase...</span>
       </div>
     );
   }
@@ -104,7 +104,7 @@ const BannerCarousel = () => {
 
   return (
     <section
-      className="w-full pt-6 pb-8 sm:pt-10 sm:pb-12 bg-gradient-to-b from-brand-hero/20 via-white to-transparent overflow-hidden"
+      className="w-full pt-6 pb-8 sm:pt-10 sm:pb-12 bg-gradient-to-b from-brand-hero/20 via-white to-transparent dark:from-[#0b130e]/40 dark:via-[#0b130e] dark:to-transparent overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={handleTouchStart}
@@ -203,13 +203,13 @@ const BannerCarousel = () => {
 
         {/* ── STAGE EDGE BLUR OVERLAYS ── */}
         {/* These wide gradient bands make it obvious the carousel is scrollable */}
-        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-r from-white via-white/85 to-transparent pointer-events-none z-25" style={{ backdropFilter: 'blur(3px)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-white via-white/85 to-transparent pointer-events-none z-25" style={{ backdropFilter: 'blur(3px)' }} />
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-r from-white via-white/85 to-transparent dark:from-[#0b130e] dark:via-[#0b130e]/85 dark:to-transparent pointer-events-none z-25" style={{ backdropFilter: 'blur(3px)' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-white via-white/85 to-transparent dark:from-[#0b130e] dark:via-[#0b130e]/85 dark:to-transparent pointer-events-none z-25" style={{ backdropFilter: 'blur(3px)' }} />
 
         {/* ── FLOATING NAVIGATION CHEVRONS ── */}
         <button
           onClick={prev}
-          className="absolute left-3 sm:left-6 md:left-10 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-30 backdrop-blur-md border border-white/60"
+          className="absolute left-3 sm:left-6 md:left-10 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 bg-white/90 hover:bg-white text-gray-800 dark:bg-black/75 dark:hover:bg-black/95 dark:text-gray-100 rounded-full shadow-xl dark:shadow-black/80 flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-30 backdrop-blur-md border border-white/60 dark:border-white/10"
           aria-label="Previous slide"
         >
           <FaChevronLeft size={16} />
@@ -217,7 +217,7 @@ const BannerCarousel = () => {
 
         <button
           onClick={next}
-          className="absolute right-3 sm:right-6 md:right-10 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-30 backdrop-blur-md border border-white/60"
+          className="absolute right-3 sm:right-6 md:right-10 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 bg-white/90 hover:bg-white text-gray-800 dark:bg-black/75 dark:hover:bg-black/95 dark:text-gray-100 rounded-full shadow-xl dark:shadow-black/80 flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-30 backdrop-blur-md border border-white/60 dark:border-white/10"
           aria-label="Next slide"
         >
           <FaChevronRight size={16} />
@@ -233,7 +233,7 @@ const BannerCarousel = () => {
             className={`h-2 rounded-full transition-all duration-300 ${
               idx === current
                 ? 'bg-brand-secondary w-7'
-                : 'bg-gray-300 w-2 hover:bg-gray-400'
+                : 'bg-gray-300 dark:bg-gray-700 w-2 hover:bg-gray-400 dark:hover:bg-gray-600'
             }`}
             aria-label={`Go to slide ${idx + 1}`}
           />
