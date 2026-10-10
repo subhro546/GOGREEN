@@ -16,7 +16,11 @@ export default function ShopSidebar({
   activeSubcategory,
 }: ShopSidebarProps) {
   // Auto-expand the active category
-  const [expandedCat, setExpandedCat] = useState<string | null>(activeCategory);
+  const [expandedCat, setExpandedCat] = useState<string | null>(
+    activeCategory
+      ? categoryTree.find(c => c.name.toLowerCase().trim() === activeCategory.toLowerCase().trim())?.name || activeCategory
+      : null
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleExpand = (catName: string) => {
@@ -54,7 +58,10 @@ export default function ShopSidebar({
           </li>
 
           {categoryTree.map((cat) => {
-            const isActive = activeCategory === cat.name && !activeSubcategory;
+            const isCatMatch = activeCategory
+              ? cat.name.toLowerCase().trim() === activeCategory.toLowerCase().trim()
+              : false;
+            const isActive = isCatMatch && !activeSubcategory;
             const isExpanded = expandedCat === cat.name;
             const hasSubcats = cat.subcategories.length > 0;
 
@@ -64,7 +71,7 @@ export default function ShopSidebar({
                   <button
                     onClick={() => toggleExpand(cat.name)}
                     className={`flex-1 flex justify-between items-center text-left text-sm px-3 py-2 rounded-lg transition-colors ${
-                      isActive || activeCategory === cat.name
+                      isActive || isCatMatch
                         ? "font-bold text-brand-topbar bg-brand-hero"
                         : "text-text-dark/70 hover:text-brand-topbar hover:bg-brand-hero/40"
                     }`}
@@ -100,7 +107,9 @@ export default function ShopSidebar({
                     </li>
                     {cat.subcategories.map((sub) => {
                       const isSubActive =
-                        activeCategory === cat.name && activeSubcategory === sub;
+                        isCatMatch &&
+                        activeSubcategory &&
+                        sub.toLowerCase().trim() === activeSubcategory.toLowerCase().trim();
                       return (
                         <li key={sub}>
                           <Link

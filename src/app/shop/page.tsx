@@ -20,10 +20,54 @@ export default async function ShopPage({
   const sort = resolvedParams.sort || "newest";
   const stockOnly = resolvedParams.stock === "true";
   
-  // Build query where filter
+  // Build category → subcategory tree for sidebar
+  const allProducts = await prisma.product.findMany({
+    select: { category: true, subcategory: true },
+    distinct: ["category", "subcategory"],
+    orderBy: [{ category: "asc" }, { subcategory: "asc" }],
+  });
+
+  const categoryTree: { name: string; subcategories: string[] }[] = [];
+  const catMap = new Map<string, string[]>();
+  for (const p of allProducts) {
+    if (!catMap.has(p.category)) catMap.set(p.category, []);
+    if (p.subcategory && p.subcategory.trim() !== "") {
+      const subs = catMap.get(p.category)!;
+      if (!subs.includes(p.subcategory)) subs.push(p.subcategory);
+    }
+  }
+  for (const [catName, subs] of catMap) {
+    categoryTree.push({ name: catName, subcategories: subs.sort() });
+  }
+  categoryTree.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Resolve canonical matching names for display and exact highlighting
+  const canonicalCategory = category && category.trim()
+    ? categoryTree.find(
+        (c) => c.name.toLowerCase().trim() === category.toLowerCase().trim()
+      )?.name || category.trim()
+    : null;
+
+  const canonicalSubcategory = subcategory && subcategory.trim()
+    ? categoryTree
+        .flatMap((c) => c.subcategories)
+        .find((s) => s.toLowerCase().trim() === subcategory.toLowerCase().trim()) || subcategory.trim()
+    : null;
+
+  // Build query where filter with case-insensitive and whitespace-tolerant matching
   const where: Prisma.ProductWhereInput = {};
-  if (category) where.category = category;
-  if (subcategory) where.subcategory = subcategory;
+  if (category && category.trim()) {
+    where.category = {
+      equals: category.trim(),
+      mode: "insensitive"
+    };
+  }
+  if (subcategory && subcategory.trim()) {
+    where.subcategory = {
+      equals: subcategory.trim(),
+      mode: "insensitive"
+    };
+  }
   if (search) {
     where.OR = [
       { name: { contains: search, mode: "insensitive" } },
@@ -49,26 +93,11 @@ export default async function ShopPage({
     orderBy,
   });
 
-  // Build category → subcategory tree for sidebar
-  const allProducts = await prisma.product.findMany({
-    select: { category: true, subcategory: true },
-    distinct: ["category", "subcategory"],
-    orderBy: [{ category: "asc" }, { subcategory: "asc" }],
-  });
-
-  const categoryTree: { name: string; subcategories: string[] }[] = [];
-  const catMap = new Map<string, string[]>();
-  for (const p of allProducts) {
-    if (!catMap.has(p.category)) catMap.set(p.category, []);
-    if (p.subcategory && p.subcategory.trim() !== "") {
-      const subs = catMap.get(p.category)!;
-      if (!subs.includes(p.subcategory)) subs.push(p.subcategory);
-    }
-  }
-  for (const [catName, subs] of catMap) {
-    categoryTree.push({ name: catName, subcategories: subs.sort() });
-  }
-  categoryTree.sort((a, b) => a.name.localeCompare(b.name));
+  const displayTitle = canonicalSubcategory 
+    ? canonicalSubcategory 
+    : canonicalCategory 
+      ? canonicalCategory 
+      : 'Our Plants';
 
   return (
     <>
@@ -79,13 +108,13 @@ export default async function ShopPage({
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 border-b border-brand/10 pb-8">
             <div>
               <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary italic mb-4">
-                {subcategory ? subcategory : category ? category : 'Our Plants'}
+                {displayTitle}
               </h1>
               <p className="text-text-dark max-w-2xl">
-                {subcategory
-                  ? `Showing all ${subcategory} plants${category ? ` in ${category}` : ''}.`
-                  : category
-                    ? `Browse all plants in the ${category} category.`
+                {canonicalSubcategory
+                  ? `Showing all ${canonicalSubcategory} plants${canonicalCategory ? ` in ${canonicalCategory}` : ''}.`
+                  : canonicalCategory
+                    ? `Browse all plants in the ${canonicalCategory} category.`
                     : 'Browse our entire collection of healthy, beautiful plants carefully curated for your home and office.'}
               </p>
             </div>
@@ -97,8 +126,8 @@ export default async function ShopPage({
           <div className="flex flex-col md:flex-row gap-8">
             <ShopSidebar
               categoryTree={categoryTree}
-              activeCategory={category || null}
-              activeSubcategory={subcategory || null}
+              activeCategory={canonicalCategory}
+              activeSubcategory={canonicalSubcategory}
             />
 
             {/* Product Grid */}

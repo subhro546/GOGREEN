@@ -18,7 +18,7 @@ const DEFAULT_PROMOS = [
     title: 'Miniature Garden - Upto 30% Off',
     subtitle: 'Enjoy a living garden even in tiny spaces.',
     image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=800&q=80',
-    link: '/shop?category=Indoor%20Plants',
+    link: '/shop?category=Indoor%20plants',
     bgColor: 'bg-white/20',
     titleColor: 'text-[#1c5c2d]',
     colSpan: 'lg:col-span-1',

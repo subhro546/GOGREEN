@@ -30,7 +30,7 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-semibold mb-4 text-lg">Shop</h3>
             <ul className="space-y-3">
-              <li><Link href="/shop?category=Indoor%20Plant" className="text-brand-light/80 hover:text-white transition-colors text-sm">Indoor Plants</Link></li>
+              <li><Link href="/shop?category=Indoor%20plants" className="text-brand-light/80 hover:text-white transition-colors text-sm">Indoor Plants</Link></li>
               <li><Link href="/shop?category=Low%20Maintenance" className="text-brand-light/80 hover:text-white transition-colors text-sm">Low Maintenance</Link></li>
               <li><Link href="/shop?category=Air%20Purifying" className="text-brand-light/80 hover:text-white transition-colors text-sm">Air Purifying</Link></li>
               <li><Link href="/shop" className="text-brand-light/80 hover:text-white transition-colors text-sm">All Plants</Link></li>
