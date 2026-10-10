@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '../src/context/CartContext';
+import { useWishlist } from '../src/context/WishlistContext';
 import { useTheme } from '../src/context/ThemeContext';
 import { useEffect, useState, useRef } from 'react';
-import { FaSearch, FaShoppingCart, FaBars, FaTimes, FaUser, FaSignOutAlt, FaPhoneAlt, FaEnvelope, FaWhatsapp, FaChevronDown, FaChevronRight } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart, FaHeart, FaBars, FaTimes, FaUser, FaSignOutAlt, FaPhoneAlt, FaEnvelope, FaWhatsapp, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import { useSession, signOut } from 'next-auth/react';
 
 interface MenuCategory {
@@ -17,6 +18,7 @@ interface MenuCategory {
 
 const Navbar = () => {
   const { totalItems } = useCart();
+  const { totalItems: totalWishlistItems } = useWishlist();
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -211,6 +213,14 @@ const Navbar = () => {
                 <FaChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${isDesktopMenuOpen ? 'rotate-180' : ''}`} />
               </button>
             </div>
+            <Link href="/wishlist" className="text-sm text-text-dark dark:text-gray-200 hover:text-red-500 dark:hover:text-red-400 font-medium transition-colors flex items-center gap-1.5">
+              <span>WISHLIST</span>
+              {mounted && totalWishlistItems > 0 && (
+                <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+                  {totalWishlistItems}
+                </span>
+              )}
+            </Link>
             <Link href="/more" className="text-sm text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light font-medium transition-colors">SERVICES</Link>
             <Link href="/about" className="text-sm text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light font-medium transition-colors">ABOUT US</Link>
             <Link href="/more" className="text-sm text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light font-medium transition-colors">MORE</Link>
@@ -236,6 +246,16 @@ const Navbar = () => {
               {renderSuggestionsDropdown()}
             </div>
             
+            {/* Wishlist Icon */}
+            <Link href="/wishlist" className="p-2 text-text-dark dark:text-gray-200 hover:text-red-500 dark:hover:text-red-400 transition-colors relative group" aria-label="Wishlist">
+              <FaHeart className="w-5 h-5 transition-transform group-hover:scale-110" />
+              {mounted && totalWishlistItems > 0 && (
+                <span className="absolute top-0 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">
+                  {totalWishlistItems}
+                </span>
+              )}
+            </Link>
+
             {/* Cart Icon */}
             <Link href="/cart" className="p-2 text-text-dark dark:text-gray-200 hover:text-brand-dark dark:hover:text-brand-light transition-colors relative group" aria-label="Cart">
               <FaShoppingCart className="w-5 h-5" />
@@ -426,6 +446,21 @@ const Navbar = () => {
           {/* Navigation Links */}
           <div className="flex flex-col space-y-1 font-medium text-text-dark">
             <Link href="/" onClick={closeMobileMenu} className="hover:text-brand-dark px-2 py-2 rounded-lg hover:bg-brand-hero/30 transition-colors">HOME</Link>
+            <Link 
+              href="/wishlist" 
+              onClick={closeMobileMenu} 
+              className="flex items-center justify-between hover:text-red-500 px-2 py-2 rounded-lg hover:bg-red-50/50 dark:hover:bg-red-950/20 transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <FaHeart className="text-red-500 w-4 h-4" />
+                <span>WISHLIST</span>
+              </span>
+              {mounted && totalWishlistItems > 0 && (
+                <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  {totalWishlistItems}
+                </span>
+              )}
+            </Link>
             
             {/* Mobile Categories Accordion */}
             <div className="rounded-xl overflow-hidden">
@@ -531,6 +566,21 @@ const Navbar = () => {
                   className="flex items-center gap-2 text-sm text-text-dark px-2 py-1.5 hover:bg-brand-hero/30 rounded-lg transition-colors"
                 >
                   My Profile
+                </Link>
+                <Link 
+                  href="/wishlist" 
+                  onClick={closeMobileMenu} 
+                  className="flex items-center justify-between text-sm text-text-dark px-2 py-1.5 hover:bg-brand-hero/30 rounded-lg transition-colors"
+                >
+                  <span className="flex items-center gap-2">
+                    <FaHeart className="text-red-500" />
+                    <span>My Wishlist</span>
+                  </span>
+                  {mounted && totalWishlistItems > 0 && (
+                    <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                      {totalWishlistItems}
+                    </span>
+                  )}
                 </Link>
                 <Link 
                   href="/orders" 

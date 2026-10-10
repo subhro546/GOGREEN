@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '../src/context/CartContext';
+import { useWishlist } from '../src/context/WishlistContext';
 
 interface ProductCardProps {
   id: string;
@@ -27,6 +28,8 @@ const ProductCard = ({
   id, name, price, category, description, isNew, images, sku, weight, potIncluded, mrp, shippingCharge, isSlider = false
 }: ProductCardProps) => {
   const { addItem } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const isWishlisted = isInWishlist(id);
 
   const parsedImages: string[] = (() => {
     try {
@@ -55,6 +58,21 @@ const ProductCard = ({
     addItem({ id, name, price, category, quantity: 1, image: imageUrl, shippingCharge });
   };
 
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist({
+      id,
+      name,
+      price,
+      mrp,
+      category,
+      image: imageUrl,
+      description,
+      shippingCharge,
+    });
+  };
+
   return (
     <Link href={`/product/${id}`} className="block group h-full">
 
@@ -68,6 +86,19 @@ const ProductCard = ({
                 NEW
               </span>
             )}
+            <button
+              onClick={handleWishlistToggle}
+              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+              className={`absolute top-2 right-2 p-1.5 backdrop-blur-md rounded-full transition-all z-10 ${
+                isWishlisted
+                  ? 'bg-red-50 dark:bg-red-950/80 text-red-500 border border-red-200 dark:border-red-800 shadow-sm'
+                  : 'bg-white/70 dark:bg-black/60 text-gray-500 dark:text-gray-300 hover:text-red-500'
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" fill={isWishlisted ? "currentColor" : "none"} className="w-3.5 h-3.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            </button>
             {parsedImages.length > 0 ? (
               parsedImages.map((url, idx) => (
                 <Image
@@ -160,6 +191,19 @@ const ProductCard = ({
                 NEW
               </div>
             )}
+            <button
+              onClick={handleWishlistToggle}
+              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+              className={`absolute top-2 right-2 p-1.5 backdrop-blur-md rounded-full transition-all z-10 ${
+                isWishlisted
+                  ? 'bg-red-50 dark:bg-red-950/80 text-red-500 border border-red-200 dark:border-red-800 shadow-sm'
+                  : 'bg-white/70 dark:bg-black/60 text-gray-500 dark:text-gray-300 hover:text-red-500'
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" fill={isWishlisted ? "currentColor" : "none"} className="w-3.5 h-3.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            </button>
             {parsedImages.length > 0 ? (
               parsedImages.map((url, idx) => (
                 <Image
@@ -221,11 +265,27 @@ const ProductCard = ({
             </div>
           )}
           <button
-            onClick={handleAddToCart}
-            className="absolute top-4 right-4 p-2 bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-full text-foreground/50 dark:text-white/60 hover:text-red-500 dark:hover:text-red-400 hover:bg-white dark:hover:bg-black/80 transition-all z-10 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+            onClick={handleWishlistToggle}
+            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            className={`absolute top-4 right-4 p-2.5 backdrop-blur-md rounded-full transition-all z-10 transform duration-200 ${
+              isWishlisted
+                ? 'opacity-100 translate-y-0 bg-red-50 dark:bg-red-950/80 text-red-500 border border-red-200 dark:border-red-800 shadow-md scale-105'
+                : 'opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 bg-white/70 dark:bg-black/60 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 hover:scale-110 shadow-sm'
+            }`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              fill={isWishlisted ? "currentColor" : "none"}
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+              />
             </svg>
           </button>
 
