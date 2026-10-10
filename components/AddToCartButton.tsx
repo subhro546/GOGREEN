@@ -15,6 +15,7 @@ interface AddToCartButtonProps {
     images?: string;
     description?: string | null;
     shippingCharge?: number | null;
+    sellWithCod?: boolean | null;
   };
 }
 
@@ -53,6 +54,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       quantity,
       image: imageUrl,
       shippingCharge: product.shippingCharge,
+      sellWithCod: product.sellWithCod ?? true,
     });
   };
 

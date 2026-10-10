@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import crypto from "node:crypto";
 import { CheckoutService } from "../src/services/CheckoutService";
+import { AdminProductService } from "../src/services/AdminProductService";
 import { IProductRepository } from "../src/interfaces/IProductRepository";
 import { IOrderRepository } from "../src/interfaces/IOrderRepository";
 import { Product, Order } from "@prisma/client";
@@ -172,6 +173,66 @@ async function runTests() {
         await service.processCheckout("user_123", [{ id: "p1", quantity: 1 }], "Address", "cod");
       },
       /Cash on Delivery is only available for orders below ₹1000/
+    );
+  });
+
+  await test("COD-01: COD order rejects products where sellWithCod is false", async () => {
+    const mockProductRepo = new MockProductRepository([
+      { id: "p1", name: "Exotic Japanese Bonsai", price: 799, stock: 5, shippingCharge: 0, sellWithCod: false } as any,
+    ]);
+    const mockOrderRepo = new MockOrderRepository();
+    const service = new CheckoutService(mockProductRepo, mockOrderRepo);
+
+    await assert.rejects(
+      async () => {
+        await service.processCheckout("user_123", [{ id: "p1", quantity: 1 }], "Address", "cod");
+      },
+      /Cash on Delivery is not available for "Exotic Japanese Bonsai"/
+    );
+  });
+
+  await test("COD-02: AdminProductService strictly enforces returnable = false when sellWithCod is true", async () => {
+    const mockProductRepo = new MockProductRepository([]);
+    const adminService = new AdminProductService(mockProductRepo);
+
+    // Payload claims returnable: true, but sellWithCod: true
+    const created = await adminService.createProduct({
+      name: "Monstera Deliciosa",
+      description: "Tropical plant",
+      price: 699,
+      category: "Indoor",
+      stock: 15,
+      sellWithCod: true,
+      returnable: true,
+    });
+
+    assert.strictEqual(created.sellWithCod, true, "sellWithCod should remain true");
+    assert.strictEqual(
+      created.returnable,
+      false,
+      "Product with COD enabled MUST be non-refundable (returnable: false)"
+    );
+  });
+
+  await test("COD-03: AdminProductService preserves returnable = true when sellWithCod is false", async () => {
+    const mockProductRepo = new MockProductRepository([]);
+    const adminService = new AdminProductService(mockProductRepo);
+
+    const created = await adminService.createProduct({
+      name: "Sansevieria Trifasciata",
+      description: "Air purifier plant",
+      price: 550,
+      category: "Indoor",
+      stock: 20,
+      sellWithCod: false,
+      returnable: true,
+    });
+
+    assert.strictEqual(created.sellWithCod, false, "sellWithCod should be false");
+    assert.strictEqual(
+      created.returnable,
+      true,
+      "Prepaid-only product can remain returnable"
     );
   });
 

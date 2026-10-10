@@ -10,6 +10,7 @@ export interface CartItem {
   image?: string;
   category: string;
   shippingCharge?: number | null;
+  sellWithCod?: boolean | null;
 }
 
 interface CartContextType {

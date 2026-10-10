@@ -72,6 +72,12 @@ export class CheckoutService {
         throw new Error("Product not found");
       }
 
+      if (cleanMethod === "cod" && product.sellWithCod === false) {
+        throw new Error(
+          `Cash on Delivery is not available for "${product.name}". Please pay online via UPI/Cards.`
+        );
+      }
+
       if (product.stock < item.quantity) {
         throw new Error(
           `Insufficient stock for "${product.name}". Only ${product.stock} available.`

@@ -21,11 +21,12 @@ interface ProductCardProps {
   potIncluded?: string;
   mrp?: number | null;
   shippingCharge?: number | null;
+  sellWithCod?: boolean | null;
   isSlider?: boolean;
 }
 
 const ProductCard = ({ 
-  id, name, price, category, description, isNew, images, sku, weight, potIncluded, mrp, shippingCharge, isSlider = false
+  id, name, price, category, description, isNew, images, sku, weight, potIncluded, mrp, shippingCharge, sellWithCod, isSlider = false
 }: ProductCardProps) => {
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -55,7 +56,7 @@ const ProductCard = ({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem({ id, name, price, category, quantity: 1, image: imageUrl, shippingCharge });
+    addItem({ id, name, price, category, quantity: 1, image: imageUrl, shippingCharge, sellWithCod: sellWithCod ?? true });
   };
 
   const handleWishlistToggle = (e: React.MouseEvent) => {

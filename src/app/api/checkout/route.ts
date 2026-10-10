@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       errorMsg.includes("Minimum purchase") ||
       errorMsg.includes("shipping address") ||
       errorMsg.includes("Too many") ||
-      errorMsg.includes("Cash on Delivery is only available")
+      errorMsg.includes("Cash on Delivery")
     );
     return NextResponse.json(
       { message: errorMsg },

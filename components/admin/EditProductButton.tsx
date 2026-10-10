@@ -87,13 +87,13 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
   // Form states - Specs & Variants
   const [plantHeight, setPlantHeight] = useState(product.plantHeight?.toString() || "");
   const [plantAge, setPlantAge] = useState(product.plantAge?.toString() || "");
-  const [returnable, setReturnable] = useState(product.returnable);
+  const [sellWithCod, setSellWithCod] = useState(product.sellWithCod ?? true);
+  const [returnable, setReturnable] = useState(product.sellWithCod ? false : (product.returnable ?? false));
   const [potIncluded, setPotIncluded] = useState(product.potIncluded);
   const [isSeed, setIsSeed] = useState(product.isSeed);
   const [isFlowerPlant, setIsFlowerPlant] = useState(product.isFlowerPlant);
   const [isFruitPlant, setIsFruitPlant] = useState(product.isFruitPlant);
   const [maintenance, setMaintenance] = useState(product.maintenance);
-  const [sellWithCod, setSellWithCod] = useState(product.sellWithCod);
   const [plantType, setPlantType] = useState(product.plantType || "");
 
   // Form states - SEO
@@ -185,7 +185,9 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
       `The pot provided corresponds to your selected option (${potIncluded || "Standard Nursery Pot"}). Decorative ceramic or fiber pots shown in styled lifestyle photos are for staging unless explicitly chosen in product specs.`
     );
     setDiscReturns(
-      returnable
+      sellWithCod
+        ? "Due to Cash on Delivery eligibility, this product is non-returnable / non-refundable once delivered. However, plants severely damaged during transit are 100% eligible for immediate free replacement upon sharing unboxing proof within 48 hours."
+        : returnable
         ? "This plant is returnable or replaceable within 14 days if received damaged. Please capture an unboxing video or clear photo upon arrival."
         : "Due to the perishable nature of live plants, this product is non-returnable once opened. However, plants severely damaged during transit are 100% eligible for immediate free replacement upon sharing unboxing proof within 48 hours."
     );
@@ -289,7 +291,7 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
           height: height ? parseFloat(height) : null,
           plantHeight: plantHeight ? parseFloat(plantHeight) : null,
           plantAge: plantAge ? parseFloat(plantAge) : null,
-          returnable,
+          returnable: sellWithCod ? false : returnable,
           potIncluded,
           isSeed,
           isFlowerPlant,
@@ -746,50 +748,94 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-1">
-                    <div>
-                      <span className="block text-sm font-semibold text-text-dark/80 mb-2">Return Policy</span>
-                      <div className="flex gap-4">
-                        <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+                  {/* ── Cash on Delivery & Return Policy (Linked Logic) ── */}
+                  <div className="p-4 bg-brand-hero/25 rounded-2xl border border-brand/10 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-brand/10">
+                      <div>
+                        <label className="flex items-center gap-3 cursor-pointer select-none">
                           <input
-                            type="radio"
-                            name="returnable"
-                            checked={returnable === true}
-                            onChange={() => setReturnable(true)}
-                            className="w-4 h-4 text-brand-secondary border-text-dark/15"
+                            type="checkbox"
+                            checked={sellWithCod}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              setSellWithCod(checked);
+                              if (checked) setReturnable(false);
+                            }}
+                            className="w-5 h-5 rounded border-text-dark/20 text-brand-secondary focus:ring-brand-secondary cursor-pointer"
                           />
-                          Returnable
-                        </label>
-                        <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
-                          <input
-                            type="radio"
-                            name="returnable"
-                            checked={returnable === false}
-                            onChange={() => setReturnable(false)}
-                            className="w-4 h-4 text-brand-secondary border-text-dark/15"
-                          />
-                          Non Returnable
+                          <div>
+                            <span className="text-sm font-bold text-text-dark block">Enable Cash on Delivery (COD)</span>
+                            <span className="text-xs text-text-dark/60 block">Allow customers to pay via cash on arrival (orders under ₹1,000)</span>
+                          </div>
                         </label>
                       </div>
+                      <span className={`text-xs px-2.5 py-1 rounded-full font-bold self-start sm:self-center shrink-0 ${sellWithCod ? "bg-amber-100 text-amber-800 border border-amber-200" : "bg-emerald-100 text-emerald-800 border border-emerald-200"}`}>
+                        {sellWithCod ? "COD Available (Non-Refundable)" : "Prepaid Only"}
+                      </span>
                     </div>
 
                     <div>
-                      <span className="block text-sm font-semibold text-text-dark/80 mb-2">Maintenance Level</span>
-                      <div className="flex gap-4">
-                        {["Low Maintenance", "Medium Maintenance", "High Maintenance"].map((lvl) => (
-                          <label key={lvl} className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
-                            <input
-                              type="radio"
-                              name="maintenance"
-                              value={lvl}
-                              checked={maintenance === lvl}
-                              onChange={(e) => setMaintenance(e.target.value)}
-                              className="w-4 h-4 text-brand-secondary border-text-dark/15"
-                            />
-                            {lvl.split(" ")[0]}
-                          </label>
-                        ))}
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="block text-sm font-semibold text-text-dark/80">Return Policy</span>
+                        {sellWithCod && (
+                          <span className="text-[11px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                            🔒 Non-Refundable for COD products
+                          </span>
+                        )}
                       </div>
+                      <div className="flex gap-4">
+                        <label className={`flex items-center gap-2 text-xs font-semibold ${sellWithCod ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}>
+                          <input
+                            type="radio"
+                            name="returnable"
+                            disabled={sellWithCod}
+                            checked={returnable === true && !sellWithCod}
+                            onChange={() => {
+                              if (!sellWithCod) setReturnable(true);
+                            }}
+                            className="w-4 h-4 text-brand-secondary border-text-dark/15 disabled:cursor-not-allowed"
+                          />
+                          Returnable (14 Days)
+                        </label>
+                        <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+                          <input
+                            type="radio"
+                            name="returnable"
+                            checked={returnable === false || sellWithCod}
+                            onChange={() => setReturnable(false)}
+                            className="w-4 h-4 text-brand-secondary border-text-dark/15"
+                          />
+                          Non Returnable (Replacement Only)
+                        </label>
+                      </div>
+                      {sellWithCod ? (
+                        <p className="text-xs text-amber-800/80 mt-1.5 font-medium">
+                          ⚠️ Per nursery policy, products available on Cash on Delivery cannot be offered as refundable. Only transit damage replacement is allowed. To make this product returnable, please disable COD above.
+                        </p>
+                      ) : (
+                        <p className="text-xs text-text-dark/50 mt-1.5">
+                          Because COD is disabled, you can choose whether this prepaid product is returnable or non-returnable.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="block text-sm font-semibold text-text-dark/80 mb-2">Maintenance Level</span>
+                    <div className="flex gap-4">
+                      {["Low Maintenance", "Medium Maintenance", "High Maintenance"].map((lvl) => (
+                        <label key={lvl} className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+                          <input
+                            type="radio"
+                            name="maintenance"
+                            value={lvl}
+                            checked={maintenance === lvl}
+                            onChange={(e) => setMaintenance(e.target.value)}
+                            className="w-4 h-4 text-brand-secondary border-text-dark/15"
+                          />
+                          {lvl.split(" ")[0]}
+                        </label>
+                      ))}
                     </div>
                   </div>
 
@@ -827,15 +873,6 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
                     </div>
 
                     <div className="flex flex-col justify-center space-y-3">
-                      <label className="flex items-center gap-3 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={sellWithCod}
-                          onChange={(e) => setSellWithCod(e.target.checked)}
-                          className="w-4.5 h-4.5 rounded border-text-dark/20 text-brand-secondary focus:ring-brand-secondary cursor-pointer"
-                        />
-                        <span className="text-xs font-bold text-text-dark/85">Enable Cash on Delivery (COD)?</span>
-                      </label>
                       <label className="flex items-center gap-3 cursor-pointer select-none">
                         <input
                           type="checkbox"

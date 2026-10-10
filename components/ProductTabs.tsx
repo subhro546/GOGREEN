@@ -87,9 +87,11 @@ export default function ProductTabs({ product }: ProductTabsProps) {
     variations: parsedDisclaimer.variations || "Plants are natural living organisms. Each specimen has its own unique branch structure, foliage count, leaf size, and coloration. Catalog photographs serve as reference representations of healthy mature plants.",
     transit: parsedDisclaimer.transit || "During courier transit in closed boxes, plants may experience temporary transport shock (slight leaf drooping or 1–2 shed bottom leaves). Place your plant in bright indirect light, water lightly, and allow 3–5 days to fully recover.",
     pot: parsedDisclaimer.pot || `The pot provided corresponds to your selected option (${product.potIncluded || "Standard Nursery Pot"}). Decorative ceramic or fiber pots shown in styled lifestyle photos are for staging unless explicitly chosen in product specs.`,
-    returns: parsedDisclaimer.returns || (product.returnable
-      ? "This plant is returnable or replaceable within 14 days if received damaged. Please capture an unboxing video or clear photo upon arrival."
-      : "Due to the perishable nature of live plants, this product is non-returnable once opened. However, plants severely damaged during transit are 100% eligible for immediate free replacement upon sharing unboxing proof within 48 hours."),
+    returns: product.sellWithCod
+      ? "Due to Cash on Delivery eligibility, this product is non-returnable / non-refundable once delivered. However, plants severely damaged during transit are 100% eligible for immediate free replacement upon sharing unboxing proof within 48 hours."
+      : product.returnable
+      ? (parsedDisclaimer.returns || "This plant is returnable or replaceable within 14 days if received damaged. Please capture an unboxing video or clear photo upon arrival.")
+      : (parsedDisclaimer.returns || "Due to the perishable nature of live plants, this product is non-returnable once opened. However, plants severely damaged during transit are 100% eligible for immediate free replacement upon sharing unboxing proof within 48 hours."),
     safety: parsedDisclaimer.safety || "Certain ornamental houseplants can cause mild stomach upset if chewed or ingested by curious cats, dogs, or small children. Please research plant toxicity if placing within reach of pets.",
     general: parsedDisclaimer.general || null,
   };
@@ -401,14 +403,18 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                 </div>
                 <div className="flex justify-between border-b border-gray-100 pb-2">
                   <span className="text-gray-500 font-normal">Cash on Delivery (COD)</span>
-                  <span className="font-semibold text-gray-900">
-                    {product.sellWithCod ? "Available (under ₹1,000)" : "Prepaid Only"}
+                  <span className={`font-semibold ${product.sellWithCod ? "text-emerald-700" : "text-gray-700"}`}>
+                    {product.sellWithCod ? "Available (under ₹1,000)" : "Not Available (Prepaid Only)"}
                   </span>
                 </div>
                 <div className="flex justify-between border-b border-gray-100 pb-2">
                   <span className="text-gray-500 font-normal">Return Policy</span>
                   <span className="font-semibold text-gray-900">
-                    {product.returnable ? "Returnable (14 Days)" : "Replacement Only"}
+                    {product.sellWithCod
+                      ? "Non-Refundable (COD Item - Replacement Only)"
+                      : product.returnable
+                      ? "Returnable (14 Days)"
+                      : "Non-Returnable (Replacement Only)"}
                   </span>
                 </div>
                 {(product.length || product.width || product.height) && (
@@ -439,6 +445,20 @@ export default function ProductTabs({ product }: ProductTabsProps) {
               </p>
               <p className="text-gray-600 leading-relaxed">
                 All plants are packaged in ventilated, shock-resistant botanical cartons engineered to hold pots firmly in place and protect delicate leaves throughout transport.
+              </p>
+            </div>
+
+            <div className="p-4 bg-white rounded-2xl border border-gray-100 shadow-xs space-y-2">
+              <div className="flex items-center gap-2 font-bold text-amber-800">
+                <FaBoxOpen size={16} />
+                <span>Return & Refund Policy</span>
+              </div>
+              <p className="text-gray-600 leading-relaxed">
+                {product.sellWithCod
+                  ? "This product is eligible for Cash on Delivery. Per nursery guidelines, all COD items are strictly Non-Refundable / Non-Returnable once accepted. If your plant arrives damaged during transit, you are 100% covered by our free replacement guarantee upon providing unboxing proof within 48 hours."
+                  : product.returnable
+                  ? "Prepaid order: This plant is returnable or replaceable within 14 days if received damaged. Please capture an unboxing video or clear photo upon arrival."
+                  : "Prepaid order: Due to the delicate nature of live plants, this product is non-returnable once opened, but fully covered by our free replacement guarantee within 48 hours if damaged in transit."}
               </p>
             </div>
 

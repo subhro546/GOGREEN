@@ -87,7 +87,10 @@ export default function CartPage() {
     setCouponError(null);
   };
 
-  const isCODEligible = totalPrice < COD_THRESHOLD;
+  const nonCodItems = items.filter((item) => item.sellWithCod === false);
+  const hasNonCodItems = nonCodItems.length > 0;
+  const isUnderCodThreshold = totalPrice < COD_THRESHOLD;
+  const isCODEligible = isUnderCodThreshold && !hasNonCodItems;
   const isNewAddress = selectedAddressId === "new" || savedAddresses.length === 0;
   const totalShipping = items.reduce((sum, item) => sum + (item.shippingCharge ?? 0) * item.quantity, 0);
   const codFee = paymentMethod === "cod" ? 49 : 0;
@@ -363,10 +366,18 @@ export default function CartPage() {
                         <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">💡 COD available for orders under ₹{COD_THRESHOLD}</p>
                       </div>
                     ) : (
-                      <div className="p-3 rounded-xl border border-brand-secondary bg-brand-hero/20 text-sm">
-                        <p className="font-bold text-text-dark">Pay Online (Prepaid)</p>
+                      <div className="p-3.5 rounded-xl border border-brand-secondary bg-brand-hero/20 text-sm">
+                        <p className="font-bold text-text-dark">Pay Online (Prepaid Only)</p>
                         <p className="text-xs text-text-dark/50 mt-0.5">UPI, Cards, Net Banking via Razorpay</p>
-                        <p className="text-xs text-text-dark/40 mt-1">COD not available for orders above ₹{COD_THRESHOLD}</p>
+                        {hasNonCodItems ? (
+                          <p className="text-xs text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200 mt-2 font-medium">
+                            ⚠️ Cash on Delivery is disabled because {nonCodItems.map((i) => `"${i.name}"`).join(", ")} {nonCodItems.length > 1 ? "are" : "is"} marked as Prepaid Only.
+                          </p>
+                        ) : (
+                          <p className="text-xs text-text-dark/50 mt-1">
+                            💡 COD is available only for orders under ₹{COD_THRESHOLD}.
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>

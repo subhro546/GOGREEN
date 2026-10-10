@@ -71,7 +71,19 @@ export default async function ProductPage({
             <div className="flex flex-col p-6 md:p-8 lg:p-12 w-full">
               <div className="pl-3 border-l-[3px] border-[#2e7d32] text-xs text-text-dark/80 mb-5 leading-relaxed bg-[#2e7d32]/5 py-2.5 pr-4 rounded-r-xl">
                 <strong>Note:</strong> Image for reference only. Product may vary.<br />
-                {product.returnable ? "Returnable." : "Replaceable, not returnable."}
+                {product.sellWithCod ? (
+                  <span className="font-semibold text-amber-800 dark:text-amber-400">
+                    Non-refundable (Eligible for Cash on Delivery).
+                  </span>
+                ) : product.returnable ? (
+                  <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+                    Returnable within 14 days (Prepaid Order).
+                  </span>
+                ) : (
+                  <span className="font-semibold text-text-dark/80">
+                    Replaceable, not returnable (Prepaid Order).
+                  </span>
+                )}
               </div>
 
               {/* Category & Product Share Row */}

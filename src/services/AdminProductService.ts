@@ -22,6 +22,9 @@ export class AdminProductService {
       ? images 
       : ['https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=500&q=80'];
 
+    const finalSellWithCod = sellWithCod === undefined ? true : !!sellWithCod;
+    const finalReturnable = finalSellWithCod ? false : (returnable === undefined ? true : !!returnable);
+
     return this.productRepository.create({
       name,
       description,
@@ -40,13 +43,13 @@ export class AdminProductService {
       height: height !== undefined && height !== null && height !== "" ? parseFloat(height) : null,
       plantHeight: plantHeight !== undefined && plantHeight !== null && plantHeight !== "" ? parseFloat(plantHeight) : null,
       plantAge: plantAge !== undefined && plantAge !== null && plantAge !== "" ? parseFloat(plantAge) : null,
-      returnable: returnable === undefined ? true : !!returnable,
+      returnable: finalReturnable,
       potIncluded: potIncluded || "Pot Included",
       isSeed: !!isSeed,
       isFlowerPlant: !!isFlowerPlant,
       isFruitPlant: !!isFruitPlant,
       maintenance: maintenance || "Low Maintenance",
-      sellWithCod: sellWithCod === undefined ? true : !!sellWithCod,
+      sellWithCod: finalSellWithCod,
       plantType: plantType || null,
       seoTitle: seoTitle || null,
       seoDescription: seoDescription || null,

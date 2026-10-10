@@ -75,13 +75,21 @@ export async function PATCH(
     if (height !== undefined) updateData.height = height !== null && height !== "" ? parseFloat(height as string) : null;
     if (plantHeight !== undefined) updateData.plantHeight = plantHeight !== null && plantHeight !== "" ? parseFloat(plantHeight as string) : null;
     if (plantAge !== undefined) updateData.plantAge = plantAge !== null && plantAge !== "" ? parseFloat(plantAge as string) : null;
-    if (returnable !== undefined) updateData.returnable = !!returnable;
-    if (potIncluded !== undefined) updateData.potIncluded = potIncluded;
-    if (isSeed !== undefined) updateData.isSeed = !!isSeed;
-    if (isFlowerPlant !== undefined) updateData.isFlowerPlant = !!isFlowerPlant;
-    if (isFruitPlant !== undefined) updateData.isFruitPlant = !!isFruitPlant;
-    if (maintenance !== undefined) updateData.maintenance = maintenance;
     if (sellWithCod !== undefined) updateData.sellWithCod = !!sellWithCod;
+
+    // Enforce business logic: products available on COD are strictly non-refundable
+    if (sellWithCod === true) {
+      updateData.returnable = false;
+    } else if (sellWithCod === false) {
+      if (returnable !== undefined) updateData.returnable = !!returnable;
+    } else if (returnable !== undefined) {
+      const current = await prisma.product.findUnique({ where: { id }, select: { sellWithCod: true } });
+      if (current?.sellWithCod) {
+        updateData.returnable = false;
+      } else {
+        updateData.returnable = !!returnable;
+      }
+    }
     if (plantType !== undefined) updateData.plantType = plantType || null;
     if (seoTitle !== undefined) updateData.seoTitle = seoTitle || null;
     if (seoDescription !== undefined) updateData.seoDescription = seoDescription || null;
