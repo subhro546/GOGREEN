@@ -16,8 +16,8 @@ export default function HomePage() {
       <CategoryBar />
       <main className="flex-1 flex flex-col">
         <CategoriesSection />
-        <BannerCarousel />
         <FeaturedProducts />
+        <BannerCarousel />
         <PromoGrid />
         <TestimonialSection />
       </main>
