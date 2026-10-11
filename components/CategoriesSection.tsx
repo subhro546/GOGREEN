@@ -21,10 +21,10 @@ const CategoriesSection = async () => {
   ];
 
   return (
-    <section id="categories" className="w-full py-5 sm:py-7 bg-white dark:bg-[#0b130e] border-b border-gray-100 dark:border-gray-800 overflow-hidden transition-colors duration-300">
+    <section id="categories" className="w-full py-3 sm:py-4 bg-white dark:bg-[#0b130e] border-b border-gray-100 dark:border-gray-800 overflow-hidden transition-colors duration-300">
       <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16">
         <div 
-          className="w-full flex items-start justify-start sm:justify-evenly gap-3 sm:gap-4 md:gap-6 overflow-x-auto scrollbar-hide py-1 px-1"
+          className="w-full flex items-start justify-start sm:justify-evenly gap-3 sm:gap-4 md:gap-6 overflow-x-auto scrollbar-hide pt-3.5 sm:pt-4 pb-2 px-2"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {categories.map((category, index) => (
