@@ -97,7 +97,7 @@ export default function FeaturedProductsSlider({ products }: { products: Product
       </div>
 
       {/* ── SINGLE ROW SLIDING TRACK WITH FROSTED BLURRED EDGES ── */}
-      <div className="w-full relative group">
+      <div className="w-full relative">
         {/* Left edge blur overlay */}
         <div
           className={`absolute left-0 top-0 bottom-6 w-5 sm:w-16 md:w-24 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[#0b130e] dark:via-[#0b130e]/80 dark:to-transparent backdrop-blur-[2px] pointer-events-none z-10 transition-opacity duration-300 ${

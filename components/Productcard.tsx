@@ -62,7 +62,7 @@ const ProductCard = ({
   };
 
   return (
-    <Link href={`/product/${id}`} className="block group h-full">
+    <Link href={`/product/${id}`} className="block group/card h-full">
 
       {/* ── MOBILE ROW (When not in slider) ── */}
       {!isSlider && (
@@ -92,14 +92,14 @@ const ProductCard = ({
               alt={name}
               fill
               sizes="128px"
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              className="object-cover group-hover/card:scale-105 transition-transform duration-500"
             />
           </div>
 
           {/* Info + button */}
           <div className="flex flex-col flex-1 p-3 gap-1">
             <p className="text-[10px] text-text-dark/50 font-semibold uppercase tracking-widest">{category}</p>
-            <p className="text-sm font-serif font-bold text-text-dark leading-snug line-clamp-1 group-hover:text-brand-secondary transition-colors">
+            <p className="text-sm font-serif font-bold text-text-dark leading-snug line-clamp-1 group-hover/card:text-brand-secondary transition-colors">
               {name}
             </p>
 
@@ -228,7 +228,7 @@ const ProductCard = ({
             className={`absolute top-4 right-4 p-2.5 backdrop-blur-md rounded-full transition-all z-10 transform duration-200 ${
               isWishlisted
                 ? 'opacity-100 translate-y-0 bg-red-50 dark:bg-red-950/80 text-red-500 border border-red-200 dark:border-red-800 shadow-md scale-105'
-                : 'opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 bg-white/70 dark:bg-black/60 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 hover:scale-110 shadow-sm'
+                : 'opacity-0 group-hover/card:opacity-100 translate-y-2 group-hover/card:translate-y-0 bg-white/70 dark:bg-black/60 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 hover:scale-110 shadow-sm'
             }`}
           >
             <svg
@@ -252,10 +252,10 @@ const ProductCard = ({
             alt={name}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover transform group-hover:scale-110 transition-transform duration-500"
+            className="object-cover transform group-hover/card:scale-110 transition-transform duration-500"
           />
 
-          <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover/card:translate-y-0 transition-transform duration-300">
             <button
               onClick={handleAddToCart}
               className="w-full bg-yellow-400 text-yellow-900 py-3 rounded-xl font-bold hover:bg-yellow-300 transition-colors shadow-lg"
@@ -267,7 +267,7 @@ const ProductCard = ({
 
         <div className="p-5 flex-1 flex flex-col">
           <p className="text-sm text-text-dark/50 font-medium mb-1 uppercase tracking-wider">{category}</p>
-          <span className="text-lg font-serif font-bold text-text-dark group-hover:text-brand-secondary transition-colors mb-1 line-clamp-2">
+          <span className="text-lg font-serif font-bold text-text-dark group-hover/card:text-brand-secondary transition-colors mb-1 line-clamp-2">
             {name}
           </span>
 
