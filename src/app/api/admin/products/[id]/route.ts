@@ -90,6 +90,12 @@ export async function PATCH(
         updateData.returnable = !!returnable;
       }
     }
+
+    if (potIncluded !== undefined) updateData.potIncluded = potIncluded;
+    if (isSeed !== undefined) updateData.isSeed = !!isSeed;
+    if (isFlowerPlant !== undefined) updateData.isFlowerPlant = !!isFlowerPlant;
+    if (isFruitPlant !== undefined) updateData.isFruitPlant = !!isFruitPlant;
+    if (maintenance !== undefined) updateData.maintenance = maintenance;
     if (plantType !== undefined) updateData.plantType = plantType || null;
     if (seoTitle !== undefined) updateData.seoTitle = seoTitle || null;
     if (seoDescription !== undefined) updateData.seoDescription = seoDescription || null;
