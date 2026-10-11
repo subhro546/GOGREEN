@@ -1,8 +1,6 @@
 "use client";
 
 import Image from 'next/image';
-
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '../src/context/CartContext';
 import { useWishlist } from '../src/context/WishlistContext';
@@ -39,16 +37,6 @@ const ProductCard = ({
       return [];
     }
   })();
-
-  const [currentIdx, setCurrentIdx] = useState(0);
-
-  useEffect(() => {
-    if (parsedImages.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentIdx((prev) => (prev + 1) % parsedImages.length);
-    }, 3000); // Cycle every 3 seconds
-    return () => clearInterval(interval);
-  }, [parsedImages.length]);
 
   const imageUrl = parsedImages[0] || '/placeholder.png';
 
@@ -99,28 +87,13 @@ const ProductCard = ({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
               </svg>
             </button>
-            {parsedImages.length > 0 ? (
-              parsedImages.map((url, idx) => (
-                <Image
-                  key={idx}
-                  src={url}
-                  alt={name}
-                  fill
-                  sizes="128px"
-                  className={`object-cover transition-opacity duration-700 ${
-                    idx === currentIdx ? "opacity-100" : "opacity-0"
-                  } group-hover:scale-105`}
-                />
-              ))
-            ) : (
-              <Image
-                src="/placeholder.png"
-                alt={name}
-                fill
-                sizes="128px"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            )}
+            <Image
+              src={imageUrl}
+              alt={name}
+              fill
+              sizes="128px"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+            />
           </div>
 
           {/* Info + button */}
@@ -204,28 +177,13 @@ const ProductCard = ({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
               </svg>
             </button>
-            {parsedImages.length > 0 ? (
-              parsedImages.map((url, idx) => (
-                <Image
-                  key={idx}
-                  src={url}
-                  alt={name}
-                  fill
-                  sizes="160px"
-                  className={`object-cover transition-opacity duration-700 ${
-                    idx === currentIdx ? "opacity-100" : "opacity-0"
-                  }`}
-                />
-              ))
-            ) : (
-              <Image
-                src="/placeholder.png"
-                alt={name}
-                fill
-                sizes="160px"
-                className="object-cover"
-              />
-            )}
+            <Image
+              src={imageUrl}
+              alt={name}
+              fill
+              sizes="160px"
+              className="object-cover"
+            />
           </div>
 
           {/* Info */}
@@ -289,28 +247,13 @@ const ProductCard = ({
             </svg>
           </button>
 
-          {parsedImages.length > 0 ? (
-            parsedImages.map((url, idx) => (
-              <Image
-                key={idx}
-                src={url}
-                alt={name}
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className={`object-cover transition-opacity duration-700 ${
-                  idx === currentIdx ? "opacity-100" : "opacity-0"
-                } group-hover:scale-110`}
-              />
-            ))
-          ) : (
-            <Image
-              src="/placeholder.png"
-              alt={name}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover transform group-hover:scale-110 transition-transform duration-500"
-            />
-          )}
+          <Image
+            src={imageUrl}
+            alt={name}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover transform group-hover:scale-110 transition-transform duration-500"
+          />
 
           <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <button
