@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import Link from "next/link";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export default async function OrdersPage() {
     orderBy: { createdAt: "desc" },
     include: {
       items: {
-        include: { product: { select: { name: true, price: true } } },
+        include: { product: { select: { id: true, name: true, price: true, images: true } } },
       },
     },
   });
@@ -101,20 +102,63 @@ export default async function OrdersPage() {
 
                   {/* Order Items */}
                   <div className="p-6 space-y-4">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-brand-hero rounded-xl flex items-center justify-center text-2xl shrink-0">
-                          🪴
+                    {order.items.map((item) => {
+                      const imageUrl = (() => {
+                        if (!item.product?.images) return null;
+                        try {
+                          const parsed = JSON.parse(item.product.images);
+                          if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "string") {
+                            return parsed[0];
+                          }
+                          if (typeof parsed === "string") return parsed;
+                        } catch {
+                          if (typeof item.product.images === "string" && item.product.images.startsWith("http")) {
+                            return item.product.images;
+                          }
+                        }
+                        return null;
+                      })();
+
+                      return (
+                        <div key={item.id} className="flex items-center gap-4">
+                          <Link
+                            href={`/product/${item.product?.id || item.productId}`}
+                            className="w-16 h-16 sm:w-20 sm:h-20 bg-brand-hero/40 rounded-2xl overflow-hidden shrink-0 border border-brand/10 relative flex items-center justify-center hover:opacity-90 transition-opacity"
+                          >
+                            {imageUrl ? (
+                              <Image
+                                src={imageUrl}
+                                alt={item.product?.name || "Plant"}
+                                fill
+                                sizes="(max-width: 640px) 64px, 80px"
+                                className="object-cover"
+                                unoptimized
+                              />
+                            ) : (
+                              <span className="text-3xl">🪴</span>
+                            )}
+                          </Link>
+                          <div className="flex-1 min-w-0">
+                            <Link
+                              href={`/product/${item.product?.id || item.productId}`}
+                              className="font-bold text-text-dark hover:text-brand-secondary transition-colors line-clamp-1 block text-sm sm:text-base"
+                            >
+                              {item.product?.name}
+                            </Link>
+                            <div className="flex items-center gap-2 mt-1 text-xs text-text-dark/55 font-medium">
+                              <span>Qty: {item.quantity}</span>
+                              <span>•</span>
+                              <span>₹{item.price.toFixed(2)} each</span>
+                            </div>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="font-bold text-brand-secondary text-base sm:text-lg">
+                              ₹{(item.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <p className="font-bold text-text-dark">{item.product.name}</p>
-                          <p className="text-sm text-text-dark/50">Qty: {item.quantity}</p>
-                        </div>
-                        <p className="font-bold text-brand-secondary">
-                          ₹{(item.price * item.quantity).toFixed(2)}
-                        </p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   {/* Shipping Address */}
