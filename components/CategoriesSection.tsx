@@ -21,20 +21,20 @@ const CategoriesSection = async () => {
   ];
 
   return (
-    <section id="categories" className="w-full py-5 sm:py-7 bg-white border-b border-gray-100 overflow-hidden">
+    <section id="categories" className="w-full py-5 sm:py-7 bg-white dark:bg-[#0b130e] border-b border-gray-100 dark:border-gray-800 overflow-hidden transition-colors duration-300">
       <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16">
         <div 
-          className="w-full flex items-start justify-between sm:justify-evenly gap-2 sm:gap-4 md:gap-6 overflow-x-auto scrollbar-hide py-1"
+          className="w-full flex items-start justify-start sm:justify-evenly gap-3 sm:gap-4 md:gap-6 overflow-x-auto scrollbar-hide py-1 px-1"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {categories.map((category, index) => (
             <Link
               key={index}
               href={category.dbName ? `/shop?category=${encodeURIComponent(category.dbName)}` : `/shop`}
-              className="flex-1 min-w-[76px] sm:min-w-[90px] md:min-w-[100px] flex flex-col items-center gap-2 group transition-transform duration-200 hover:-translate-y-1 text-center shrink-0 sm:shrink"
+              className="w-[78px] sm:w-[92px] md:w-[104px] flex flex-col items-center gap-1.5 sm:gap-2 group transition-transform duration-200 hover:-translate-y-1 text-center shrink-0"
             >
-              {/* Category shape */}
-              <div className="w-18 h-18 sm:w-22 sm:h-22 md:w-24 md:h-24 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-brand/5 group-hover:border-brand-secondary transition-all duration-300 group-hover:shadow-lg group-hover:scale-105 bg-brand-hero flex items-center justify-center shrink-0">
+              {/* Category shape - strictly uniform square */}
+              <div className="w-[76px] h-[76px] sm:w-[88px] sm:h-[88px] md:w-24 md:h-24 aspect-square rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-brand/10 dark:border-white/10 group-hover:border-brand-secondary dark:group-hover:border-emerald-400 transition-all duration-300 group-hover:shadow-lg group-hover:scale-105 bg-brand-hero/40 dark:bg-emerald-950/20 flex items-center justify-center shrink-0 relative">
                 <img
                   src={category.image}
                   alt={category.name}
@@ -42,8 +42,8 @@ const CategoriesSection = async () => {
                   loading="eager"
                 />
               </div>
-              {/* Label */}
-              <span className="text-[10px] sm:text-xs font-semibold text-text-dark/70 group-hover:text-brand-secondary transition-colors text-center leading-tight uppercase tracking-wide px-1 line-clamp-2 select-none">
+              {/* Label - uniform 2-row height container */}
+              <span className="text-[10px] sm:text-xs font-semibold text-text-dark/75 dark:text-gray-200 group-hover:text-brand-secondary dark:group-hover:text-emerald-400 transition-colors text-center leading-tight uppercase tracking-wide px-0.5 line-clamp-2 select-none h-7 sm:h-8 flex items-center justify-center">
                 {category.name}
               </span>
             </Link>
