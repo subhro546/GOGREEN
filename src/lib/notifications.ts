@@ -61,6 +61,13 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
+type EmailSenderFn = (to: string, subject: string, text: string, html?: string) => Promise<boolean>;
+let customEmailSender: EmailSenderFn | null = null;
+
+export function setCustomEmailSenderForTesting(sender: EmailSenderFn | null) {
+  customEmailSender = sender;
+}
+
 /**
  * Sends an email using SMTP. Falls back to safe log in development if SMTP is not configured.
  * Returns true if sent or simulated, false on failure.
@@ -71,6 +78,10 @@ export async function sendEmail(
   text: string,
   html?: string
 ): Promise<boolean> {
+  if (customEmailSender) {
+    return customEmailSender(to, subject, text, html);
+  }
+
   if (!isSmtpConfigured) {
     if (process.env.NODE_ENV !== "production") {
       console.log(`[DEV NOTIFICATION] Mock Email queued for: ${maskEmail(to)} | Subject: ${subject}`);

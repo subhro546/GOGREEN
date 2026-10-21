@@ -11,6 +11,7 @@ import {
   notifyOrderPlacement,
   notifyOrderStatusUpdate,
   resetNotificationDeduplicationForTests,
+  setCustomEmailSenderForTesting,
 } from "../src/lib/notifications";
 
 // Mock Product Repository for testing business logic
@@ -415,6 +416,9 @@ async function runTests() {
 
   // ── TEST CATEGORY 7: TRANSACTIONAL EMAIL NOTIFICATIONS ──
   console.log("\n7. Transactional Email Notifications & Idempotency Tests");
+
+  // Mock email dispatcher during unit tests so fake test addresses (test@example.com) are not sent to Brevo
+  setCustomEmailSenderForTesting(async () => true);
 
   await test("NOTIF-01: Order confirmation email includes all required order details", () => {
     const mockOrder = {
