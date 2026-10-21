@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { prisma } from "./prisma";
 
 // Environment Configuration
 const accountSid = process.env.TWILIO_ACCOUNT_SID || "";
@@ -6,13 +7,21 @@ const authToken = process.env.TWILIO_AUTH_TOKEN || "";
 const fromSmsNumber = process.env.TWILIO_FROM_SMS_NUMBER || "";
 const fromWhatsAppNumber = process.env.TWILIO_FROM_WHATSAPP_NUMBER || "";
 
-const adminEmail = process.env.ADMIN_EMAIL || "admin@gogreen.com";
+export const getAdminEmail = (): string => {
+  return (process.env.ADMIN_EMAIL || "gogreen.nursery20@gmail.com").trim();
+};
+
+export const getSmtpFrom = (): string => {
+  return (process.env.SMTP_FROM || "GoGreen Nursery <gogreen.nursery20@gmail.com>").trim();
+};
+
+export const adminEmail = getAdminEmail();
 
 const smtpHost = process.env.SMTP_HOST || "";
 const smtpPort = parseInt(process.env.SMTP_PORT || "587", 10);
 const smtpUser = process.env.SMTP_USER || "";
 const smtpPass = process.env.SMTP_PASS || "";
-const smtpFrom = process.env.SMTP_FROM || "GoGreen Nursery <notifications@gogreen.com>";
+export const smtpFrom = getSmtpFrom();
 
 export const isTwilioConfigured = !!(
   accountSid &&
@@ -103,8 +112,10 @@ export async function sendEmail(
       socketTimeout: 15000,
     });
 
+    const fromAddress = getSmtpFrom();
+
     await transporter.sendMail({
-      from: smtpFrom,
+      from: fromAddress,
       to,
       subject,
       text,
@@ -222,6 +233,128 @@ export interface OrderNotificationData {
     phone?: string | null;
   } | null;
   items?: OrderNotificationItem[];
+}
+
+/**
+ * Checks whether an email address is a dummy/placeholder (e.g. test@example.com).
+ * In production, sending to placeholder addresses hurts Brevo sender reputation and causes hard bounces.
+ */
+export function isPlaceholderEmail(email: string): boolean {
+  if (!email || !email.includes("@")) return true;
+  const normalized = email.trim().toLowerCase();
+  const placeholderDomains = [
+    "@example.com",
+    "@example.org",
+    "@example.net",
+    "@test.com",
+    "@test.org",
+    "@sample.com",
+    "@placeholder.com",
+  ];
+
+  if (placeholderDomains.some((d) => normalized.endsWith(d))) {
+    return true;
+  }
+
+  if (
+    normalized === "test@example.com" ||
+    normalized === "customer@example.com" ||
+    normalized === "user@example.com" ||
+    normalized.startsWith("placeholder@")
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Dynamically retrieves customer details from the database if not present on the order.
+ * Ensures that no customer email is hardcoded or mocked with placeholders in production.
+ */
+export async function resolveCustomerDetails(order: OrderNotificationData): Promise<{
+  email: string | null;
+  name: string | null;
+}> {
+  // 1. If email is already attached to order.user, verify and use it
+  if (order.user?.email && order.user.email.trim()) {
+    return {
+      email: order.user.email.trim(),
+      name: order.user.name || null,
+    };
+  }
+
+  // 2. Dynamically retrieve from database using order.id
+  if (order.id) {
+    try {
+      const dbOrder = await prisma.order.findUnique({
+        where: { id: order.id },
+        select: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      if (dbOrder?.user?.email) {
+        return {
+          email: dbOrder.user.email.trim(),
+          name: dbOrder.user.name || null,
+        };
+      }
+    } catch (err) {
+      console.error(`[NOTIFICATIONS] Failed to dynamically look up customer for order ${order.id}:`, err);
+    }
+  }
+
+  return { email: null, name: null };
+}
+
+/**
+ * Dynamically retrieves order items from the database if not present on the order.
+ */
+export async function resolveOrderItems(order: OrderNotificationData): Promise<OrderNotificationItem[]> {
+  if (order.items && order.items.length > 0) {
+    return order.items;
+  }
+
+  if (order.id) {
+    try {
+      const dbItems = await prisma.orderItem.findMany({
+        where: { orderId: order.id },
+        include: {
+          product: {
+            select: {
+              name: true,
+              description: true,
+              images: true,
+              sku: true,
+            },
+          },
+        },
+      });
+
+      if (dbItems && dbItems.length > 0) {
+        return dbItems.map((item) => ({
+          price: item.price,
+          quantity: item.quantity,
+          product: {
+            name: item.product?.name || "Product",
+            description: item.product?.description || undefined,
+            images: item.product?.images || undefined,
+            sku: item.product?.sku,
+          },
+        }));
+      }
+    } catch (err) {
+      console.error(`[NOTIFICATIONS] Failed to dynamically look up items for order ${order.id}:`, err);
+    }
+  }
+
+  return [];
 }
 
 /**
@@ -661,27 +794,51 @@ export async function notifyOrderPlacement(order: OrderNotificationData): Promis
 
   try {
     const orderIdShort = order.id.slice(-8).toUpperCase();
-    const customerEmail = order.user?.email?.trim();
+
+    // Dynamically retrieve customer details from database if not supplied
+    const customer = await resolveCustomerDetails(order);
+    const customerEmail = customer.email;
+    const customerName = customer.name || order.user?.name || "Valued Customer";
+
+    // Dynamically retrieve items from database if not supplied
+    const items = await resolveOrderItems(order);
+
+    const enrichedOrder: OrderNotificationData = {
+      ...order,
+      user: {
+        ...(order.user || {}),
+        name: customerName,
+        email: customerEmail || undefined,
+      },
+      items,
+    };
+
     const isCod = order.razorpayOrderId?.startsWith("cod_");
     const paymentMethodText = isCod ? "Cash on Delivery (COD)" : "Prepaid Online (Verified)";
-    const totalFormatted = order.totalAmount.toFixed(2);
+    const totalFormatted = enrichedOrder.totalAmount.toFixed(2);
 
-    const emailContent = generateOrderConfirmationEmail(order);
+    const emailContent = generateOrderConfirmationEmail(enrichedOrder);
 
     // 1. Send Order Confirmation Email to Customer
     if (customerEmail) {
-      await sendEmail(customerEmail, emailContent.subject, emailContent.text, emailContent.html);
+      // In production, block placeholder emails such as test@example.com
+      if (process.env.NODE_ENV === "production" && isPlaceholderEmail(customerEmail)) {
+        console.warn(`[NOTIFICATIONS] Blocked email delivery to placeholder address in production: ${maskEmail(customerEmail)}`);
+      } else {
+        await sendEmail(customerEmail, emailContent.subject, emailContent.text, emailContent.html);
+      }
     } else {
       console.warn(`[NOTIFICATIONS] No customer email available for Order #${orderIdShort}`);
     }
 
     // 2. Send Alert Email to Admin
-    if (adminEmail) {
+    const targetAdminEmail = getAdminEmail();
+    if (targetAdminEmail) {
       const adminSubject = `🚨 New Order Received #${orderIdShort} [₹${totalFormatted}] via ${paymentMethodText}`;
       const adminText = `
 New Order Received!
 Order ID: #${orderIdShort}
-Customer: ${order.user?.name || "Customer"} (${customerEmail || "No email"})
+Customer: ${customerName} (${customerEmail || "No email"})
 Amount: ₹${totalFormatted}
 Payment Method: ${paymentMethodText}
 
@@ -689,7 +846,7 @@ Shipping Address:
 ${order.shippingAddress}
       `.trim();
 
-      await sendEmail(adminEmail, adminSubject, adminText, emailContent.html);
+      await sendEmail(targetAdminEmail, adminSubject, adminText, emailContent.html);
     }
   } catch (err) {
     // Fail gracefully without interrupting checkout or payment processing
@@ -723,30 +880,52 @@ export async function notifyOrderStatusUpdate(
 
   try {
     const orderIdShort = order.id.slice(-8).toUpperCase();
-    const customerEmail = order.user?.email?.trim();
-    const totalFormatted = order.totalAmount.toFixed(2);
 
-    const emailContent = generateOrderStatusUpdateEmail(order, oldStatus, newStatus);
+    // Dynamically retrieve customer details from database if not supplied
+    const customer = await resolveCustomerDetails(order);
+    const customerEmail = customer.email;
+    const customerName = customer.name || order.user?.name || "Valued Customer";
+
+    // Dynamically retrieve items from database if not supplied
+    const items = await resolveOrderItems(order);
+
+    const enrichedOrder: OrderNotificationData = {
+      ...order,
+      user: {
+        ...(order.user || {}),
+        name: customerName,
+        email: customerEmail || undefined,
+      },
+      items,
+    };
+
+    const totalFormatted = enrichedOrder.totalAmount.toFixed(2);
+    const emailContent = generateOrderStatusUpdateEmail(enrichedOrder, oldStatus, newStatus);
 
     // 1. Send Status Update Email to Customer
     if (customerEmail) {
-      await sendEmail(customerEmail, emailContent.subject, emailContent.text, emailContent.html);
+      if (process.env.NODE_ENV === "production" && isPlaceholderEmail(customerEmail)) {
+        console.warn(`[NOTIFICATIONS] Blocked email delivery to placeholder address in production: ${maskEmail(customerEmail)}`);
+      } else {
+        await sendEmail(customerEmail, emailContent.subject, emailContent.text, emailContent.html);
+      }
     } else {
       console.warn(`[NOTIFICATIONS] No customer email available for status update on Order #${orderIdShort}`);
     }
 
     // 2. Send Notification Email to Admin
-    if (adminEmail) {
+    const targetAdminEmail = getAdminEmail();
+    if (targetAdminEmail) {
       const adminSubject = `🔔 Order #${orderIdShort} Status Updated: ${oldStatus} ➔ ${newStatus}`;
       const adminText = `
 Order Status Update:
 Order ID: #${orderIdShort}
-Customer: ${order.user?.name || "Customer"} (${customerEmail || "No email"})
+Customer: ${customerName} (${customerEmail || "No email"})
 Status: ${oldStatus} ➔ ${newStatus}
 Total: ₹${totalFormatted}
       `.trim();
 
-      await sendEmail(adminEmail, adminSubject, adminText, emailContent.html);
+      await sendEmail(targetAdminEmail, adminSubject, adminText, emailContent.html);
     }
   } catch (err) {
     console.error("[NOTIFICATIONS] Error in notifyOrderStatusUpdate:", err instanceof Error ? err.message : err);

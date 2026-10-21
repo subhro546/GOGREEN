@@ -12,6 +12,10 @@ import {
   notifyOrderStatusUpdate,
   resetNotificationDeduplicationForTests,
   setCustomEmailSenderForTesting,
+  getAdminEmail,
+  getSmtpFrom,
+  isPlaceholderEmail,
+  resolveCustomerDetails,
 } from "../src/lib/notifications";
 
 // Mock Product Repository for testing business logic
@@ -482,7 +486,7 @@ async function runTests() {
       shippingAddress: "Alice Roy\nPh: 9123456780\n45 Park Street\nKolkata - 700016",
       user: {
         name: "Alice Roy",
-        email: "alice@example.com",
+        email: "gogreen.nursery20@gmail.com",
       },
       items: [
         {
@@ -511,7 +515,7 @@ async function runTests() {
       shippingAddress: "Bob Smith\nPh: 9988776655\n9 Orchid Garden\nBengaluru - 560001",
       user: {
         name: "Bob Smith",
-        email: "bob@example.com",
+        email: "gogreen.nursery20@gmail.com",
       },
       items: [
         {
@@ -540,7 +544,7 @@ async function runTests() {
       id: "ord_idempotency_111",
       totalAmount: 500,
       shippingAddress: "Test Address",
-      user: { name: "Test User", email: "test@example.com" },
+      user: { name: "Test User", email: "gogreen.nursery20@gmail.com" },
       items: [],
     };
 
@@ -574,6 +578,82 @@ async function runTests() {
 
     // Empty order object does not crash
     await notifyOrderPlacement({} as any);
+  });
+
+  await test("NOTIF-06: Admin email is read from ADMIN_EMAIL and defaults to gogreen.nursery20@gmail.com", () => {
+    const defaultAdmin = getAdminEmail();
+    assert.strictEqual(defaultAdmin, "gogreen.nursery20@gmail.com");
+
+    const prevAdmin = process.env.ADMIN_EMAIL;
+    try {
+      process.env.ADMIN_EMAIL = "custom.admin@gmail.com";
+      assert.strictEqual(getAdminEmail(), "custom.admin@gmail.com");
+    } finally {
+      process.env.ADMIN_EMAIL = prevAdmin;
+    }
+  });
+
+  await test("NOTIF-07: Sender email is read from SMTP_FROM configuration", () => {
+    const defaultSender = getSmtpFrom();
+    assert.strictEqual(defaultSender, "GoGreen Nursery <gogreen.nursery20@gmail.com>");
+  });
+
+  await test("NOTIF-08: isPlaceholderEmail detects dummy addresses and preserves real inboxes", () => {
+    assert.strictEqual(isPlaceholderEmail("test@example.com"), true, "test@example.com must be detected as placeholder");
+    assert.strictEqual(isPlaceholderEmail("user@example.org"), true, "*@example.org must be detected as placeholder");
+    assert.strictEqual(isPlaceholderEmail("customer@test.com"), true, "*@test.com must be detected as placeholder");
+    assert.strictEqual(isPlaceholderEmail("placeholder@custom.com"), true, "placeholder prefix must be detected");
+    assert.strictEqual(isPlaceholderEmail(""), true, "empty email is invalid/placeholder");
+
+    // Real test inboxes must NOT be considered placeholders
+    assert.strictEqual(isPlaceholderEmail("gogreen.nursery20@gmail.com"), false, "gogreen.nursery20@gmail.com is authentic");
+    assert.strictEqual(isPlaceholderEmail("subhro.das546@gmail.com"), false, "subhro.das546@gmail.com is authentic");
+  });
+
+  await test("NOTIF-09: resolveCustomerDetails dynamically retrieves email and name", async () => {
+    // 1. When present on user object
+    const resultFromUser = await resolveCustomerDetails({
+      id: "ord_user_mock",
+      totalAmount: 100,
+      shippingAddress: "Addr",
+      user: { name: "Ananya Sen", email: "gogreen.nursery20@gmail.com" },
+    });
+    assert.strictEqual(resultFromUser.email, "gogreen.nursery20@gmail.com");
+    assert.strictEqual(resultFromUser.name, "Ananya Sen");
+
+    // 2. When user is null and ID is not in DB, returns null safely without throwing
+    const resultEmpty = await resolveCustomerDetails({
+      id: "ord_nonexistent_999",
+      totalAmount: 100,
+      shippingAddress: "Addr",
+      user: null,
+    });
+    assert.strictEqual(resultEmpty.email, null);
+    assert.strictEqual(resultEmpty.name, null);
+  });
+
+  await test("NOTIF-10: Notification dispatch failure does not throw or break caller execution", async () => {
+    resetNotificationDeduplicationForTests();
+
+    // Simulate failing sender that rejects with an error
+    setCustomEmailSenderForTesting(async () => {
+      throw new Error("Simulated SMTP Connection Refused / Timeout");
+    });
+
+    try {
+      // Must not throw exception
+      await notifyOrderPlacement({
+        id: "ord_fail_simulation_777",
+        totalAmount: 500,
+        shippingAddress: "Safe Address",
+        user: { name: "Test User", email: "gogreen.nursery20@gmail.com" },
+        items: [],
+      });
+      assert.strictEqual(true, true, "Execution continued smoothly despite email failure");
+    } finally {
+      // Restore working mock sender for subsequent tests
+      setCustomEmailSenderForTesting(async () => true);
+    }
   });
 
   console.log("\n==================================================");

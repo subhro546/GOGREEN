@@ -171,8 +171,12 @@ export class CheckoutService {
         return createdOrder;
       });
 
-      // Send placement notification
-      await notifyOrderPlacement(order);
+      // Send placement notification (resilient: failed notifications never interrupt checkout)
+      try {
+        await notifyOrderPlacement(order);
+      } catch (notifErr) {
+        console.error("Order notification error (non-fatal):", notifErr);
+      }
 
       return {
         id: order.razorpayOrderId,

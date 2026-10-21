@@ -49,7 +49,11 @@ export async function PATCH(
     });
 
     const { notifyOrderStatusUpdate } = await import("../../../../../lib/notifications");
-    await notifyOrderStatusUpdate(updatedOrder, oldStatus, status);
+    try {
+      await notifyOrderStatusUpdate(updatedOrder, oldStatus, status);
+    } catch (notifErr) {
+      console.error("Order status update notification error (non-fatal):", notifErr);
+    }
 
     return NextResponse.json({ message: "Order status updated" });
   } catch (error) {

@@ -145,7 +145,11 @@ export async function POST(req: Request) {
 
     if (updatedOrder) {
       await saveShippingAddress(updatedOrder.userId, updatedOrder.shippingAddress);
-      await notifyOrderPlacement(updatedOrder);
+      try {
+        await notifyOrderPlacement(updatedOrder);
+      } catch (notifErr) {
+        console.error("Order notification error during verify (non-fatal):", notifErr);
+      }
     }
 
     return NextResponse.json({ message: "Payment verified successfully" });
