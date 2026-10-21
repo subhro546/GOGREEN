@@ -13,7 +13,8 @@ export default function AddressManager({ initialAddresses }: { initialAddresses:
   const [addresses, setAddresses] = useState<Address[]>(initialAddresses);
   const [formData, setFormData] = useState({
     name: "",
-    street: "",
+    line1: "",
+    line2: "",
     city: "",
     state: "",
     zip: "",
@@ -25,12 +26,32 @@ export default function AddressManager({ initialAddresses }: { initialAddresses:
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.street || !formData.city || !formData.state || !formData.zip || !formData.phone) {
+    if (!formData.line1 || !formData.city || !formData.state || !formData.zip || !formData.phone) {
       alert("Please fill all required fields, including phone number.");
       return;
     }
 
-    const fullAddress = `${formData.name ? formData.name + ', ' : ''}${formData.street}, ${formData.city}, ${formData.state} - ${formData.zip}. Phone: ${formData.phone}`;
+    const cleanPhone = formData.phone.trim().replace(/\s+/g, "").replace(/^\+91/, "").replace(/^0/, "");
+    if (!/^\d{10}$/.test(cleanPhone)) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
+    const cleanZip = formData.zip.trim().replace(/\s+/g, "");
+    if (!/^\d{6}$/.test(cleanZip)) {
+      alert("Please enter a valid 6-digit PIN code.");
+      return;
+    }
+
+    const fullAddress = [
+      formData.name.trim(),
+      `Ph: ${cleanPhone}`,
+      formData.line1.trim(),
+      formData.line2.trim(),
+      `${formData.city.trim()}${formData.state.trim() ? ", " + formData.state.trim() : ""}${cleanZip ? " - " + cleanZip : ""}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     setLoading(true);
     try {
@@ -48,7 +69,7 @@ export default function AddressManager({ initialAddresses }: { initialAddresses:
 
       const added = await res.json();
       setAddresses((prev) => [added, ...prev]);
-      setFormData({ name: "", street: "", city: "", state: "", zip: "", phone: "" });
+      setFormData({ name: "", line1: "", line2: "", city: "", state: "", zip: "", phone: "" });
       router.refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Something went wrong");
@@ -122,11 +143,20 @@ export default function AddressManager({ initialAddresses }: { initialAddresses:
         
         <input
           type="text"
-          name="street"
+          name="line1"
           required
-          value={formData.street}
+          value={formData.line1}
           onChange={handleChange}
-          placeholder="Street Address *"
+          placeholder="Address Line 1 (House / Flat / Street) *"
+          className="w-full px-4 py-3 rounded-xl border border-text-dark/20 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
+        />
+
+        <input
+          type="text"
+          name="line2"
+          value={formData.line2}
+          onChange={handleChange}
+          placeholder="Address Line 2 (Area, Landmark - Optional)"
           className="w-full px-4 py-3 rounded-xl border border-text-dark/20 focus:outline-none focus:ring-2 focus:ring-brand-secondary text-sm bg-white"
         />
         

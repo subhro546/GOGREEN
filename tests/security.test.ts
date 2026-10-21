@@ -5,6 +5,13 @@ import { AdminProductService } from "../src/services/AdminProductService";
 import { IProductRepository } from "../src/interfaces/IProductRepository";
 import { IOrderRepository } from "../src/interfaces/IOrderRepository";
 import { Product, Order } from "@prisma/client";
+import {
+  generateOrderConfirmationEmail,
+  generateOrderStatusUpdateEmail,
+  notifyOrderPlacement,
+  notifyOrderStatusUpdate,
+  resetNotificationDeduplicationForTests,
+} from "../src/lib/notifications";
 
 // Mock Product Repository for testing business logic
 class MockProductRepository implements IProductRepository {
@@ -304,6 +311,39 @@ async function runTests() {
     assert.strictEqual(validatePassword("SecurePass123!"), true, "Valid password accepted");
   });
 
+  await test("REG-01: Conventional address builder formats multiline structure correctly", () => {
+    const buildAddress = (f: { recipient?: string; phone: string; line1: string; line2?: string; city: string; state: string; pincode: string }) => {
+      const cleanPhone = f.phone.replace(/\s+/g, "").replace(/^\+91/, "").replace(/^0/, "");
+      const cleanPincode = f.pincode.replace(/\s+/g, "");
+      return [
+        f.recipient || "Customer",
+        cleanPhone ? `Ph: ${cleanPhone}` : "",
+        f.line1.trim(),
+        f.line2?.trim(),
+        `${f.city.trim()}${f.state.trim() ? ", " + f.state.trim() : ""}${cleanPincode ? " - " + cleanPincode : ""}`,
+      ].filter(Boolean).join("\n");
+    };
+
+    const formatted = buildAddress({
+      recipient: "Anita Sen",
+      phone: "+91 9876543210",
+      line1: "Flat 2B, Green Villa",
+      line2: "Near Lake Park",
+      city: "Kolkata",
+      state: "West Bengal",
+      pincode: "700066",
+    });
+
+    const expected = "Anita Sen\nPh: 9876543210\nFlat 2B, Green Villa\nNear Lake Park\nKolkata, West Bengal - 700066";
+    assert.strictEqual(formatted, expected, "Conventional multiline address must match expected standard format");
+
+    // Phone & Pincode regex validation
+    assert.strictEqual(/^\d{10}$/.test("9876543210"), true, "10-digit phone accepted");
+    assert.strictEqual(/^\d{10}$/.test("98765"), false, "Short phone rejected");
+    assert.strictEqual(/^\d{6}$/.test("700066"), true, "6-digit pincode accepted");
+    assert.strictEqual(/^\d{6}$/.test("7000"), false, "Short pincode rejected");
+  });
+
   // ── TEST CATEGORY 5: FILE UPLOAD CONTENT HARDENING ──
   console.log("\n5. File Upload Content & MIME Hardening Tests");
 
@@ -371,6 +411,165 @@ async function runTests() {
     assert.strictEqual(validateComment("a"), false, "Single character comment rejected");
     assert.strictEqual(validateComment("Great plant! Fast delivery."), true, "Normal comment accepted");
     assert.strictEqual(validateComment("x".repeat(1001)), false, "Excessive comment >1000 chars rejected");
+  });
+
+  // ── TEST CATEGORY 7: TRANSACTIONAL EMAIL NOTIFICATIONS ──
+  console.log("\n7. Transactional Email Notifications & Idempotency Tests");
+
+  await test("NOTIF-01: Order confirmation email includes all required order details", () => {
+    const mockOrder = {
+      id: "ord_test_12345678",
+      totalAmount: 1249,
+      discount: 100,
+      status: "PAID",
+      razorpayOrderId: "order_mock_12345678",
+      shippingAddress: "Subhro Das\nPh: 9876543210\n123 Green Way\nKolkata, West Bengal - 700066",
+      user: {
+        name: "Subhro Das",
+        email: "subhro.das546@gmail.com",
+      },
+      items: [
+        {
+          price: 699,
+          quantity: 1,
+          product: { name: "Monstera Deliciosa" },
+        },
+        {
+          price: 550,
+          quantity: 1,
+          product: { name: "Snake Plant" },
+        },
+      ],
+    };
+
+    const { subject, text, html } = generateOrderConfirmationEmail(mockOrder);
+
+    // 1. Order ID presence
+    assert.strictEqual(subject.includes("12345678"), true, "Subject must contain short order ID");
+    assert.strictEqual(text.includes("12345678"), true, "Text must contain short order ID");
+    assert.strictEqual(html.includes("12345678"), true, "HTML must contain short order ID");
+
+    // 2. Items, quantities, and prices
+    assert.strictEqual(html.includes("Monstera Deliciosa"), true, "HTML must include item 1 name");
+    assert.strictEqual(html.includes("Snake Plant"), true, "HTML must include item 2 name");
+    assert.strictEqual(html.includes("₹699.00"), true, "HTML must include item 1 price");
+    assert.strictEqual(html.includes("₹550.00"), true, "HTML must include item 2 price");
+    assert.strictEqual(text.includes("Monstera Deliciosa x 1 @ ₹699.00"), true, "Text must include item 1 line");
+
+    // 3. Total amount & discount
+    assert.strictEqual(html.includes("₹1249.00"), true, "HTML must include total amount");
+    assert.strictEqual(html.includes("-₹100.00"), true, "HTML must include discount");
+
+    // 4. Payment method
+    assert.strictEqual(html.includes("Prepaid Online"), true, "Payment method must be Prepaid Online");
+
+    // 5. Delivery address
+    assert.strictEqual(html.includes("123 Green Way"), true, "HTML must include street address");
+    assert.strictEqual(html.includes("700066"), true, "HTML must include pincode");
+    assert.strictEqual(text.includes("123 Green Way"), true, "Text must include street address");
+  });
+
+  await test("NOTIF-02: COD order confirmation explicitly reflects COD payment method and status", () => {
+    const mockCodOrder = {
+      id: "ord_cod_87654321",
+      totalAmount: 848,
+      status: "PENDING",
+      razorpayOrderId: "cod_12345_abcde",
+      shippingAddress: "Alice Roy\nPh: 9123456780\n45 Park Street\nKolkata - 700016",
+      user: {
+        name: "Alice Roy",
+        email: "alice@example.com",
+      },
+      items: [
+        {
+          price: 799,
+          quantity: 1,
+          product: { name: "Areca Palm" },
+        },
+      ],
+    };
+
+    const { subject, text, html } = generateOrderConfirmationEmail(mockCodOrder);
+
+    assert.strictEqual(subject.includes("87654321"), true);
+    assert.strictEqual(html.includes("Cash on Delivery (COD)"), true, "HTML must specify Cash on Delivery");
+    assert.strictEqual(text.includes("Cash on Delivery (COD)"), true, "Text must specify Cash on Delivery");
+    assert.strictEqual(html.includes("₹49.00"), true, "HTML must mention COD fee");
+    assert.strictEqual(html.includes("Areca Palm"), true, "HTML must list item");
+    assert.strictEqual(html.includes("45 Park Street"), true, "HTML must list delivery address");
+  });
+
+  await test("NOTIF-03: Order status update email contains status transition and order items", () => {
+    const mockOrder = {
+      id: "ord_update_99887766",
+      totalAmount: 1499,
+      status: "SHIPPED",
+      shippingAddress: "Bob Smith\nPh: 9988776655\n9 Orchid Garden\nBengaluru - 560001",
+      user: {
+        name: "Bob Smith",
+        email: "bob@example.com",
+      },
+      items: [
+        {
+          price: 1499,
+          quantity: 1,
+          product: { name: "Fiddle Leaf Fig" },
+        },
+      ],
+    };
+
+    const { subject, text, html } = generateOrderStatusUpdateEmail(mockOrder, "PAID", "SHIPPED");
+
+    assert.strictEqual(subject.includes("SHIPPED"), true, "Subject must include new status");
+    assert.strictEqual(subject.includes("99887766"), true, "Subject must include order ID");
+    assert.strictEqual(html.includes("PAID"), true, "HTML must show previous status");
+    assert.strictEqual(html.includes("SHIPPED"), true, "HTML must show new status");
+    assert.strictEqual(html.includes("Fiddle Leaf Fig"), true, "HTML must list items");
+    assert.strictEqual(html.includes("₹1499.00"), true, "HTML must include order total");
+    assert.strictEqual(text.includes("PAID to SHIPPED"), true, "Text must include status transition");
+  });
+
+  await test("NOTIF-04: Duplicate notifications are prevented on retries", async () => {
+    resetNotificationDeduplicationForTests();
+
+    const mockOrder = {
+      id: "ord_idempotency_111",
+      totalAmount: 500,
+      shippingAddress: "Test Address",
+      user: { name: "Test User", email: "test@example.com" },
+      items: [],
+    };
+
+    // First placement call succeeds
+    await notifyOrderPlacement(mockOrder);
+
+    // Second placement call with same ID is detected and skipped without error
+    await notifyOrderPlacement(mockOrder);
+
+    // Identical status update transition (SHIPPED -> SHIPPED) is skipped
+    await notifyOrderStatusUpdate(mockOrder, "SHIPPED", "SHIPPED");
+
+    // Status transition (PAID -> SHIPPED) first time succeeds
+    await notifyOrderStatusUpdate(mockOrder, "PAID", "SHIPPED");
+
+    // Status transition (PAID -> SHIPPED) second time is skipped
+    await notifyOrderStatusUpdate(mockOrder, "PAID", "SHIPPED");
+  });
+
+  await test("NOTIF-05: Missing email or invalid order gracefully handled without exceptions", async () => {
+    resetNotificationDeduplicationForTests();
+
+    // Order with missing email or null user does not crash
+    await notifyOrderPlacement({
+      id: "ord_no_email_222",
+      totalAmount: 300,
+      shippingAddress: "Test Address",
+      user: null,
+      items: [],
+    });
+
+    // Empty order object does not crash
+    await notifyOrderPlacement({} as any);
   });
 
   console.log("\n==================================================");

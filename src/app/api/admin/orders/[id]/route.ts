@@ -35,11 +35,16 @@ export async function PATCH(
 
     const oldStatus = order.status;
 
+    if (oldStatus === status) {
+      return NextResponse.json({ message: "Order status is already " + status });
+    }
+
     const updatedOrder = await prisma.order.update({
       where: { id },
       data: { status },
       include: {
-        user: { select: { name: true, email: true } }
+        user: { select: { name: true, email: true } },
+        items: { include: { product: true } }
       }
     });
 

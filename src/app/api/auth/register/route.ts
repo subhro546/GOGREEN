@@ -44,7 +44,37 @@ export async function POST(req: Request) {
     }
 
     const cleanName = name.trim().slice(0, 100);
-    const cleanAddress = address.trim().slice(0, 500);
+
+    let cleanAddress = "";
+    if (typeof address === "string") {
+      cleanAddress = address.trim().slice(0, 500);
+    } else if (address && typeof address === "object") {
+      const recipient = (address.recipientName || address.fullName || address.name || cleanName).trim();
+      const phoneStr = (address.phone || "").trim().replace(/\s+/g, "").replace(/^\+91/, "").replace(/^0/, "");
+      const line1 = (address.line1 || address.street || "").trim();
+      const line2 = (address.line2 || "").trim();
+      const city = (address.city || "").trim();
+      const state = (address.state || "").trim();
+      const pincode = (address.pincode || address.zip || "").trim();
+
+      cleanAddress = [
+        recipient,
+        phoneStr ? `Ph: ${phoneStr}` : "",
+        line1,
+        line2,
+        `${city}${state ? ", " + state : ""}${pincode ? " - " + pincode : ""}`,
+      ]
+        .filter(Boolean)
+        .join("\n")
+        .slice(0, 500);
+    }
+
+    if (!cleanAddress) {
+      return NextResponse.json(
+        { message: "A valid shipping address is required" },
+        { status: 400 }
+      );
+    }
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
