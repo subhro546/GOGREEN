@@ -98,8 +98,8 @@ export class CheckoutService {
       });
     }
 
-    if (totalItemsSubtotal < 499) {
-      throw new Error("Minimum purchase amount is ₹499.");
+    if (totalItemsSubtotal <= 0) {
+      throw new Error("Invalid order total.");
     }
 
     let calculatedDiscount = 0;

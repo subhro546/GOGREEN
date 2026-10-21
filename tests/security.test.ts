@@ -154,20 +154,16 @@ async function runTests() {
     );
   });
 
-  await test("SEC-02: Minimum purchase threshold is enforced", async () => {
+  await test("SEC-02: Orders without minimum purchase threshold are accepted", async () => {
     const mockProductRepo = new MockProductRepository([
       { id: "p1", name: "Small Succulent", price: 150, stock: 20, shippingCharge: 0 },
     ]);
     const mockOrderRepo = new MockOrderRepository();
     const service = new CheckoutService(mockProductRepo, mockOrderRepo);
 
-    // ₹150 is below minimum ₹499
-    await assert.rejects(
-      async () => {
-        await service.processCheckout("user_123", [{ id: "p1", quantity: 1 }], "Address", "prepaid");
-      },
-      /Minimum purchase amount is ₹499/
-    );
+    // ₹150 order is accepted now that minimum purchase limit is removed
+    const res = await service.processCheckout("user_123", [{ id: "p1", quantity: 1 }], "Address", "prepaid");
+    assert.strictEqual(res.amount, 15000);
   });
 
   // ── TEST CATEGORY 2: CASH ON DELIVERY & STATE HANDLING ──

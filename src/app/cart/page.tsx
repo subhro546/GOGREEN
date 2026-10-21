@@ -95,8 +95,7 @@ export default function CartPage() {
   const totalShipping = items.reduce((sum, item) => sum + (item.shippingCharge ?? 0) * item.quantity, 0);
   const codFee = paymentMethod === "cod" ? 49 : 0;
   const finalTotal = Math.max(0, totalPrice - discount + totalShipping + codFee);
-  const MIN_PURCHASE_LIMIT = 499;
-  const isMinLimitSatisfied = totalPrice >= MIN_PURCHASE_LIMIT;
+  const isMinLimitSatisfied = totalPrice > 0;
 
   // Build the final shipping address string
   const shippingAddress = isNewAddress
@@ -448,14 +447,7 @@ export default function CartPage() {
                       <span className="text-lg font-bold text-text-dark">Total Amount</span>
                       <span className="text-2xl font-bold text-brand-secondary">₹{finalTotal.toFixed(2)}</span>
                     </div>
-                    {!isMinLimitSatisfied && (
-                      <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-xs text-red-600 font-medium space-y-1 mb-3">
-                        <p className="flex items-center gap-1.5 font-bold">
-                          <span>⚠️</span> Minimum purchase limit is ₹499
-                        </p>
-                        <p>Please add items worth ₹{(MIN_PURCHASE_LIMIT - totalPrice).toFixed(2)} more to place your order.</p>
-                      </div>
-                    )}
+
                     <button
                       onClick={handleCheckout}
                       disabled={loading || !isMinLimitSatisfied}
