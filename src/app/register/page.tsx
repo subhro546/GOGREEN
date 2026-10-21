@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaMapMarkerAlt, FaSpinner } from "react-icons/fa";
+import { FaUser, FaMapMarkerAlt, FaSpinner } from "react-icons/fa";
 
 interface AddressFormState {
   recipientName: string;

@@ -7,7 +7,6 @@ const fromSmsNumber = process.env.TWILIO_FROM_SMS_NUMBER || "";
 const fromWhatsAppNumber = process.env.TWILIO_FROM_WHATSAPP_NUMBER || "";
 
 const adminEmail = process.env.ADMIN_EMAIL || "admin@gogreen.com";
-const adminPhone = process.env.ADMIN_PHONE || "";
 
 const smtpHost = process.env.SMTP_HOST || "";
 const smtpPort = parseInt(process.env.SMTP_PORT || "587", 10);
@@ -349,7 +348,7 @@ export function generateOrderConfirmationEmail(order: OrderNotificationData) {
                   isCod
                     ? `<tr>
                         <td style="padding: 4px 0; color: #6b7280;">COD Handling Fee:</td>
-                        <td style="padding: 4px 0; text-align: right; color: #111827; font-weight: 500;">₹49.00</td>
+                        <td style="padding: 4px 0; text-align: right; color: #111827; font-weight: 500;">₹${codFee.toFixed(2)}</td>
                       </tr>`
                     : ""
                 }
@@ -421,7 +420,7 @@ ${itemsTextList || "Item details recorded in order"}
 
 --------------------------------------------------
 Subtotal: ₹${itemsSubtotal.toFixed(2)}
-${discountAmount > 0 ? `Coupon Discount: -₹${discountAmount.toFixed(2)}\n` : ""}${isCod ? `COD Fee: ₹49.00\n` : ""}Shipping: Free
+${discountAmount > 0 ? `Coupon Discount: -₹${discountAmount.toFixed(2)}\n` : ""}${isCod ? `COD Fee: ₹${codFee.toFixed(2)}\n` : ""}Shipping: Free
 TOTAL AMOUNT: ₹${grandTotal.toFixed(2)}
 --------------------------------------------------
 
