@@ -74,7 +74,9 @@ export default function OrdersTable({ initialOrders }: { initialOrders: Order[] 
 
   const printReceipt = (order: Order) => {
     const isCod = order.razorpayOrderId?.startsWith("cod_");
-    const orderIdShort = order.id.slice(-8).toUpperCase();
+    const orderIdShort = order.id.toUpperCase().startsWith("GGN")
+      ? order.id.toUpperCase()
+      : order.id.slice(-8).toUpperCase();
     
     // Extract phone & address lines
     const addressLines = order.shippingAddress ? order.shippingAddress.split("\n").map(l => l.trim()).filter(Boolean) : [];
@@ -423,7 +425,7 @@ ${addressBody}</div>
                   <div>
                     <div className="flex items-center gap-2">
                       <h4 className="font-mono font-bold text-sm text-text-dark">
-                        ORDER: #{order.id.slice(-8).toUpperCase()}
+                        ORDER: #{order.id.toUpperCase().startsWith("GGN") ? order.id.toUpperCase() : order.id.slice(-8).toUpperCase()}
                       </h4>
                       <span className={`px-1.5 py-0.5 text-[9px] font-black rounded ${
                         order.razorpayOrderId?.startsWith("cod_") 

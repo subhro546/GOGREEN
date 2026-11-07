@@ -67,8 +67,8 @@ export default async function OrdersPage() {
                   <div className="px-6 py-4 bg-brand-hero/50 border-b border-brand/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-6">
                       <div>
-                        <p className="text-xs text-text-dark/50 font-medium">ORDER ID</p>
-                        <p className="font-mono text-sm font-bold text-text-dark">{order.id.slice(-8).toUpperCase()}</p>
+                        <p className="text-xs text-text-dark/50 font-medium">ORDER NUMBER</p>
+                        <p className="font-mono text-sm font-bold text-text-dark">{order.id.toUpperCase().startsWith("GGN") ? order.id.toUpperCase() : order.id.slice(-8).toUpperCase()}</p>
                       </div>
                       <div>
                         <p className="text-xs text-text-dark/50 font-medium">PAYMENT</p>

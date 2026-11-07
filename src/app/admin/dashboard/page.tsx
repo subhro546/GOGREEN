@@ -72,7 +72,7 @@ export default async function AdminDashboard() {
               ) : (
                 recentOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-brand-hero/50 transition-colors border-t border-brand/5">
-                    <td className="p-4 font-mono text-sm">{order.id.slice(-8).toUpperCase()}</td>
+                    <td className="p-4 font-mono text-sm font-bold">{order.id.toUpperCase().startsWith("GGN") ? order.id.toUpperCase() : order.id.slice(-8).toUpperCase()}</td>
                     <td className="p-4">
                       <p className="font-medium">{order.user.name || "Guest"}</p>
                       <p className="text-xs text-text-dark/50">{order.user.email}</p>

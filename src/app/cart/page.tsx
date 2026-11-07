@@ -10,6 +10,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const COD_THRESHOLD = 1000;
+const MIN_PREPAID_ORDER = 449;
+const MIN_COD_ORDER = 349;
 
 interface AddressForm {
   fullName: string;
@@ -95,7 +97,8 @@ export default function CartPage() {
   const totalShipping = items.reduce((sum, item) => sum + (item.shippingCharge ?? 0) * item.quantity, 0);
   const codFee = paymentMethod === "cod" ? 49 : 0;
   const finalTotal = Math.max(0, totalPrice - discount + totalShipping + codFee);
-  const isMinLimitSatisfied = totalPrice > 0;
+  const minPurchaseLimit = paymentMethod === "cod" ? MIN_COD_ORDER : MIN_PREPAID_ORDER;
+  const isMinLimitSatisfied = totalPrice >= minPurchaseLimit;
 
   // Build the final shipping address string
   const shippingAddress = isNewAddress
@@ -352,22 +355,22 @@ export default function CartPage() {
                           <input type="radio" name="payment" checked={paymentMethod === "prepaid"} onChange={() => setPaymentMethod("prepaid")} className="w-4 h-4" />
                           <div>
                             <p className="font-bold text-text-dark">Pay Online</p>
-                            <p className="text-xs text-text-dark/50">UPI, Cards, Net Banking</p>
+                            <p className="text-xs text-text-dark/50">UPI, Cards, Net Banking (Min. order ₹{MIN_PREPAID_ORDER})</p>
                           </div>
                         </label>
                         <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all text-sm ${paymentMethod === "cod" ? "border-brand-secondary bg-brand-hero/20" : "border-text-dark/10 hover:bg-brand-hero/10"}`}>
                           <input type="radio" name="payment" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="w-4 h-4" />
                           <div>
                             <p className="font-bold text-text-dark">Cash on Delivery</p>
-                            <p className="text-xs text-text-dark/50">Pay ₹{finalTotal.toFixed(2)} at your door (includes shipping and ₹49.00 fee)</p>
+                            <p className="text-xs text-text-dark/50">Pay ₹{finalTotal.toFixed(2)} at your door (includes shipping and ₹49.00 fee • Min. order ₹{MIN_COD_ORDER})</p>
                           </div>
                         </label>
-                        <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">💡 COD available for orders under ₹{COD_THRESHOLD}</p>
+                        <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">💡 Min. order ₹{MIN_COD_ORDER} for COD (under ₹{COD_THRESHOLD}) | ₹{MIN_PREPAID_ORDER} for Prepaid</p>
                       </div>
                     ) : (
                       <div className="p-3.5 rounded-xl border border-brand-secondary bg-brand-hero/20 text-sm">
                         <p className="font-bold text-text-dark">Pay Online (Prepaid Only)</p>
-                        <p className="text-xs text-text-dark/50 mt-0.5">UPI, Cards, Net Banking via Razorpay</p>
+                        <p className="text-xs text-text-dark/50 mt-0.5">UPI, Cards, Net Banking via Razorpay (Min. order ₹{MIN_PREPAID_ORDER})</p>
                         {hasNonCodItems ? (
                           <p className="text-xs text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200 mt-2 font-medium">
                             ⚠️ Cash on Delivery is disabled because {nonCodItems.map((i) => `"${i.name}"`).join(", ")} {nonCodItems.length > 1 ? "are" : "is"} marked as Prepaid Only.
@@ -447,6 +450,20 @@ export default function CartPage() {
                       <span className="text-lg font-bold text-text-dark">Total Amount</span>
                       <span className="text-2xl font-bold text-brand-secondary">₹{finalTotal.toFixed(2)}</span>
                     </div>
+
+                    {!isMinLimitSatisfied && (
+                      <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-xs text-red-600 font-medium space-y-1 mb-3">
+                        <p className="flex items-center gap-1.5 font-bold">
+                          <span>⚠️</span> Minimum {paymentMethod === "cod" ? "COD" : "prepaid"} order amount is ₹{minPurchaseLimit}
+                        </p>
+                        <p>
+                          Please add items worth ₹{(minPurchaseLimit - totalPrice).toFixed(2)} more to place your {paymentMethod === "cod" ? "COD" : "prepaid"} order
+                          {paymentMethod === "prepaid" && isCODEligible && totalPrice >= MIN_COD_ORDER
+                            ? ` (or switch to Cash on Delivery, min. ₹${MIN_COD_ORDER}).`
+                            : "."}
+                        </p>
+                      </div>
+                    )}
 
                     <button
                       onClick={handleCheckout}

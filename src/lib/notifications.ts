@@ -357,11 +357,18 @@ export async function resolveOrderItems(order: OrderNotificationData): Promise<O
   return [];
 }
 
+export function formatOrderNumber(orderId: string): string {
+  if (!orderId) return "";
+  return orderId.toUpperCase().startsWith("GGN")
+    ? orderId.toUpperCase()
+    : orderId.slice(-8).toUpperCase();
+}
+
 /**
  * Generates email content (HTML and plain text) for order confirmation
  */
 export function generateOrderConfirmationEmail(order: OrderNotificationData) {
-  const orderIdShort = order.id.slice(-8).toUpperCase();
+  const orderIdShort = formatOrderNumber(order.id);
   const isCod = order.razorpayOrderId?.startsWith("cod_");
   const paymentMethodLabel = isCod ? "Cash on Delivery (COD)" : "Prepaid Online (Razorpay Verified)";
   const customerName = order.user?.name || "Valued Customer";
@@ -589,7 +596,7 @@ export function generateOrderStatusUpdateEmail(
   oldStatus: string,
   newStatus: string
 ) {
-  const orderIdShort = order.id.slice(-8).toUpperCase();
+  const orderIdShort = formatOrderNumber(order.id);
   const customerName = order.user?.name || "Valued Customer";
   const grandTotal = order.totalAmount.toFixed(2);
   const items = order.items || [];
@@ -787,13 +794,13 @@ export async function notifyOrderPlacement(order: OrderNotificationData): Promis
 
   // Prevent duplicate confirmation emails for the same order ID
   if (processedConfirmationOrders.has(order.id)) {
-    console.log(`[NOTIFICATIONS] Skipping duplicate confirmation email for Order #${order.id.slice(-8)}`);
+    console.log(`[NOTIFICATIONS] Skipping duplicate confirmation email for Order #${formatOrderNumber(order.id)}`);
     return;
   }
   processedConfirmationOrders.add(order.id);
 
   try {
-    const orderIdShort = order.id.slice(-8).toUpperCase();
+    const orderIdShort = formatOrderNumber(order.id);
 
     // Dynamically retrieve customer details from database if not supplied
     const customer = await resolveCustomerDetails(order);
@@ -879,7 +886,7 @@ export async function notifyOrderStatusUpdate(
   processedStatusUpdates.add(updateKey);
 
   try {
-    const orderIdShort = order.id.slice(-8).toUpperCase();
+    const orderIdShort = formatOrderNumber(order.id);
 
     // Dynamically retrieve customer details from database if not supplied
     const customer = await resolveCustomerDetails(order);

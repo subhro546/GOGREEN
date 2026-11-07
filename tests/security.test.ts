@@ -4,6 +4,7 @@ import { CheckoutService } from "../src/services/CheckoutService";
 import { AdminProductService } from "../src/services/AdminProductService";
 import { IProductRepository } from "../src/interfaces/IProductRepository";
 import { IOrderRepository } from "../src/interfaces/IOrderRepository";
+import { generateNextOrderId } from "../src/repositories/PrismaOrderRepository";
 import { Product, Order } from "@prisma/client";
 import {
   generateOrderConfirmationEmail,
@@ -45,7 +46,8 @@ class MockOrderRepository implements IOrderRepository {
   public updatedOrders: Map<string, any> = new Map();
 
   async create(data: any): Promise<Order> {
-    const order = { ...data, id: "ord_" + Math.random().toString(36).slice(2) };
+    const nextNum = this.createdOrders.length + 1;
+    const order = { ...data, id: data.id || `GGN${String(nextNum).padStart(3, "0")}` };
     this.createdOrders.push(order);
     return order as Order;
   }
@@ -154,16 +156,64 @@ async function runTests() {
     );
   });
 
-  await test("SEC-02: Orders without minimum purchase threshold are accepted", async () => {
+  await test("SEC-02: Minimum prepaid order (₹449) and COD order (₹349) thresholds are enforced", async () => {
     const mockProductRepo = new MockProductRepository([
-      { id: "p1", name: "Small Succulent", price: 150, stock: 20, shippingCharge: 0 },
+      { id: "p_small", name: "Small Succulent", price: 150, stock: 20, shippingCharge: 0 },
+      { id: "p_cod", name: "Medium Plant", price: 349, stock: 20, shippingCharge: 0 },
+      { id: "p_prepaid", name: "Large Plant", price: 449, stock: 20, shippingCharge: 0 },
     ]);
     const mockOrderRepo = new MockOrderRepository();
     const service = new CheckoutService(mockProductRepo, mockOrderRepo);
 
-    // ₹150 order is accepted now that minimum purchase limit is removed
-    const res = await service.processCheckout("user_123", [{ id: "p1", quantity: 1 }], "Address", "prepaid");
-    assert.strictEqual(res.amount, 15000);
+    // ₹150 prepaid order is rejected (< ₹449)
+    await assert.rejects(
+      async () => {
+        await service.processCheckout("user_123", [{ id: "p_small", quantity: 1 }], "Address", "prepaid");
+      },
+      /Minimum purchase amount for prepaid orders is ₹449/
+    );
+
+    // ₹349 prepaid order is rejected (< ₹449)
+    await assert.rejects(
+      async () => {
+        await service.processCheckout("user_123", [{ id: "p_cod", quantity: 1 }], "Address", "prepaid");
+      },
+      /Minimum purchase amount for prepaid orders is ₹449/
+    );
+
+    // ₹150 COD order is rejected (< ₹349)
+    await assert.rejects(
+      async () => {
+        await service.processCheckout("user_123", [{ id: "p_small", quantity: 1 }], "Address", "cod");
+      },
+      /Minimum purchase amount for Cash on Delivery orders is ₹349/
+    );
+
+    // ₹449 prepaid order is accepted and receives sequential order ID GGN001
+    const res1 = await service.processCheckout("user_123", [{ id: "p_prepaid", quantity: 1 }], "Address", "prepaid");
+    assert.strictEqual(res1.amount, 44900);
+    assert.strictEqual(res1.orderDbId, "GGN001");
+
+    // Second prepaid order receives GGN002
+    const res2 = await service.processCheckout("user_123", [{ id: "p_prepaid", quantity: 1 }], "Address", "prepaid");
+    assert.strictEqual(res2.orderDbId, "GGN002");
+  });
+
+  await test("ORD-01: generateNextOrderId produces sequential GGN001, GGN002, ... IDs", async () => {
+    const id1 = await generateNextOrderId({
+      order: { findMany: (async () => []) as any },
+    });
+    assert.strictEqual(id1, "GGN001");
+
+    const id2 = await generateNextOrderId({
+      order: { findMany: (async () => [{ id: "GGN001" }]) as any },
+    });
+    assert.strictEqual(id2, "GGN002");
+
+    const id3 = await generateNextOrderId({
+      order: { findMany: (async () => [{ id: "GGN001" }, { id: "GGN002" }]) as any },
+    });
+    assert.strictEqual(id3, "GGN003");
   });
 
   // ── TEST CATEGORY 2: CASH ON DELIVERY & STATE HANDLING ──

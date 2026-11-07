@@ -2,7 +2,11 @@ import { IProductRepository } from "../interfaces/IProductRepository";
 import { IOrderRepository } from "../interfaces/IOrderRepository";
 import { prisma } from "../lib/prisma";
 import { notifyOrderPlacement } from "../lib/notifications";
+import { generateNextOrderId } from "../repositories/PrismaOrderRepository";
 import Razorpay from "razorpay";
+
+export const MIN_PREPAID_ORDER_AMOUNT = 449;
+export const MIN_COD_ORDER_AMOUNT = 349;
 
 export interface CartCheckoutItem {
   id: string;
@@ -102,6 +106,14 @@ export class CheckoutService {
       throw new Error("Invalid order total.");
     }
 
+    if (cleanMethod === "prepaid" && totalItemsSubtotal < MIN_PREPAID_ORDER_AMOUNT) {
+      throw new Error(`Minimum purchase amount for prepaid orders is ₹${MIN_PREPAID_ORDER_AMOUNT}.`);
+    }
+
+    if (cleanMethod === "cod" && totalItemsSubtotal < MIN_COD_ORDER_AMOUNT) {
+      throw new Error(`Minimum purchase amount for Cash on Delivery orders is ₹${MIN_COD_ORDER_AMOUNT}.`);
+    }
+
     let calculatedDiscount = 0;
     if (couponCode && typeof couponCode === "string") {
       const code = couponCode.trim().toUpperCase();
@@ -145,9 +157,11 @@ export class CheckoutService {
           });
         }
 
-        // Create COD order
+        // Create COD order with sequential order number (GGN001, GGN002, ...)
+        const nextOrderId = await generateNextOrderId(tx);
         const createdOrder = await tx.order.create({
           data: {
+            id: nextOrderId,
             userId,
             totalAmount,
             discount: calculatedDiscount,
