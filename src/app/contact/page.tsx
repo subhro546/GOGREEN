@@ -38,7 +38,7 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary italic mb-4">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-secondary italic mb-4">
               Contact Us
             </h1>
             <p className="text-text-dark/70 text-lg max-w-2xl mx-auto">
@@ -51,7 +51,7 @@ export default function ContactPage() {
             {/* Contact Details Column */}
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-white p-8 rounded-3xl shadow-lg border border-brand/5 space-y-8">
-                <h3 className="text-2xl font-serif font-bold text-brand-secondary">Get In Touch</h3>
+                <h3 className="text-2xl font-heading font-bold text-brand-secondary">Get In Touch</h3>
                 
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-brand-hero text-brand-secondary rounded-xl flex items-center justify-center shrink-0 text-lg">
@@ -135,7 +135,7 @@ export default function ContactPage() {
             {/* Contact Form Column */}
             <div className="lg:col-span-2">
               <div className="bg-white p-8 md:p-12 rounded-3xl shadow-lg border border-brand/5">
-                <h3 className="text-2xl font-serif font-bold text-brand-secondary mb-8">Send Us A Message</h3>
+                <h3 className="text-2xl font-heading font-bold text-brand-secondary mb-8">Send Us A Message</h3>
                 
                 {submitted ? (
                   <div className="p-8 bg-green-50 rounded-2xl border border-green-200 text-center space-y-4">

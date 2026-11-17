@@ -256,7 +256,7 @@ export default function CartPage() {
       <Navbar />
       <main className="flex-1 pt-24 pb-16 bg-transparent min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-serif font-bold text-brand-secondary italic mb-8">Your Cart</h1>
+          <h1 className="text-4xl font-heading font-bold text-brand-secondary italic mb-8">Your Cart</h1>
 
           {items.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-brand/5">

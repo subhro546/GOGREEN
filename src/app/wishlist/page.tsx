@@ -86,7 +86,7 @@ export default function WishlistPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200/80 dark:border-gray-800">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-gray-900 dark:text-white tracking-tight">
+              <h1 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 dark:text-white tracking-tight">
                 My Wishlist
               </h1>
               <span className="bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/60 text-xs sm:text-sm font-bold px-3 py-0.5 rounded-full">
@@ -135,7 +135,7 @@ export default function WishlistPage() {
             <div className="w-20 h-20 rounded-full bg-red-50 dark:bg-red-950/50 border border-red-100 dark:border-red-900/50 flex items-center justify-center text-red-500 dark:text-red-400 text-3xl mb-5 shadow-inner">
               <FaHeart />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-2">
               Your wishlist is empty
             </h2>
             <p className="text-sm text-text-dark/60 dark:text-gray-400 mb-8 leading-relaxed">
@@ -202,7 +202,7 @@ export default function WishlistPage() {
                       </p>
                       <Link
                         href={`/product/${item.id}`}
-                        className="text-sm sm:text-base font-serif font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-brand-secondary dark:group-hover:text-emerald-400 transition-colors"
+                        className="text-sm sm:text-base font-heading font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-brand-secondary dark:group-hover:text-emerald-400 transition-colors"
                       >
                         {item.name}
                       </Link>

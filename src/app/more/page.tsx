@@ -11,7 +11,7 @@ export default function MorePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary italic mb-4">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-secondary italic mb-4">
               More Services
             </h1>
             <p className="text-text-dark text-lg max-w-2xl mx-auto">
@@ -25,7 +25,7 @@ export default function MorePage() {
               <div className="w-16 h-16 bg-brand-topbar text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl shadow-lg">
                 <FaLeaf />
               </div>
-              <h3 className="text-2xl font-serif font-bold text-brand-secondary mb-3">Plant Styling</h3>
+              <h3 className="text-2xl font-heading font-bold text-brand-secondary mb-3">Plant Styling</h3>
               <p className="text-text-dark mb-6">
                 Not sure which plants fit your space? Our experts will visit your home or office to recommend the perfect green companions.
               </p>
@@ -39,7 +39,7 @@ export default function MorePage() {
               <div className="w-16 h-16 bg-brand-topbar text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl shadow-lg">
                 <FaSeedling />
               </div>
-              <h3 className="text-2xl font-serif font-bold text-brand-secondary mb-3">Plant Care & Maintenance</h3>
+              <h3 className="text-2xl font-heading font-bold text-brand-secondary mb-3">Plant Care & Maintenance</h3>
               <p className="text-text-dark mb-6">
                 Let us do the dirty work. We offer weekly or monthly maintenance plans to keep your plants healthy and thriving.
               </p>
@@ -53,7 +53,7 @@ export default function MorePage() {
               <div className="w-16 h-16 bg-brand-topbar text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl shadow-lg">
                 <FaTruck />
               </div>
-              <h3 className="text-2xl font-serif font-bold text-brand-secondary mb-3">Corporate Gifting</h3>
+              <h3 className="text-2xl font-heading font-bold text-brand-secondary mb-3">Corporate Gifting</h3>
               <p className="text-text-dark mb-6">
                 Give the gift of life. We provide beautiful, customized plant gifts for your clients and employees.
               </p>

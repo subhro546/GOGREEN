@@ -99,7 +99,7 @@ const ProductCard = ({
           {/* Info + button */}
           <div className="flex flex-col flex-1 p-3 gap-1">
             <p className="text-[10px] text-text-dark/50 font-semibold uppercase tracking-widest">{category}</p>
-            <p className="text-sm font-serif font-bold text-text-dark leading-snug line-clamp-1 group-hover/card:text-brand-secondary transition-colors">
+            <p className="text-sm font-heading font-bold text-text-dark leading-snug line-clamp-1 group-hover/card:text-brand-secondary transition-colors">
               {name}
             </p>
 
@@ -190,7 +190,7 @@ const ProductCard = ({
           <div className="p-2 flex-1 flex flex-col justify-between">
             <div>
               <p className="text-[9px] text-text-dark/50 dark:text-gray-400 font-semibold mb-0.5 uppercase tracking-wider line-clamp-1">{category}</p>
-              <span className="text-[11px] font-serif font-bold text-text-dark dark:text-white line-clamp-1 leading-tight">
+              <span className="text-[11px] font-heading font-bold text-text-dark dark:text-white line-clamp-1 leading-tight">
                 {name}
               </span>
             </div>
@@ -267,7 +267,7 @@ const ProductCard = ({
 
         <div className="p-5 flex-1 flex flex-col">
           <p className="text-sm text-text-dark/50 font-medium mb-1 uppercase tracking-wider">{category}</p>
-          <span className="text-lg font-serif font-bold text-text-dark group-hover/card:text-brand-secondary transition-colors mb-1 line-clamp-2">
+          <span className="text-lg font-heading font-bold text-text-dark group-hover/card:text-brand-secondary transition-colors mb-1 line-clamp-2">
             {name}
           </span>
 

@@ -8,7 +8,7 @@ export default function AboutPage() {
       <main className="flex-1 bg-transparent min-h-screen py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl shadow-xl p-8 md:p-16 border border-brand/10">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary text-center mb-8 italic">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-secondary text-center mb-8 italic">
               Our Story
             </h1>
             
@@ -31,7 +31,7 @@ export default function AboutPage() {
               </p>
               
               <div className="pt-8 text-center">
-                <p className="font-serif italic text-2xl text-brand-topbar">
+                <p className="font-heading italic text-2xl text-brand-topbar">
                   Sincerely,
                 </p>
                 <p className="font-bold mt-2 text-brand-secondary">

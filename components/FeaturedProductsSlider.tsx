@@ -48,7 +48,7 @@ export default function FeaturedProductsSlider({ products }: { products: Product
           <span className="inline-block bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-xs font-bold px-3.5 py-1 rounded-full mb-2 border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider">
             🌿 Top Picks
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white italic tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-gray-900 dark:text-white italic tracking-tight">
             Featured Plants
           </h2>
           <p className="mt-1 text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-xl">
@@ -152,7 +152,7 @@ export default function FeaturedProductsSlider({ products }: { products: Product
           <div className="px-6 sm:px-10 py-8 sm:py-10 md:flex items-center justify-between gap-6 relative z-10">
             <div>
               <p className="text-green-100 text-xs font-semibold uppercase tracking-widest mb-1">🎉 Limited Time</p>
-              <h3 className="text-white text-2xl md:text-3xl font-serif font-bold italic">
+              <h3 className="text-white text-2xl md:text-3xl font-heading font-bold italic">
                 Get 10% off your first order!
               </h3>
               <p className="text-green-100 mt-1 text-sm">

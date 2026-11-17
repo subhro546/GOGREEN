@@ -93,7 +93,7 @@ export default function BlogPage() {
           
           {/* Header */}
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary italic mb-4">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-secondary italic mb-4">
               Green Blog
             </h1>
             <p className="text-text-dark/70 text-lg max-w-2xl mx-auto">
@@ -176,7 +176,7 @@ export default function BlogPage() {
                         </span>
                       </div>
                       
-                      <h3 className="text-xl font-serif font-bold text-text-dark group-hover:text-brand-secondary transition-colors mb-3 leading-snug">
+                      <h3 className="text-xl font-heading font-bold text-text-dark group-hover:text-brand-secondary transition-colors mb-3 leading-snug">
                         {post.title}
                       </h3>
                       

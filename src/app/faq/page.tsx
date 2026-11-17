@@ -84,7 +84,7 @@ export default function FAQPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary italic mb-4">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-secondary italic mb-4">
               Frequently Asked Questions
             </h1>
             <p className="text-text-dark/70 text-lg">
@@ -111,7 +111,7 @@ export default function FAQPage() {
 
           {/* Accordion Questions */}
           <div className="space-y-4 bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-brand/5">
-            <h2 className="text-2xl font-serif font-bold text-brand-secondary mb-6 flex items-center gap-2">
+            <h2 className="text-2xl font-heading font-bold text-brand-secondary mb-6 flex items-center gap-2">
               <span className="text-xl"><FaQuestionCircle /></span>
               {faqData[activeCategory].title}
             </h2>

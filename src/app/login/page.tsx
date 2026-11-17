@@ -46,7 +46,7 @@ function LoginForm() {
   return (
     <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl border border-brand/5">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-serif font-bold text-brand-secondary italic">Welcome Back</h1>
+        <h1 className="text-3xl font-heading font-bold text-brand-secondary italic">Welcome Back</h1>
         <p className="text-text-dark/60 mt-2">Log in to your GOGREEN account</p>
       </div>
 

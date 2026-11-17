@@ -190,7 +190,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20 gap-4">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center mr-2 sm:mr-6 lg:mr-8 xl:mr-12">
-            <Link href="/" className="text-lg sm:text-2xl font-serif font-bold text-brand-dark dark:text-brand-light flex items-center gap-1.5 sm:gap-2">
+            <Link href="/" className="text-lg sm:text-2xl font-heading font-bold text-brand-dark dark:text-brand-light flex items-center gap-1.5 sm:gap-2">
               <img src="/logo.png" alt="GoGreen Nursery Logo" className="h-8 w-8 sm:h-10 sm:w-10 object-contain" />
               <span className="whitespace-nowrap">GoGreen<span className="hidden min-[380px]:inline"> Nursery</span></span>
             </Link>
@@ -404,7 +404,7 @@ const Navbar = () => {
                     return (
                       <div className="animate-fade-in">
                         <div className="flex items-center gap-3 mb-4">
-                          <h3 className="text-lg font-serif font-bold text-brand-secondary italic">{activeCat.name}</h3>
+                          <h3 className="text-lg font-heading font-bold text-brand-secondary italic">{activeCat.name}</h3>
                           {activeCat.tag && (
                             <span className="text-[10px] bg-brand-hero text-brand-secondary font-bold px-2.5 py-0.5 rounded-full border border-brand/10">
                               {activeCat.tag}

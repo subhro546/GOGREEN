@@ -215,7 +215,7 @@ export default function AdminBannersAndPromos() {
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Page Header */}
       <div className="border-b border-brand/10 pb-5">
-        <h1 className="text-3xl font-serif font-bold text-brand-secondary italic">Website Media Manager</h1>
+        <h1 className="text-3xl font-heading font-bold text-brand-secondary italic">Website Media Manager</h1>
         <p className="text-text-dark/60 text-sm mt-1">Manage dynamic elements such as home hero banners and promotional layout grid images.</p>
       </div>
 

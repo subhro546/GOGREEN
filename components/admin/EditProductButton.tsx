@@ -375,7 +375,7 @@ export default function EditProductButton({ product }: EditProductButtonProps) {
               <FaTimes size={18} />
             </button>
 
-            <h3 className="text-2xl font-serif font-bold text-brand-secondary mb-4 italic">Edit Product</h3>
+            <h3 className="text-2xl font-heading font-bold text-brand-secondary mb-4 italic">Edit Product</h3>
 
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium">

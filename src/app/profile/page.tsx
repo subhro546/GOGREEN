@@ -38,7 +38,7 @@ export default async function ProfilePage() {
       <Navbar />
       <main className="flex-1 pt-28 pb-16 bg-transparent min-h-screen">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-serif font-bold text-brand-secondary italic mb-8">My Profile</h1>
+          <h1 className="text-4xl font-heading font-bold text-brand-secondary italic mb-8">My Profile</h1>
 
           <div className="bg-white rounded-3xl shadow-xl border border-brand/5 overflow-hidden">
             {/* Profile Header */}

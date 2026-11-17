@@ -47,7 +47,7 @@ export default async function TestimonialSection() {
           <span className="inline-block bg-brand-hero text-brand-secondary text-sm font-bold px-4 py-1.5 rounded-full mb-4 border border-brand/10 uppercase tracking-widest">
             Testimonials
           </span>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-brand-topbar italic">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-topbar italic">
             What Our Plant Lovers Say
           </h2>
         </div>

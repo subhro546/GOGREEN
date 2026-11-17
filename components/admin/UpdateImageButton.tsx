@@ -95,7 +95,7 @@ export default function UpdateImageButton({ productId, currentImage }: { product
               <FaTimes size={16} />
             </button>
 
-            <h3 className="text-xl font-serif font-bold text-brand-secondary mb-1 italic">Replace Product Image</h3>
+            <h3 className="text-xl font-heading font-bold text-brand-secondary mb-1 italic">Replace Product Image</h3>
             <p className="text-xs text-text-dark/50 mb-5">Upload from your device or paste an image URL.</p>
 
             {/* Tab toggle */}

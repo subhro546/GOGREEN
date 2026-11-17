@@ -42,7 +42,7 @@ const HeroSection = () => {
               <span className="font-sans text-3xl md:text-4xl lg:text-5xl text-gray-800 font-semibold leading-snug">
                 Bring Nature Into
               </span>
-              <span className="font-serif text-5xl md:text-6xl lg:text-7xl italic font-bold leading-tight text-green-700">
+              <span className="font-heading text-5xl md:text-6xl lg:text-7xl italic font-bold leading-tight text-green-700">
                 Your Home
               </span>
               <span className="font-sans text-base md:text-lg text-gray-500 font-normal mt-2">

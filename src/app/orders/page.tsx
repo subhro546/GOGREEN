@@ -40,7 +40,7 @@ export default async function OrdersPage() {
       <Navbar />
       <main className="flex-1 pt-28 pb-16 bg-transparent min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-serif font-bold text-brand-secondary italic mb-8">Order History</h1>
+          <h1 className="text-4xl font-heading font-bold text-brand-secondary italic mb-8">Order History</h1>
 
           {orders.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-brand/5">

@@ -128,7 +128,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
         <span className="text-[11px] font-bold tracking-widest text-emerald-800 uppercase bg-emerald-50 border border-emerald-200/80 px-3 py-1 rounded-full">
           General Information
         </span>
-        <h2 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 mt-2">
+        <h2 className="text-2xl sm:text-3xl font-heading font-bold text-gray-900 mt-2">
           Product Details & Care Guide
         </h2>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">
@@ -351,7 +351,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
         {activeTab === "specs" && (
           <div className="animate-in fade-in duration-300">
             <div className="p-5 bg-white rounded-3xl border border-gray-100 shadow-xs">
-              <h3 className="font-serif font-bold text-lg text-emerald-900 mb-4">
+              <h3 className="font-heading font-bold text-lg text-emerald-900 mb-4">
                 Technical Specifications
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8 text-xs sm:text-sm">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Geist } from "next/font/google";
+import { Inter, Playfair_Display, Geist, Carrois_Gothic_SC } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { Providers } from "../../components/Providers";
@@ -19,6 +19,12 @@ const inter = Inter({
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
+});
+
+const carroisGothic = Carrois_Gothic_SC({
+  variable: "--font-heading",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -45,7 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body
-        className={`${inter.variable} ${playfair.variable} antialiased min-h-screen flex flex-col relative`}
+        className={`${inter.variable} ${playfair.variable} ${carroisGothic.variable} antialiased min-h-screen flex flex-col relative`}
       >
         <Providers>
           {/* Animated Grainient Background (Light green-to-white / Dark green-to-black) */}

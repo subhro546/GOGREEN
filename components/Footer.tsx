@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           
           <div className="space-y-4">
-            <Link href="/" className="text-2xl font-serif font-bold text-white flex items-center gap-2">
+            <Link href="/" className="text-2xl font-heading font-bold text-white flex items-center gap-2">
               <img src="/logo.png" alt="GoGreen Nursery Logo" className="h-8 w-8 object-contain brightness-0 invert" />
               <span>GoGreen Nursery</span>
             </Link>

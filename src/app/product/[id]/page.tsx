@@ -98,7 +98,7 @@ export default async function ProductPage({
                 />
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-text-dark mb-2">{product.name}</h1>
+              <h1 className="text-4xl md:text-5xl font-heading font-bold text-text-dark mb-2">{product.name}</h1>
               
               {/* Reviews Summary */}
               <div className="flex items-center gap-2 mb-4">
@@ -155,7 +155,7 @@ export default async function ProductPage({
           {/* Related Products Section */}
           {relatedProducts.length > 0 && (
             <div className="mt-16 mb-12">
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-brand-secondary mb-8">You May Also Like</h2>
+              <h2 className="text-2xl sm:text-3xl font-heading font-bold text-brand-secondary mb-8">You May Also Like</h2>
               <div className="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 sm:overflow-visible">
                 {relatedProducts.map((related) => (
                   <div key={related.id} className="w-[45vw] min-w-[150px] max-w-[185px] sm:w-full sm:max-w-none shrink-0 snap-start">

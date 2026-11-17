@@ -137,7 +137,7 @@ export default function RegisterPage() {
             <span className="inline-block px-3 py-1 bg-brand-secondary/10 text-brand-secondary text-xs font-bold rounded-full uppercase tracking-wider mb-2">
               Join GoGreen
             </span>
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-brand-secondary italic">
+            <h1 className="text-3xl sm:text-4xl font-heading font-bold text-brand-secondary italic">
               Create Account
             </h1>
             <p className="text-text-dark/60 mt-2 text-sm sm:text-base">

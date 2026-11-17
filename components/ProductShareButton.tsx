@@ -150,7 +150,7 @@ export default function ProductShareButton({
                 <FaShareAlt size={14} />
               </div>
               <div>
-                <h3 className="font-serif font-bold text-lg text-gray-900">Share This Plant</h3>
+                <h3 className="font-heading font-bold text-lg text-gray-900">Share This Plant</h3>
                 <p className="text-xs text-gray-500">Inspire your friends & family to go green</p>
               </div>
             </div>

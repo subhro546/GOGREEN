@@ -107,7 +107,7 @@ export default async function ShopPage({
           
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 border-b border-brand/10 pb-8">
             <div>
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary italic mb-4">
+              <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-secondary italic mb-4">
                 {displayTitle}
               </h1>
               <p className="text-text-dark max-w-2xl">

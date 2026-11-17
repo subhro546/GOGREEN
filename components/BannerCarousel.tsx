@@ -192,7 +192,7 @@ const BannerCarousel = () => {
                   <p className="text-xs font-semibold tracking-widest uppercase text-emerald-300 drop-shadow">
                     GoGreen Showcase
                   </p>
-                  <h3 className="text-xl sm:text-2xl font-serif font-bold italic drop-shadow-md">
+                  <h3 className="text-xl sm:text-2xl font-heading font-bold italic drop-shadow-md">
                     {banner.alt}
                   </h3>
                 </div>
