@@ -41,7 +41,7 @@ export default function FeaturedProductsSlider({ products }: { products: Product
   };
 
   return (
-    <section className="w-full pt-8 pb-14 bg-white dark:bg-[#0b130e] overflow-hidden relative">
+    <section className="w-full pt-8 pb-14 bg-transparent overflow-hidden relative">
       {/* ── HEADER WITH GENEROUS SIDE PADDING ── */}
       <div className="w-full px-6 sm:px-14 md:px-20 lg:px-28 flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-4">
         <div>

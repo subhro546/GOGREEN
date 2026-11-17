@@ -8,11 +8,12 @@
 }
 
 html {
+  background-color: var(--background);
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--background);
+  background-color: transparent;
   color: var(--foreground);
   font-family: var(--font-inter), sans-serif;
   overflow-x: hidden;
@@ -73,7 +74,7 @@ html.dark {
 }
 
 html.dark body {
-  background-color: #0b130e !important;
+  background-color: transparent !important;
   color: #f1fdf4 !important;
 }
 

@@ -5,7 +5,7 @@ export default function AboutPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 bg-brand-hero min-h-screen py-20">
+      <main className="flex-1 bg-transparent min-h-screen py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl shadow-xl p-8 md:p-16 border border-brand/10">
             <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-secondary text-center mb-8 italic">

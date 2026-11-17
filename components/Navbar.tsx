@@ -183,7 +183,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white dark:bg-[#0b130e] w-full z-40 border-b border-gray-100 dark:border-gray-800 sticky top-0 shadow-sm transition-colors duration-300">
+    <nav className="bg-white/85 dark:bg-[#0b130e]/85 backdrop-blur-md w-full z-40 border-b border-gray-100/80 dark:border-gray-800/80 sticky top-0 shadow-sm transition-colors duration-300">
       {/* Colourful top accent strip */}
       <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #2e7d32, #66bb6a, #f9a825, #f97316, #f43f5e)' }} />
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
@@ -322,7 +322,7 @@ const Navbar = () => {
       </div>
 
       {/* Search Bar Row (Mobile only, visible all the time) */}
-      <div ref={mobileSearchContainerRef} className="relative block lg:hidden px-4 pb-3 pt-1 bg-white dark:bg-[#0b130e] border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
+      <div ref={mobileSearchContainerRef} className="relative block lg:hidden px-4 pb-3 pt-1 bg-white/85 dark:bg-[#0b130e]/85 backdrop-blur-md border-b border-gray-100/80 dark:border-gray-800/80 transition-colors duration-300">
         <form onSubmit={handleSearchSubmit} className="relative w-full">
           <input 
             type="text" 

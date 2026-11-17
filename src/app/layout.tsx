@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, Geist } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { Providers } from "../../components/Providers";
 import TopBar from "../../components/TopBar";
 import WhatsAppWidget from "../../components/WhatsAppWidget";
 import NavigationProgress from "../../components/NavigationProgress";
+import BackgroundGrainient from "../../components/BackgroundGrainient";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const inter = Inter({
   variable: "--font-inter",
@@ -39,23 +43,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <body
         className={`${inter.variable} ${playfair.variable} antialiased min-h-screen flex flex-col relative`}
       >
-        {/* Subtle pattern background */}
-        <div
-          className="fixed inset-0 z-0 pointer-events-none"
-          style={{
-            backgroundImage: 'url(/pattern-bg.png)',
-            backgroundSize: '600px',
-            backgroundRepeat: 'repeat',
-            opacity: 0.04,
-            filter: 'blur(1px)',
-          }}
-          aria-hidden="true"
-        />
         <Providers>
+          {/* Animated Grainient Background (Light green-to-white / Dark green-to-black) */}
+          <BackgroundGrainient />
           <Suspense fallback={null}>
             <NavigationProgress />
           </Suspense>

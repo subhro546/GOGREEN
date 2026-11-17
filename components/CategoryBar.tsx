@@ -17,18 +17,27 @@ const CategoryBar = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    let cancelled = false;
+    const fetchCategories = async (attempt = 0) => {
       try {
         const res = await fetch('/api/categories/menu');
+        if (cancelled) return;
         if (res.ok) {
           const data = await res.json();
           setCategories(data);
         }
       } catch (err) {
-        console.error('Error fetching categories for bar:', err);
+        if (cancelled) return;
+        // Retry up to 3 times with exponential backoff (500ms, 1s, 2s)
+        if (attempt < 3) {
+          setTimeout(() => fetchCategories(attempt + 1), 500 * Math.pow(2, attempt));
+        } else {
+          console.error('Error fetching categories for bar after retries:', err);
+        }
       }
     };
     fetchCategories();
+    return () => { cancelled = true; };
   }, []);
 
   const handleMouseEnter = (catName: string) => {
@@ -45,7 +54,7 @@ const CategoryBar = () => {
   if (categories.length === 0) return null;
 
   return (
-    <div className="bg-white dark:bg-[#0b130e] border-b border-gray-100 dark:border-gray-800 sticky top-[80px] z-30 shadow-xs block w-full transition-colors duration-300">
+    <div className="bg-white/80 dark:bg-[#0b130e]/80 backdrop-blur-md border-b border-gray-100/80 dark:border-gray-800/80 sticky top-[80px] z-30 shadow-xs block w-full transition-colors duration-300">
       <div className="w-full px-3 sm:px-8 md:px-12 lg:px-16">
         <div 
           className="flex flex-nowrap sm:flex-wrap items-center overflow-x-auto sm:overflow-visible sm:justify-center lg:justify-evenly gap-2 sm:gap-1.5 md:gap-3 py-2 sm:py-1 relative scrollbar-hide"

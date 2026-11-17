@@ -104,7 +104,7 @@ const BannerCarousel = () => {
 
   return (
     <section
-      className="w-full pt-6 pb-8 sm:pt-10 sm:pb-12 bg-gradient-to-b from-brand-hero/20 via-white to-transparent dark:from-[#0b130e]/40 dark:via-[#0b130e] dark:to-transparent overflow-hidden"
+      className="w-full pt-6 pb-8 sm:pt-10 sm:pb-12 bg-transparent overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={handleTouchStart}

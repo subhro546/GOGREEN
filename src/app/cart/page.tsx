@@ -254,7 +254,7 @@ export default function CartPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 bg-white min-h-screen">
+      <main className="flex-1 pt-24 pb-16 bg-transparent min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl font-serif font-bold text-brand-secondary italic mb-8">Your Cart</h1>
 

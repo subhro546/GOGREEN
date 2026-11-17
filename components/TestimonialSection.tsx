@@ -37,7 +37,7 @@ export default async function TestimonialSection() {
   };
 
   return (
-    <section className="py-20 bg-[#f8faf8] relative overflow-hidden">
+    <section className="py-20 bg-white/40 dark:bg-[#0b130e]/40 backdrop-blur-sm relative overflow-hidden">
       {/* Decorative background leaf/shape */}
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-green-100 rounded-full opacity-50 blur-3xl" />
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-yellow-50 rounded-full opacity-50 blur-3xl" />

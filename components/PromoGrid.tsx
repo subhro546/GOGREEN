@@ -45,7 +45,7 @@ export default function PromoGrid() {
   if (promos.length < 5) return null;
 
   return (
-    <section className="w-full py-10 sm:py-14 md:py-16 bg-white dark:bg-[#0b130e] transition-colors duration-300">
+    <section className="w-full py-10 sm:py-14 md:py-16 bg-transparent transition-colors duration-300">
       {/* Whole width container matching other full-width sections */}
       <div className="w-full px-4 sm:px-6 md:px-10 lg:px-14 xl:px-16">
         

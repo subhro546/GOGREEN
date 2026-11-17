@@ -80,7 +80,7 @@ export default function FAQPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 bg-brand-hero min-h-screen pt-28 pb-16">
+      <main className="flex-1 bg-transparent min-h-screen pt-28 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center mb-12">
